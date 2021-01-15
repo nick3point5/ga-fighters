@@ -28,7 +28,7 @@ router.post('/', (req, res) => {
 	});
 });
 
-// POST ---->   /index/:id    <---- User Login
+// POST ---->   /index/:id  <-- redirects to  <---- User Login
 router.post('/login', (req, res) => {
 	db.User.findOne(
 		{
@@ -48,7 +48,29 @@ router.post('/login', (req, res) => {
 	);
 });
 
-// POST/PUT ---->   /index/:id    <---- User Edit
+// GET/Show  ---->   /index/:id    <---- Show User Profile
+router.get('/:id', (req, res) => {
+	const userId = req.params.id;
+	db.User.findById(userId)
+		.populate('avatars')
+		.excu((err, foundObj) => {
+			if (err) {
+				res.send(err);
+			}
+			res.render('index', { user: foundObj });
+		});
+});
+// GET ---->   /index/:id/edit    <---- User Edit Form
+router.get('/:id/edit', (req, res) => {
+	const userId = req.params.id;
+	db.User.findById(userId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		res.render('index', { user: foundObj });
+	});
+});
+// POST/PUT ---->   /index/:id    <---- User Edit/Update
 router.put('/:id', (req, res) => {
 	const userId = req.params.id;
 	db.User.findByIdAndUpdate(
