@@ -3,7 +3,7 @@ const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const controller = require('./controllers/controllers');
+const indexRoute = require('./controllers/indexRoute');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -13,11 +13,11 @@ app.set('view engine', 'ejs');
 const PORT = process.env.PORT || 3000;
 
 // ALL SEPRATE ROUTES
-app.use('/index', controller);
+app.use('/index', indexRoute); // login page and link to Sign-Up
 
 // GET AT LOCAL HOST: /
 app.get('/', (req, res) => {
-	res.send('GET: Login page!');
+	res.send('GET: main page!');
 });
 
 app.listen(PORT, () => {
