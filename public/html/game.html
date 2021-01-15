@@ -6,13 +6,31 @@
     <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="../css/style.css" rel="stylesheet" type="text/css">
     <script defer src="../js/bootstrap.bundle.js"></script>
-    <title>Login</title>
+    <title>Game</title>
 </head>
 <body>
     <a href="account.html">&lt</a>
     <main class="game-window">
-    
-        <a href="level-up.html">Level Up</a>
+        <div class="info-display">
+        <meter class="hp" id="player-hp"
+            min="0" max="100"
+            low="33" high="66" optimum="80"
+            value="50">
+            at 50/100
+        </meter>
+        <h3 id="timer">12</h3>
+        <meter class="hp" id="enemy-hp"
+            min="0" max="100"
+            low="33" high="66" optimum="80"
+            value="50">
+            at 50/100
+        </meter>
+        </div>
+        <div id="play-window">
+            <img src="https://picsum.photos/id/1024/200/200" alt="" id="player">
+            <img src="https://picsum.photos/id/10/200/200" alt="" id="enemy">
+        </div>
     </main>
+    <a href="level-up.html">Level Up</a>
 </body>
 </html>

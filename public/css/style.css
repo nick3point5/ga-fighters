@@ -37,3 +37,25 @@ p{
     display: flex;
 
 }
+
+.game-window{
+    height: 500px;
+    width: 800px;
+    border: 2px solid black;
+}
+
+.info-display{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.hp{
+    width: 350px;
+    height: 30px;
+    margin: 0 10px;
+}
+
+#enemy-hp{
+    transform: scaleX(-1);
+}
