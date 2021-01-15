@@ -1,58 +1,45 @@
 require('../config/database');
 const express = require('express');
 const router = express.Router();
-const Model = require('../models/model')
+const Model = require('../models/User');
 
-router.get('/', (req,res) => {
-    res.render('index.ejs')
-})
+router.get('/', (req, res) => {
+	res.render('index.ejs');
+});
 
-router.post('/', (req,res) => {
-    const objData ={
-        property: arg
-    }
-    
-    Model.create(
-        objData,
-        (err, obj) => {
-            if (err) {
-                console.log('Error:');
-                console.log(err);
-            }
-        }
-    )
-})
+router.post('/', (req, res) => {
+	const objData = {
+		property: arg,
+	};
 
-router.put('/:id', (req,res) => {
+	Model.create(objData, (err, obj) => {
+		if (err) {
+			console.log('Error:');
+			console.log(err);
+		}
+	});
+});
 
-    const updateObj = {
-        property: newArg
-    }
+router.put('/:id', (req, res) => {
+	const updateObj = {
+		property: newArg,
+	};
 
-    Model.findByIdAndUpdate(
-        req.body.id,
-        updateObj,
-        {new: true},
-        (err, obj) => {
-            if (err) {
-                console.log('Error:');
-                console.log(err);
-            }
-        }
-    )
-})
+	Model.findByIdAndUpdate(req.body.id, updateObj, { new: true }, (err, obj) => {
+		if (err) {
+			console.log('Error:');
+			console.log(err);
+		}
+	});
+});
 
-router.delete('/:id', (req,res) => {
-    Model.findByIdAndDelete(
-        req.body.id,
-        (err, obj) => {
-            if (err) {
-                console.log('Error:');
-                console.log(err);
-            }
-        }
-    )
-})
-
+router.delete('/:id', (req, res) => {
+	Model.findByIdAndDelete(req.body.id, (err, obj) => {
+		if (err) {
+			console.log('Error:');
+			console.log(err);
+		}
+	});
+});
 
 module.exports = router;
