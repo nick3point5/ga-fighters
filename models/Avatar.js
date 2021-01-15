@@ -11,7 +11,7 @@ const avatarSchema = new Schema(
 			type: String,
 			default: 'Input details on the Avatar. ex: Avatar background story',
 		},
-		stats: new Schema({
+		stats: {
 			health: Number,
 			mana: Number,
 			attack: Number,
@@ -19,8 +19,13 @@ const avatarSchema = new Schema(
 			spclAttack: Number,
 			spclDefence: Number,
 			exp: Number,
-		}),
+		},
+		user: {
+			type: Schema.Types.ObjectId,
+			ref: 'User',
+		},
 	},
+
 	{ timestamps: true }
 );
 
