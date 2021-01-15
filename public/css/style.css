@@ -13,3 +13,27 @@
     flex-direction: column;
     align-items: center;
 }
+
+.character-container{
+    display: flex;
+    flex-direction: row;
+}
+
+p{
+    color: black;
+    margin: 20px;
+}
+
+.character{
+    /* width: 200px; */
+    display: flex;
+    flex-direction: column;
+}
+
+.game-link{
+    text-decoration: none;
+    border: black solid 2px;
+    margin: 20px;
+    display: flex;
+
+}
