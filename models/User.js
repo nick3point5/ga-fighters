@@ -9,9 +9,9 @@ const userSchema = new Schema(
 		},
 		password: {
 			type: String,
-			required: true,
-			minlength: 8,
-			maxlength: 255,
+			// required: true,
+			// minlength: 8,
+			// maxlength: 255,
 		},
 		avatars: [{ type: Schema.Types.ObjectId, ref: 'Avatar' }],
 	},
