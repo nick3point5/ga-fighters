@@ -6,19 +6,19 @@
     <link href="./css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="./css/style.css" rel="stylesheet" type="text/css">
     <script defer src="./js/bootstrap.bundle.js"></script>
-    <title>Login</title>
+    <title>Sign Up</title>
 </head>
 <body>
-
-        <form action="login" method="post" class="form">
+    <main>
+        <form action="/index" method="post" class="form">
             <label for="">Username</label>
-            <input type="text" name="name">
+            <input type="text" name="username">
             <label for="">Password</label>
             <input type="password" name="password">
-            <button type="submit">Login</button>        
+            <label for="">Confirmation</label>
+            <input type="password" name="confirm">
+            <button type="submit">Sign up</button>
         </form>
-
-        <a href="new">signup</a>
-
+    </main>
 </body>
 </html>
