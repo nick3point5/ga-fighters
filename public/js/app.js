@@ -44,7 +44,7 @@ class interObj {
         }
         this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg)`
     }
-    postion() {
+    position() {
         this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg)`
     }
     trackdown(target) {
@@ -82,6 +82,12 @@ class fireball extends interObj {
 class fighter extends interObj {
     constructor(x, y, element, name) {
         super(x, y,150, 200, element)
+        this.hp=5
+        this.mp=5
+        this.atk=5
+        this.def=5
+        this.spAtk=5
+        this.spDef=5
     }
 
 
@@ -298,7 +304,7 @@ class petClass extends interObj {
                 $('#food').addClass('hidden')
                 food.x = -food.width
                 food.y = food.ymax + food.height
-                food.postion()
+                food.position()
             }
 
 
