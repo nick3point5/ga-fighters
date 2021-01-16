@@ -400,11 +400,17 @@ function update() {
 
 function uiUpdate() {
     gaugeUi()
+    timerUi()
 }
 
 function gaugeUi() {
     enemyHpBar.value = enemyCharacter.hp
     playerHpBar.value = playerCharacter.hp
+}
+
+function timerUi() {
+    playwin.timer -= 1/playwin.framerate
+    timerEle.textContent = Math.ceil(playwin.timer)
 }
 
 
