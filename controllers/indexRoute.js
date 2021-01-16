@@ -75,25 +75,30 @@ router.get('/:id/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		// res.render('index', { user: foundObj });
-		res.send('Get edit Form');
+		res.render('index', { user: foundObj });
+		// res.send('Get edit Form');
 	});
 });
 // POST/PUT ---->   /index/:id    <---- User Edit/Update
-// router.put('/:id', (req, res) => {
-// 	const userId = req.params.id;
-// 	db.User.findByIdAndUpdate(
-// 		req.body.id,
-// 		updateObj,
-// 		{ new: true },
-// 		(err, obj) => {
-// 			if (err) {
-// 				console.log('Error:');
-// 				console.log(err);
-// 			}
-// 		}
-// 	);
-// });
+router.put('/:id', (req, res) => {
+	const userId = req.params.id;
+	const dataObj = {
+		name: req.body.name,
+		password: req.body.password,
+	};
+	db.User.findByIdAndUpdate(
+		userId,
+		dataObj,
+		{ new: true },
+		(err, updatedObj) => {
+			if (err) {
+				console.log('Error:');
+				console.log(err);
+			}
+			res.redirect(`/${updatedObj._id}`);
+		}
+	);
+});
 
 router.delete('/:id', (req, res) => {
 	Model.findByIdAndDelete(req.body.id, (err, obj) => {
