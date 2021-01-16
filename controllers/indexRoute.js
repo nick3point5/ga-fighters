@@ -1,7 +1,7 @@
 require('../config/database');
 const express = require('express');
 const router = express.Router();
-const db = require('../models/User');
+const db = require('../config/database');
 
 // User route ---------------------------------------------------------------
 // GET   --->   /index <-----  Gets -> Login form and sign-up page link
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
 		password: req.body.password,
 	};
 
-	db.User.create(objData, (err, obj) => {
+	db.User.create(dataObj, (err) => {
 		if (err) {
 			res.send(err);
 		}
@@ -38,14 +38,15 @@ router.post('/login', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			if (!foundObj) {
-				return res.redirect('/');
+			if (!foundObj === '') {
+				return res.send('error finding user during login');
 			}
 			if (foundObj.password === req.body.password) {
-				return res.redirect(`/${foundObj._id}`);
+				res.redirect(`/${foundObj._id}`);
 			}
 		}
 	);
+	// res.send('redirects to .GET  /:id');
 });
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
@@ -57,7 +58,8 @@ router.get('/:id', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			res.render('index', { user: foundObj });
+			// res.render('index', { user: foundObj });
+			res.send('Get show profile');
 		});
 });
 // GET ---->   /index/:id/edit    <---- User Edit Form
@@ -67,7 +69,8 @@ router.get('/:id/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		res.render('index', { user: foundObj });
+		// res.render('index', { user: foundObj });
+		res.send('Get edit Form');
 	});
 });
 // POST/PUT ---->   /index/:id    <---- User Edit/Update
