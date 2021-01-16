@@ -101,11 +101,14 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-	Model.findByIdAndDelete(req.body.id, (err, obj) => {
+	const userId = req.params.id;
+	db.User.findByIdAndDelete(userId, (err, deletedObj) => {
 		if (err) {
 			console.log('Error:');
 			console.log(err);
 		}
+
+		res.redirect('/');
 	});
 });
 
