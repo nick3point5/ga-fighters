@@ -73,10 +73,15 @@ class interObj {
     }
 }
 
-class fireball extends interObj {
-    constructor(x, y, element) {
-        super(x, y, element.clientWidth, element.clientHeight, element)
+class fireballClass extends interObj {
+    constructor(x, y, element, direction) {
+        super(x, y, 20, 20, element)
         this.speed = 3;
+        if(this.direction>0){
+            this.move.ri = true
+        }else{
+            this.move.lf = true
+        }
     }
 }
 
@@ -103,12 +108,31 @@ class fighter extends interObj {
         }
     }
     fireball(target){
+        const  fire = document.createElement('div')
+        fire.classList.add("fire")
+        fire.classList.add("hitbox")
+        
+        playwin.element.appendChild(fire)
+        const fireball = new fireballClass(
+            this.x,this.y,fire,this.direction
+        )
+        const launch = setInterval(()=>{
+
+            fireball.moveFunction()
+
+        },1000/playwin.framerate
+        )
+
         console.log('fireball')
     }
 
 
 
 }
+
+
+
+
 
 class attackClass extends interObj{
     constructor(x, y, width, height, element) {
@@ -392,10 +416,14 @@ class petClass extends interObj {
 function update() {
     if (!playwin.pause) {
         uiUpdate();
-        playerCharacter.moveFunction()
-        enemyCharacter.moveFunction()
+        movement()
         playwin.frame++
     }
+}
+
+function movement() {
+    playerCharacter.moveFunction()
+    enemyCharacter.moveFunction()
 }
 
 function uiUpdate() {
@@ -495,20 +523,6 @@ function assignEvents() {
     window.addEventListener("keyup", releaseKey);
 }
 
-//ANCHOR global var and obj
-
-playwin = {
-    height: 500,
-    width: 800,
-    element: document.getElementById('play-window'),
-    mute: false,
-    pause: true,
-    frame: 0,
-    framerate: 30,
-    timer: 99,
-    gameOver: false
-};
-
 function getKey(event) {
     controller(event.key)   
 }
@@ -530,6 +544,9 @@ function controller(inp){
         if(inp === ' '){
             playerCharacter.attack(enemyCharacter)
         }
+        if(inp === 'z'){
+            playerCharacter.fireball(enemyCharacter)
+        }
     }
     // console.log(inp)
     // console.log(playerCharacter.move);
@@ -550,6 +567,19 @@ function releaseKey(inp) {
     }
     // console.log(inp)
 }
+//ANCHOR global var and obj
+
+playwin = {
+    height: 500,
+    width: 800,
+    element: document.getElementById('play-window'),
+    mute: false,
+    pause: true,
+    frame: 0,
+    framerate: 30,
+    timer: 99,
+    gameOver: false
+};
 
 let playerCharacter = new playerClass(
     0,0,document.getElementById('player'),'guy'
