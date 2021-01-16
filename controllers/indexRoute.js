@@ -75,7 +75,7 @@ router.get('/:id/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		res.render('index', { user: foundObj });
+		res.render('edit', { user: foundObj });
 		// res.send('Get edit Form');
 	});
 });
