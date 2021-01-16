@@ -93,6 +93,7 @@ p{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .hp{
@@ -100,6 +101,34 @@ p{
     height: 30px;
     margin: 0 10px;
 }
+
+.mp{
+    width: 350px;
+    height: 30px;
+    margin: 0 10px;
+}
+.mp::-webkit-meter-optimum-value{
+    background-color: blue;
+}
+
+/* meter::-webkit-meter-optimum-value {
+    box-shadow: 0 5px 5px -5px #999 inset;
+    background-image: linear-gradient(
+      90deg, 
+      #8bcf69 5%, 
+      #e6d450 5%,
+      #e6d450 15%,
+      #f28f68 15%,
+      #f28f68 55%,
+      #cf82bf 55%,
+      #cf82bf 95%,
+      #719fd1 95%,
+      #719fd1 100%
+    );
+    background-color: blue;
+    background-size: 100% 100%;
+  } */
+
 
 #enemy-hp{
     transform: scaleX(-1);

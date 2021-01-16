@@ -14,17 +14,33 @@
     <a href="account.html">&lt</a>
     <main class="game-window">
         <div class="info-display">
-        <meter class="hp" id="player-hp"
-            min="0" max="100"
-            low="33" high="66" optimum="80"
-            value="50">
-        </meter>
+
+        <div class="bar-container player-bar-container">
+            <meter class="hp" id="player-hp"
+                min="0" max="100"
+                low="33" high="66" optimum="80"
+                value="50">
+            </meter>
+            <meter class="mp" id="player-mp"
+                min="0" max="100"
+                value="50">
+            </meter>
+        </div>
+
         <h3 id="timer">12</h3>
-        <meter class="hp" id="enemy-hp"
-            min="0" max="100"
-            low="33" high="66" optimum="80"
-            value="50">
-        </meter>
+
+        <div class="bar-container enemy-bar-container">
+            <meter class="hp" id="enemy-hp"
+                min="0" max="100"
+                low="33" high="66" optimum="80"
+                value="50">
+            </meter>
+            <meter class="mp" id="enemy-mp"
+                min="0" max="100"
+                value="50">
+            </meter>
+        </div>
+
         </div>
         <div id="play-window">
             <div class="fighter" id="player">

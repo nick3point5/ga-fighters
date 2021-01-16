@@ -84,7 +84,7 @@ class fighter extends interObj {
     constructor(x, y, element, name) {
         super(x, y,150, 200, element)
         this.hp=100
-        this.mp=5
+        this.mp=100
         this.atk=5
         this.def=5
         this.spAtk=5
@@ -406,11 +406,15 @@ function uiUpdate() {
 function gaugeUi() {
     enemyHpBar.value = enemyCharacter.hp
     playerHpBar.value = playerCharacter.hp
+    enemyMpBar.value = enemyCharacter.mp
+    playerMpBar.value = playerCharacter.mp
 }
 
 function timerUi() {
-    playwin.timer -= 1/playwin.framerate
-    timerEle.textContent = Math.ceil(playwin.timer)
+    if (playwin.timer>0) {
+        playwin.timer -= 1/playwin.framerate
+        timerEle.textContent = Math.ceil(playwin.timer)        
+    }
 }
 
 
@@ -561,6 +565,8 @@ let playerAttack = new attackClass(
 
 enemyHpBar = document.getElementById('enemy-hp')
 playerHpBar = document.getElementById('player-hp')
+enemyMpBar = document.getElementById('enemy-mp')
+playerMpBar = document.getElementById('player-mp')
 timerEle = document.getElementById('timer')
 
 
