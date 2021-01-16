@@ -10,6 +10,7 @@ class interObj {
         this.ymax = playwin.height - height;
         this.rotation = 0;
         this.speed = 0;
+        this.direction = 1
         this.move = {
             up: false,
             ri: false,
@@ -42,7 +43,7 @@ class interObj {
         if (this.move.ri && this.x + this.speed <= this.xmax) {
             this.x += this.speed;
         }
-        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg)`
+        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
     }
     position() {
         this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg)`
@@ -82,19 +83,39 @@ class fireball extends interObj {
 class fighter extends interObj {
     constructor(x, y, element, name) {
         super(x, y,150, 200, element)
-        this.hp=5
+        this.hp=100
         this.mp=5
         this.atk=5
         this.def=5
         this.spAtk=5
         this.spDef=5
-    }
+        this.control = true
 
+    }
+    attack(target){
+        
+        if (this.collision(target)) {
+            if(this.atk > target.def){
+                target.hp -= this.atk - target.def
+            } else {
+                target.hp -= 2
+            }
+        }
+    }
+    fireball(target){
+        console.log('fireball')
+    }
 
 
 
 }
 
+class attackClass extends interObj{
+    constructor(x, y, width, height, element) {
+        super(x, y, width, height, element)
+        this.speed = 5;
+    }
+}
 class playerClass extends fighter {
     constructor(x, y, element, name) {
         super(x, y, element)
@@ -105,7 +126,16 @@ class playerClass extends fighter {
 
 
 }
+class enemyClass extends fighter {
+    constructor(x, y, element, name) {
+        super(x, y, element)
+        this.speed = 5;
+    }
 
+
+
+
+}
 class petClass extends interObj {
     constructor(x, y, width, height, element, name) {
         super(x, y, width, height, element);
@@ -363,16 +393,18 @@ function update() {
     if (!playwin.pause) {
         uiUpdate();
         playerCharacter.moveFunction()
+        enemyCharacter.moveFunction()
         playwin.frame++
     }
 }
 
 function uiUpdate() {
-
+    gaugeUi()
 }
 
 function gaugeUi() {
-
+    enemyHpBar.value = enemyCharacter.hp
+    playerHpBar.value = playerCharacter.hp
 }
 
 
@@ -463,6 +495,7 @@ playwin = {
     pause: true,
     frame: 0,
     framerate: 30,
+    timer: 99,
     gameOver: false
 };
 
@@ -471,25 +504,25 @@ function getKey(event) {
 }
 
 function controller(inp){
-
-    if(inp === 'ArrowUp'){
-        playerCharacter.move.up = true
+    if(playerCharacter.control){
+        if(inp === 'ArrowUp'){
+            playerCharacter.move.up = true
+        }
+        if(inp === 'ArrowDown'){
+            playerCharacter.move.dn = true
+        }
+        if(inp === 'ArrowLeft'){
+            playerCharacter.move.lf = true
+        }
+        if(inp === 'ArrowRight'){
+            playerCharacter.move.ri = true
+        }
+        if(inp === ' '){
+            playerCharacter.attack(enemyCharacter)
+        }
     }
-    if(inp === 'ArrowDown'){
-        playerCharacter.move.dn = true
-    }
-    if(inp === 'ArrowLeft'){
-        playerCharacter.move.lf = true
-    }
-    if(inp === 'ArrowRight'){
-        playerCharacter.move.ri = true
-    }
-    if(inp === ' '){
-        fire()
-    }
-
-    console.log(inp)
-    console.log(playerCharacter.move);
+    // console.log(inp)
+    // console.log(playerCharacter.move);
 }
 
 function releaseKey(inp) {
@@ -505,12 +538,25 @@ function releaseKey(inp) {
     if(inp.key === 'ArrowRight'){
         playerCharacter.move.ri = false
     }
-    console.log(inp)
+    // console.log(inp)
 }
 
 let playerCharacter = new playerClass(
     0,0,document.getElementById('player'),'guy'
 )
+
+let enemyCharacter = new enemyClass(
+    400,200,document.getElementById('enemy'),'sdf'
+)
+
+let playerAttack = new attackClass(
+    100,0,50,50,document.getElementById('enemy'),playerCharacter
+)
+
+enemyHpBar = document.getElementById('enemy-hp')
+playerHpBar = document.getElementById('player-hp')
+timerEle = document.getElementById('timer')
+
 
 
 game()

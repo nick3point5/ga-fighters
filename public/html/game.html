@@ -7,6 +7,7 @@
     <link href="../css/style.css" rel="stylesheet" type="text/css">
     <script defer src="../js/bootstrap.bundle.js"></script>
     <script defer src="../js/app.js"></script>
+    <!-- <script data-main="../js/app.js" src="../js/require.js"></script> -->
     <title>Game</title>
 </head>
 <body>
@@ -17,20 +18,19 @@
             min="0" max="100"
             low="33" high="66" optimum="80"
             value="50">
-            at 50/100
         </meter>
         <h3 id="timer">12</h3>
         <meter class="hp" id="enemy-hp"
             min="0" max="100"
             low="33" high="66" optimum="80"
             value="50">
-            at 50/100
         </meter>
         </div>
         <div id="play-window">
-            <div class="fighter" id="player"></div>
+            <div class="fighter" id="player">
+                <div class="player-attack hitbox"></div>
+            </div>
             <div class="fighter" id="enemy"></div>
-            <!-- <img src="https://picsum.photos/id/10/200/200" alt="" id="enemy"> -->
         </div>
     </main>
     <a href="level-up.html">Level Up</a>
