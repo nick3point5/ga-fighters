@@ -1,24 +1,25 @@
-require('./config/database');
 const express = require('express');
+const app = express();
+require('./config/database');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const indexRoute = require('./controllers/indexRoute');
-const app = express();
+const indexRoute = require('./controllers/indexRoute.js');
+const PORT = 3000;
 
+app.set('view engine', 'ejs');
+app.use((req, res, next) => {
+	next();
+});
+// app.use('/index', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
-app.use('/index', express.static(__dirname + '/public'));
-app.set('view engine', 'ejs');
-const PORT = process.env.PORT || 3000;
-
-// ALL SEPRATE ROUTES
-app.use('/index', indexRoute); // login page and link to Sign-Up
-
 // GET AT LOCAL HOST: /
 app.get('/', (req, res) => {
-	res.send('GET: main page!');
+	res.render('index');
 });
+// ALL SEPRATE ROUTES
+app.use('/index', indexRoute); // login page and link to Sign-Up
 
 app.listen(PORT, () => {
 	console.log('Server is running on port: ' + PORT);

@@ -1,7 +1,7 @@
-require('../config/database');
 const express = require('express');
+require('body-parser');
 const router = express.Router();
-const db = require('../models/User');
+const db = require('../config/database');
 
 // User route ---------------------------------------------------------------
 // GET   --->   /index <-----  Gets -> Login form and sign-up page link
@@ -15,21 +15,27 @@ router.get('/new', (req, res) => {
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
-	const dataObj = {
-		name: req.body.name,
-		password: req.body.password,
-	};
+	console.log(req.body.name);
 
-	db.User.create(objData, (err, obj) => {
-		if (err) {
-			res.send(err);
+	db.User.create(
+		{
+			name: req.body.name,
+			password: req.body.password,
+		},
+		(err, newUser) => {
+			console.log(req.body.password);
+			if (err) {
+				console.log('Fuck bro');
+			}
+			console.log(newUser);
+			res.redirect('/index');
 		}
-		res.redirect('/');
-	});
+	);
 });
 
 // POST ---->   /index/:id  <-- redirects to  <---- User Login
 router.post('/login', (req, res) => {
+	const passW = req.body.password;
 	db.User.findOne(
 		{
 			name: req.body.name,
@@ -38,28 +44,30 @@ router.post('/login', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			if (!foundObj) {
-				return res.redirect('/');
+			if (!foundObj === '') {
+				return res.send('error finding user during login');
 			}
-			if (foundObj.password === req.body.password) {
-				return res.redirect(`/${foundObj._id}`);
+			if (foundObj.password === passW) {
+				res.redirect(`/${foundObj._id}`);
 			}
 		}
 	);
+	// res.send('redirects to .GET  /:id');
 });
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:id', (req, res) => {
 	const userId = req.params.id;
-	db.User.findById(userId)
-		.populate('avatars')
-		.excu((err, foundObj) => {
-			if (err) {
-				res.send(err);
-			}
-			res.render('index', { user: foundObj });
-		});
+	db.User.findById(userId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		console.log('Profile route hit');
+		res.render('index', { user: foundObj });
+		// res.send('Got show profile');
+	});
 });
+
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:id/edit', (req, res) => {
 	const userId = req.params.id;
@@ -68,20 +76,26 @@ router.get('/:id/edit', (req, res) => {
 			res.send(err);
 		}
 		res.render('index', { user: foundObj });
+		// res.send('Get edit Form');
 	});
 });
 // POST/PUT ---->   /index/:id    <---- User Edit/Update
 router.put('/:id', (req, res) => {
 	const userId = req.params.id;
+	const dataObj = {
+		name: req.body.name,
+		password: req.body.password,
+	};
 	db.User.findByIdAndUpdate(
-		req.body.id,
-		updateObj,
+		userId,
+		dataObj,
 		{ new: true },
-		(err, obj) => {
+		(err, updatedObj) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);
 			}
+			res.redirect(`/${updatedObj._id}`);
 		}
 	);
 });
