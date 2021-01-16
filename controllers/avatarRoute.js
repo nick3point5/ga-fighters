@@ -3,32 +3,45 @@ require('body-parser');
 const router = express.Router();
 const db = require('../config/database');
 
-// User route ---------------------------------------------------------------
-// GET   --->   /index <-----  Gets -> Login form and sign-up page link
+// Avatar route ---------------------------------------------------------------
+// GET   --->   /avatar index page <-----  Gets
 router.get('/', (req, res) => {
 	res.render('index.ejs');
 });
-// GET  ---->  /index/new  <------------   Gets Create new user form page
+// GET  ---->  /avatar/new  <------------   Gets Create new avatar form page
 router.get('/new', (req, res) => {
 	res.render('new.ejs');
 });
 
-// POST ---->   /index/    <---- User Sign up and redirects to login
+// POST ---->   /avatar/    <---- POST =  new avatar and redirects to show
 router.post('/', (req, res) => {
-	console.log(req.body.name);
+	console.log(req.body);
 
-	db.User.create(
+	const rb = req.body;
+
+	db.Avatar.create(
 		{
-			name: req.body.name,
-			password: req.body.password,
+			name: rb.name,
+			info: rb.info,
+			stats: {
+				health: rb.health,
+				mana: rb.mana,
+				attack: rb.attack,
+				defence: rb.defence,
+				spclAttack: rb.spclAttack,
+				spclDefence: rb.spclDefence,
+			},
+			user: rb.user,
 		},
-		(err, newUser) => {
-			console.log(req.body.password);
+		(err, newAvatar) => {
+			console.log(' creating avatar');
+
 			if (err) {
 				console.log('Fuck bro');
 			}
-			console.log(newUser);
-			res.redirect('/index');
+
+			console.log(newAvatar);
+			res.redirect(`/${newAvatar._id}`);
 		}
 	);
 });
@@ -75,7 +88,7 @@ router.get('/:id/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		res.render('edit', { user: foundObj });
+		res.render('index', { user: foundObj });
 		// res.send('Get edit Form');
 	});
 });
