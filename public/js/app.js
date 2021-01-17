@@ -4,12 +4,13 @@ class interObj {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.xmin = 0;
-        this.xmax = playwin.width - width;
-        this.ymin = 0;
-        this.ymax = playwin.height - height;
+        this.xMin = 0;
+        this.xMax = playwin.width - width;
+        this.yMin = 0;
+        this.yMax = playwin.height - height;
         this.rotation = 0;
-        this.speed = 0;
+        this.xSpd = 0;
+        this.ySpd = 0;
         this.direction = 1
         this.move = {
             up: false,
@@ -31,17 +32,17 @@ class interObj {
         return false
     };
     moveFunction() {
-        if (this.move.up && this.y - this.speed >= this.ymin) {
-            this.y -= this.speed;
+        if (this.move.up && this.y - this.ySpd >= this.yMin) {
+            this.y -= this.ySpd;
         }
-        if (this.move.dn && this.y + this.speed <= this.ymax) {
-            this.y += this.speed;
+        if (this.move.dn && this.y + this.ySpd <= this.yMax) {
+            this.y += this.ySpd;
         }
-        if (this.move.lf && this.x - this.speed >= this.xmin) {
-            this.x -= this.speed;
+        if (this.move.lf && this.x - this.xSpd >= this.xMin) {
+            this.x -= this.xSpd;
         }
-        if (this.move.ri && this.x + this.speed <= this.xmax) {
-            this.x += this.speed;
+        if (this.move.ri && this.x + this.xSpd <= this.xMax) {
+            this.x += this.xSpd;
         }
         this.position()
     }
@@ -65,7 +66,8 @@ class interObj {
         }
     }
     stop() {
-        this.speed = 0
+        this.ySpd = 0
+        this.xSpd = 0
         this.move.up = false
         this.move.ri = false
         this.move.dn = false
@@ -76,7 +78,7 @@ class interObj {
 class fireballClass extends interObj {
     constructor(x, y, element, direction) {
         super(x, y, 20, 20, element)
-        this.speed = 3;
+        this.xSpd = 3;
         if(this.direction>0){
             this.move.ri = true
         }else{
@@ -91,18 +93,18 @@ class fireballClass extends interObj {
         this.moveFunction()
         if(this.collision(target)){
                 if(this.spAtk > target.spDef){
-                    target.hp -= this.spAtk*3 - target.spDef
+                    target.hp -= this.spAtk*3 - target.spDef + 10
                 } else {
                     target.hp -= 10
                 }
             this.element.remove()
             clearInterval(launch);
         }
-        if (this.x - this.speed <= this.xmin) {
+        if (this.x - this.speed <= this.xMin) {
             this.element.remove()
             clearInterval(launch);
         }
-        if (this.x + this.speed >= this.xmax) {
+        if (this.x + this.speed >= this.xMax) {
             this.element.remove()
             clearInterval(launch);
         }
@@ -178,9 +180,23 @@ class attackClass extends interObj{
     }
 }
 class playerClass extends fighter {
-    constructor(x, y, element, name, HitBox) {
+    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef) {
         super(x, y, element, name, HitBox)
-        this.speed = 5;
+        this.hp=hp
+        this.mp=mp
+        this.atk=atk
+        this.def=def
+        this.spAtk=spAtk
+        this.spDef=spDef
+        this.xSpd = 5;
+        this.airborne = true
+    }
+    update(){
+        if(this.airborne && this.y + this.ySpd >= this.yMax){
+            this.airborne=false
+            this.ySpd = 0
+            console.log('ground');
+        }
     }
 
 
@@ -190,7 +206,7 @@ class playerClass extends fighter {
 class enemyClass extends fighter {
     constructor(x, y, element, name) {
         super(x, y, element)
-        this.speed = 5;
+        this.xSpd  = 5;
     }
 
 
@@ -272,11 +288,11 @@ class petClass extends interObj {
 
     stateHappy() {
         this.speed = 5
-        if (this.x >= this.xmax - 4) {
+        if (this.x >= this.xMax - 4) {
             this.move.ri = false;
             this.move.lf = true;
         }
-        if (this.x <= this.xmin + 4) {
+        if (this.x <= this.xMin + 4) {
             this.move.ri = true;
             this.move.lf = false;
         }
@@ -298,11 +314,11 @@ class petClass extends interObj {
 
     stateSleepy() {
         this.speed = 1
-        if (this.x >= this.xmax) {
+        if (this.x >= this.xMax) {
             this.move.ri = false;
             this.move.lf = true;
         }
-        if (this.x <= this.xmin) {
+        if (this.x <= this.xMin) {
             this.move.ri = true;
             this.move.lf = false;
         }
@@ -312,11 +328,11 @@ class petClass extends interObj {
 
     stateBored() {
         this.speed = 3
-        if (this.x >= this.xmax - 4) {
+        if (this.x >= this.xMax - 4) {
             this.move.ri = false;
             this.move.lf = true;
         }
-        if (this.x <= this.xmin + 4) {
+        if (this.x <= this.xMin + 4) {
             this.move.ri = true;
             this.move.lf = false;
         }
@@ -394,7 +410,7 @@ class petClass extends interObj {
             if (this.spriteFrame === 5) {
                 $('#food').addClass('hidden')
                 food.x = -food.width
-                food.y = food.ymax + food.height
+                food.y = food.yMax + food.height
                 food.position()
             }
 
@@ -453,8 +469,19 @@ class petClass extends interObj {
 function update() {
     if (!playwin.pause) {
         uiUpdate();
-        movement()
+        movement();
+        playerCharacter.update();
+        gravity()
         playwin.frame++
+    }
+}
+
+function gravity() {
+    if(playerCharacter.airborne){
+        playerCharacter.ySpd = 4
+        playerCharacter.move.dn = true
+    }else{
+
     }
 }
 
@@ -606,6 +633,11 @@ function releaseKey(inp) {
     // console.log(inp)
 }
 //ANCHOR global var and obj
+enemyHpBar = document.getElementById('enemy-hp')
+playerHpBar = document.getElementById('player-hp')
+enemyMpBar = document.getElementById('enemy-mp')
+playerMpBar = document.getElementById('player-mp')
+timerEle = document.getElementById('timer')
 
 playwin = {
     height: 450,
@@ -618,29 +650,30 @@ playwin = {
     timer: 99,
     gameOver: false
 };
+playerEle = document.getElementById('player')
+
 let playerAttack = new attackClass(
     100,0,50,50,document.getElementById('player-attack')
 )
 
 let playerCharacter = new playerClass(
-    0,0,document.getElementById('player'),'guy',playerAttack
+    0,0,playerEle,'guy',playerAttack, 
+    +playerEle.getAttribute('hp'), 
+    +playerEle.getAttribute('mp'), 
+    +playerEle.getAttribute('atk'), 
+    +playerEle.getAttribute('def'), 
+    +playerEle.getAttribute('spatk'), 
+    +playerEle.getAttribute('spdef'), 
 )
 
 playerAttack.user = playerCharacter
 
 let enemyCharacter = new enemyClass(
-    400,300,document.getElementById('enemy'),'sdf',null
+    400,300,document.getElementById('enemy'),'sdf',null, 100, 100, 10, 5, 5, 5
 )
-
-
-enemyHpBar = document.getElementById('enemy-hp')
-playerHpBar = document.getElementById('player-hp')
-enemyMpBar = document.getElementById('enemy-mp')
-playerMpBar = document.getElementById('player-mp')
-timerEle = document.getElementById('timer')
-
-
 
 game()
 assignEvents()
 mute()
+
+console.log(playerCharacter.hp)

@@ -15,7 +15,6 @@ router.get('/new', (req, res) => {
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
-	console.log(req.body.name);
 	if(req.body.password===req.body.confirm){
 		db.User.create(
 			{
@@ -23,11 +22,9 @@ router.post('/', (req, res) => {
 				password: req.body.password,
 			},
 			(err, newUser) => {
-				console.log(req.body.name);
 				if (err) {
 					console.log('Fuck bro');
 				}
-				console.log(newUser);
 				res.redirect('/index');
 			}
 		);
@@ -65,12 +62,9 @@ router.get('/:id', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		// console.log('Profile route hit');
 		db.Avatar.find({user: account._id},(err,avatars)=>{
-			// console.log(avatars); 
 			res.render('show', { user: account, character: avatars });
 		})
-		// res.send('Got show profile');
 	});
 });
 
@@ -136,18 +130,13 @@ router.delete('/:id', (req, res) => {
 // });
 // GET  ---->  /avatars/new  <------------   Gets Create new avatar form page
 router.get('/:id/avatars/new', (req, res) => {
-	console.log('avatars/new  create avatar form');
-	// console.log(req.params.id);
 	res.render('new-avatar',{accountId: req.params.id});
 });
 
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
 router.post('/:id/avatars/', (req, res) => {
-	// console.log(req.body);
 	const userId = req.params.id;
-	// console.log(req.body)
 	const rb = req.body;
-	console.log(rb);
 
 	db.User.findById(
 		
@@ -157,7 +146,6 @@ router.post('/:id/avatars/', (req, res) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);}
-			// console.log(account);
 			db.Avatar.create(
 				{
 					name: rb.name,
@@ -180,7 +168,6 @@ router.post('/:id/avatars/', (req, res) => {
 						console.log('Fuck bro');
 					}
 		
-					console.log(newAvatar);
 					res.redirect(`/index/${req.params.id}`);
 				}
 			);
@@ -196,7 +183,7 @@ router.get('/:id/avatars/:avatarId', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		console.log('avatar show route hit');
+
 		res.render('game', { character: foundObj,accountId: userId });
 		// res.send('Got show profile');
 	});

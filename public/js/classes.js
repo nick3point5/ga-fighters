@@ -4,10 +4,10 @@ const ex = class interObj {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.xmin = 0;
-        this.xmax = playwin.width - width;
-        this.ymin = 0;
-        this.ymax = playwin.height - height;
+        this.xMin = 0;
+        this.xMax = playwin.width - width;
+        this.yMin = 0;
+        this.yMax = playwin.height - height;
         this.rotation = 0;
         this.speed = 0;
         this.direction = 1
@@ -31,16 +31,16 @@ const ex = class interObj {
         return false
     };
     moveFunction() {
-        if (this.move.up && this.y - this.speed >= this.ymin) {
+        if (this.move.up && this.y - this.speed >= this.yMin) {
             this.y -= this.speed;
         }
-        if (this.move.dn && this.y + this.speed <= this.ymax) {
+        if (this.move.dn && this.y + this.speed <= this.yMax) {
             this.y += this.speed;
         }
-        if (this.move.lf && this.x - this.speed >= this.xmin) {
+        if (this.move.lf && this.x - this.speed >= this.xMin) {
             this.x -= this.speed;
         }
-        if (this.move.ri && this.x + this.speed <= this.xmax) {
+        if (this.move.ri && this.x + this.speed <= this.xMax) {
             this.x += this.speed;
         }
         this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
