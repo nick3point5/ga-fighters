@@ -186,33 +186,8 @@ router.post('/:id/avatars/', (req, res) => {
 			);
 
 	})
-	// db.Avatar.create(
-	// 	{
-	// 		name: rb.name,
-	// 		info: rb.info,
-	// 		stats: {
-	// 			health: rb.health,
-	// 			mana: rb.mana,
-	// 			attack: rb.attack,
-	// 			defence: rb.defence,
-	// 			spclAttack: rb.spclAttack,
-	// 			spclDefence: rb.spclDefence,
-	// 		},
-	// 		user: userId,
-	// 	},
-	// 	(err, newAvatar) => {
-	// 		console.log(' creating avatar');
-
-	// 		if (err) {
-	// 			console.log('Fuck bro');
-	// 		}
-
-	// 		// console.log(newAvatar);
-	// 		res.redirect(`/index/${req.params.id}`);
-	// 	}
-	// );
 });
-/* 
+
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:id/avatars/:avatarId', (req, res) => {
 	const userId = req.params.id;
@@ -222,11 +197,11 @@ router.get('/:id/avatars/:avatarId', (req, res) => {
 			res.send(err);
 		}
 		console.log('avatar show route hit');
-		res.render('index', { avatar: foundObj });
+		res.render('game', { avatar: foundObj });
 		// res.send('Got show profile');
 	});
 });
-
+/* 
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:id/avatars/:avatarId/edit', (req, res) => {
 	const userId = req.params.id;
