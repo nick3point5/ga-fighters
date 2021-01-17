@@ -42,16 +42,19 @@ router.post('/login', (req, res) => {
 	console.log(req.body);
 
 	db.User.findOne({ name: req.body.name }, (err, foundObj) => {
-		const user = foundObj;
+		console.log(foundObj);
 		if (err) {
 			return res.send(err);
 		}
-		if (user.password === req.body.password) {
-			console.log('user logged in.... Yeppy!!');
-			res.redirect(`/index/${foundObj.account}`);
-		} else {
+		if (foundObj === null) {
+			console.log('User not found');
+			res.redirect('/');
+		} else if (foundObj.password !== req.body.password) {
 			console.log('Incorrect password.');
 			res.redirect('/');
+		} else {
+			console.log('user logged in.... Yeppy!!');
+			res.redirect(`/index/${foundObj.account}`);
 		}
 	});
 });
@@ -68,6 +71,16 @@ router.get('/:account', (req, res) => {
 		// res.send('Got show profile');
 	});
 });
+//============================================================================================================================
+//             -->  Avatar New <--
+// GET  ---->  /:account/new  <------------   Gets Create new avatar form page
+router.get('/:account/new', (req, res) => {
+	console.log('avatars/new  create avatar form');
+	db.User.findOne({ account: req.params.account }, (err, foundUser) => {
+		res.render('new-avatar.ejs', { user: foundUser });
+	});
+});
+//============================================================================================================================
 
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:account/edit', (req, res) => {
@@ -122,15 +135,20 @@ router.put('/:account', (req, res) => {
 	});
 });
 
-router.delete('/:id', (req, res) => {
-	const userId = req.params.id;
-	db.User.findByIdAndDelete(userId, (err, deletedObj) => {
+router.delete('/:account', (req, res) => {
+	const userAcc = req.params.account;
+	db.User.findOne({ account: userAcc }, (err, foundObj) => {
 		if (err) {
 			console.log('Error:');
 			console.log(err);
 		}
-
-		res.redirect('/');
+		db.User.findByIdAndDelete(foundObj._id, (err, deletedObj) => {
+			if (err) {
+				return res.send(err);
+			}
+			console.log(deletedObj);
+			res.redirect('/');
+		});
 	});
 });
 

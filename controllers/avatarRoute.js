@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 require('body-parser');
 const router = express.Router();
 const db = require('../config/database');
@@ -6,13 +7,11 @@ const db = require('../config/database');
 // Avatar route ---------------------------------------------------------------
 // GET   --->   /avatars index page <-----  Gets
 router.get('/', (req, res) => {
+	console.log(req.params.account)
 	console.log('in avatar index');
-	res.render('show');
-});
-// GET  ---->  /avatars/new  <------------   Gets Create new avatar form page
-router.get('/new', (req, res) => {
-	console.log('avatars/new  create avatar form');
-	res.render('../views/new-avatar');
+	db.User.findOne({ account: req.params.account }, (err, foundUser) => {
+		res.render('show', { user: foundUser });
+	});
 });
 
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show

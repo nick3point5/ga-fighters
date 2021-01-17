@@ -11,11 +11,11 @@
 	<body>
 		<h1>Welcome, <%= user.name %></h1>
 		<a href="/index/<%= user.account %>/edit">settings</a>
-		<a href="/">Logout</a>
+		<a href="/index">Logout</a>
 		<main class="character-container">
 			<%- include('partials/avatar-show.ejs') %>
 		</main>
 
-		<a href="/index/<%= user.account %>/avatars/new">New Character</a>
+		<a href="/index/<%= user.account %>/new">New Character</a>
 	</body>
 </html>
