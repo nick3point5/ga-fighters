@@ -44,11 +44,11 @@ router.post('/login', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			if (!foundObj === '') {
+			if (!foundObj) {
 				return res.send('error finding user during login');
 			}
 			if (foundObj.password === passW) {
-				res.redirect(`/${foundObj._id}`);
+				res.redirect(`${foundObj._id}`);
 			}
 		}
 	);
@@ -63,7 +63,7 @@ router.get('/:id', (req, res) => {
 			res.send(err);
 		}
 		console.log('Profile route hit');
-		res.render('index', { user: foundObj });
+		res.render('show', { user: foundObj });
 		// res.send('Got show profile');
 	});
 });
@@ -111,5 +111,7 @@ router.delete('/:id', (req, res) => {
 		res.redirect('/');
 	});
 });
+
+
 
 module.exports = router;
