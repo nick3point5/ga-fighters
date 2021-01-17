@@ -127,10 +127,10 @@ router.delete('/:id', (req, res) => {
 
 //ANCHOR //	Avatar routes		///////////////////////////////////////
 
-router.get('/:id/avatars/', (req, res) => {
-	console.log('in avatar index');
-	res.render('show.ejs');
-});
+// router.get('/:id/avatars/', (req, res) => {
+// 	console.log('in avatar index');
+// 	res.render('show.ejs');
+// });
 // GET  ---->  /avatars/new  <------------   Gets Create new avatar form page
 router.get('/:id/avatars/new', (req, res) => {
 	console.log('avatars/new  create avatar form');
@@ -140,38 +140,75 @@ router.get('/:id/avatars/new', (req, res) => {
 
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
 router.post('/:id/avatars/', (req, res) => {
-	console.log(req.body);
+	// console.log(req.body);
 	const userId = req.params.id;
-
+	// console.log(req.body)
 	const rb = req.body;
+	console.log(rb);
 
-	db.Avatar.create(
-		{
-			name: rb.name,
-			info: rb.info,
-			stats: {
-				health: rb.health,
-				mana: rb.mana,
-				attack: rb.attack,
-				defence: rb.defence,
-				spclAttack: rb.spclAttack,
-				spclDefence: rb.spclDefence,
-			},
-			user: userId,
-		},
-		(err, newAvatar) => {
-			console.log(' creating avatar');
-
+	db.User.findById(
+		
+			userId
+		,
+		(err, account) => {
 			if (err) {
-				console.log('Fuck bro');
-			}
+				console.log('Error:');
+				console.log(err);}
+			// console.log(account);
+			db.Avatar.create(
+				{
+					name: rb.name,
+					info: rb.info,
+					stats: {
+						health: rb.health,
+						mana: rb.mana,
+						attack: rb.attack,
+						defence: rb.defence,
+						spclAttack: rb.spclAttack,
+						spclDefence: rb.spclDefence,
+					},
+					user: account._id,
+				},
+				(err, newAvatar) => {
+					console.log(' creating avatar');
+		
+					if (err) {
+						console.log('Fuck bro');
+					}
+		
+					console.log(newAvatar);
+					res.redirect(`/index/${req.params.id}`);
+				}
+			);
 
-			console.log(newAvatar);
-			res.redirect(`/`);
-		}
-	);
+	})
+	// db.Avatar.create(
+	// 	{
+	// 		name: rb.name,
+	// 		info: rb.info,
+	// 		stats: {
+	// 			health: rb.health,
+	// 			mana: rb.mana,
+	// 			attack: rb.attack,
+	// 			defence: rb.defence,
+	// 			spclAttack: rb.spclAttack,
+	// 			spclDefence: rb.spclDefence,
+	// 		},
+	// 		user: userId,
+	// 	},
+	// 	(err, newAvatar) => {
+	// 		console.log(' creating avatar');
+
+	// 		if (err) {
+	// 			console.log('Fuck bro');
+	// 		}
+
+	// 		// console.log(newAvatar);
+	// 		res.redirect(`/index/${req.params.id}`);
+	// 	}
+	// );
 });
-
+/* 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:id/avatars/:avatarId', (req, res) => {
 	const userId = req.params.id;
@@ -230,7 +267,7 @@ router.delete('/:id/avatars/:id', (req, res) => {
 
 		res.redirect('/');
 	});
-});
+}); */
 
 
 module.exports = router;
