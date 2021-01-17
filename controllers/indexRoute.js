@@ -84,10 +84,16 @@ router.get('/:id/edit', (req, res) => {
 });
 // POST/PUT ---->   /index/:id    <---- User Edit/Update
 router.put('/:id', (req, res) => {
-	const userId = req.params.id;
+	userId = req.params.id;
+
 	const dataObj = {
-		name: req.body.name,
-		password: req.body.password,
+		newName: req.body.newName,
+		currentPassword: req.body.currentPassword,
+		newPassword: req.body.newPassword,
+		confirmation: req.body.confirmation,
+		// updated info var
+		name: req.body.newName,
+		password: req.body.newPassword,
 	};
 	if(req.body.password===req.body.confirm){
 	db.User.findByIdAndUpdate(
