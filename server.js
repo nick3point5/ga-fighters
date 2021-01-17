@@ -12,7 +12,7 @@ app.set('view engine', 'ejs');
 app.use((req, res, next) => {
 	next();
 });
-app.use('/index', express.static(__dirname + '/public'));
+app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 
@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 }); 
 // ALL SEPRATE ROUTES
 app.use('/index', indexRoute); // login page and link to Sign-Up
-app.use('/index/:id/avatars', avatarRoute); // Avatar index page and link to Create avatar
+
 app.listen(PORT, () => {
 	console.log('Server is running on port: ' + PORT);
 });
