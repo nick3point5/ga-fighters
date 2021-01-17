@@ -163,13 +163,25 @@ class fighter extends interObj {
         if(this.airborne && this.y - this.ySpd >= this.yMax){
             this.airborne=false
             this.ySpd = 0
-            console.log('ground');
         }
         if(this.airborne){
             
             this.ySpd -= playwin.gravAcc
             this.move.up = true
         }else {
+        }
+    }
+    update(){
+        this.gravity()
+        this.facing()
+        this.moveFunction()
+
+    }
+    facing(){
+        if(this.x < this.opponent.x){
+            this.direction = 1
+        }else {
+            this.direction = -1
         }
     }
 
@@ -207,12 +219,6 @@ class playerClass extends fighter {
         this.xSpd = 5;
         this.airborne = true
     }
-    update(){
-        this.gravity()
-    }
-
-
-
 
 
 }
@@ -221,7 +227,13 @@ class enemyClass extends fighter {
         super(x, y, element)
         this.xSpd  = 5;
     }
-
+    facing(){
+        if(this.x < this.opponent.x){
+            this.direction = -1
+        }else {
+            this.direction = 1
+        }
+    }
 
 
 
@@ -484,6 +496,7 @@ function update() {
         uiUpdate();
         movement();
         playerCharacter.update();
+        enemyCharacter.update();
         playwin.frame++
     }
 }
@@ -491,9 +504,7 @@ function update() {
 
 
 function movement() {
-    playerCharacter.moveFunction()
     playerAttack.moveFunction()
-    enemyCharacter.moveFunction()
 }
 
 function uiUpdate() {
@@ -674,11 +685,13 @@ let playerCharacter = new playerClass(
     +playerEle.getAttribute('spdef'), 
 )
 
-playerAttack.user = playerCharacter
-
 let enemyCharacter = new enemyClass(
     400,300,document.getElementById('enemy'),'sdf',null, 100, 100, 10, 5, 5, 5
 )
+playerAttack.user = playerCharacter
+playerCharacter.opponent = enemyCharacter
+enemyCharacter.opponent = playerCharacter
+
 
 game()
 assignEvents()
