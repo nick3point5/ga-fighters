@@ -43,10 +43,10 @@ class interObj {
         if (this.move.ri && this.x + this.speed <= this.xmax) {
             this.x += this.speed;
         }
-        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
+        this.position()
     }
     position() {
-        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg)`
+        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
     }
     trackdown(target) {
         if (this.x < target.x) {
@@ -83,6 +83,30 @@ class fireballClass extends interObj {
             this.move.lf = true
         }
     }
+    launch(target){ 
+        const launch = setInterval(()=>{
+
+        this.moveFunction()
+        if(this.collision(target)){
+                if(this.spAtk > target.spDef){
+                    target.hp -= this.spAtk*3 - target.spDef
+                } else {
+                    target.hp -= 10
+                }
+            this.element.remove()
+            clearInterval(launch);
+        }
+        if (this.x - this.speed <= this.xmin) {
+            this.element.remove()
+            clearInterval(launch);
+        }
+        if (this.x + this.speed >= this.xmax) {
+            this.element.remove()
+            clearInterval(launch);
+        }
+
+    },1000/playwin.framerate)
+    }
 }
 
 class fighter extends interObj {
@@ -108,22 +132,23 @@ class fighter extends interObj {
         }
     }
     fireball(target){
-        const  fire = document.createElement('div')
-        fire.classList.add("fire")
-        fire.classList.add("hitbox")
-        
-        playwin.element.appendChild(fire)
-        const fireball = new fireballClass(
-            this.x,this.y,fire,this.direction
-        )
-        const launch = setInterval(()=>{
 
-            fireball.moveFunction()
+        if (this.mp >= 10) {
+            
+            const  fire = document.createElement('div')
+            fire.classList.add("fire")
+            fire.classList.add("hitbox")
+            
+            playwin.element.appendChild(fire)
+            const fireball = new fireballClass(
+                this.x,this.y,fire,this.direction
+            )
+                
+            fireball.launch(target)
+            this.mp -= 10
+        }
+                
 
-        },1000/playwin.framerate
-        )
-
-        console.log('fireball')
     }
 
 
