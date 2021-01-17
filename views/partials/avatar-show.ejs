@@ -1,8 +1,9 @@
 <a href="game.html" class="game-link">
     <div class="character">
-        <img src="https://picsum.photos/id/10/200/200" alt="" class="character-image">
+        <img src="<%= character[i].img %>" alt="" class="character-image">
         <div>
-            <p class="character-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam in cum velit perferendis corrupti laudantium! Natus exercitationem nobis itaque ipsum necessitatibus illo, maxime, neque numquam alias ipsam deleniti voluptate quibusdam!</p>
+            <h1 class="character-name"><%= character[i].name %></h1>
+            <p class="character-text"><%= character[i].info %> </p>
         </div>
     </div>
 </a>

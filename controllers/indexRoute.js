@@ -61,12 +61,15 @@ router.post('/login', (req, res) => {
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:id', (req, res) => {
 	const userId = req.params.id;
-	db.User.findById(userId, (err, foundObj) => {
+	db.User.findById(userId, (err, account) => {
 		if (err) {
 			res.send(err);
 		}
-		console.log('Profile route hit');
-		res.render('show', { user: foundObj });
+		// console.log('Profile route hit');
+		db.Avatar.find({user: account._id},(err,avatars)=>{
+			// console.log(avatars); 
+			res.render('show', { user: account, character: avatars });
+		})
 		// res.send('Got show profile');
 	});
 });
@@ -159,6 +162,7 @@ router.post('/:id/avatars/', (req, res) => {
 				{
 					name: rb.name,
 					info: rb.info,
+					img: rb.img,
 					stats: {
 						health: rb.health,
 						mana: rb.mana,
