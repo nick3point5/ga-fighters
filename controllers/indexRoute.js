@@ -16,21 +16,25 @@ router.get('/new', (req, res) => {
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
 	console.log(req.body.name);
-
-	db.User.create(
-		{
-			name: req.body.name,
-			password: req.body.password,
-		},
-		(err, newUser) => {
-			console.log(req.body.password);
-			if (err) {
-				console.log('Fuck bro');
+	if(req.body.password===req.body.confirm){
+		db.User.create(
+			{
+				name: req.body.name,
+				password: req.body.password,
+			},
+			(err, newUser) => {
+				console.log(req.body.password);
+				if (err) {
+					console.log('Fuck bro');
+				}
+				console.log(newUser);
+				res.redirect('/index');
 			}
-			console.log(newUser);
-			res.redirect('/index');
-		}
-	);
+		);
+	} else {
+		res.redirect('/index/new')
+	}
+
 });
 
 // POST ---->   /index/:id  <-- redirects to  <---- User Login
