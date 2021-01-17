@@ -5,7 +5,6 @@ const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const indexRoute = require('./controllers/indexRoute.js');
-const avatarRoute = require('./controllers/avatarRoute.js');
 const PORT = 3000;
 
 app.set('view engine', 'ejs');
