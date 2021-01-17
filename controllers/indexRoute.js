@@ -1,26 +1,27 @@
 const express = require('express');
+const mongoose = require('mongoose');
 require('body-parser');
 const router = express.Router();
 const db = require('../config/database');
-const avatarRoute = require('./avatarRoute.js');
 // User route ---------------------------------------------------------------
 // GET   --->   /index <-----  Gets -> Login form and sign-up page link
 router.get('/', (req, res) => {
-	res.render('index.ejs');
+	res.render('index');
 });
 // GET  ---->  /index/new  <------------   Gets Create new user form page
 router.get('/new', (req, res) => {
-	res.render('new.ejs');
+	res.render('new');
 });
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
 	console.log('In POST create User route.');
-	if (req.body.password === req.body.confirmation) {
+	if (req.body.password === req.body.confirm) {
 		db.User.create(
 			{
 				name: req.body.name,
 				password: req.body.password,
+				account: mongoose.Types.ObjectId(),
 			},
 			(err, newUser) => {
 				console.log(req.body.name);
@@ -28,82 +29,77 @@ router.post('/', (req, res) => {
 					console.log('Fuck bro');
 				}
 				console.log(newUser);
-				res.redirect('/index');
+				res.render('index');
 			}
 		);
 	} else {
-		res.send('User not created wrong password.');
-		// res.redirect('/new');
+		res.redirect('/new');
 	}
 });
 
 // POST ---->   /index/:id  <-- redirects to  <---- User Login
 router.post('/login', (req, res) => {
-	const userName = req.body.name;
-	const passW = req.body.password;
-	db.User.findOne({ name: userName }, (err, foundObj) => {
+	console.log(req.body);
+
+	db.User.findOne({ name: req.body.name }, (err, foundObj) => {
+		const user = foundObj;
 		if (err) {
-			res.send(err);
+			return res.send(err);
 		}
-		if (!foundObj === {}) {
-			return res.send('error finding user during login');
-		}
-		if (foundObj.password === passW) {
+		if (user.password === req.body.password) {
 			console.log('user logged in.... Yeppy!!');
-			res.redirect(`/${foundObj._id}`);
+			res.redirect(`/index/${foundObj.account}`);
 		} else {
 			console.log('Incorrect password.');
-			return res.redirect('/');
+			res.redirect('/');
 		}
 	});
 });
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
-router.get('/:id', (req, res) => {
-	const userId = req.params.id;
-	db.User.findById(userId, (err, foundObj) => {
+router.get('/:account', (req, res) => {
+	db.User.findOne({ account: req.params.account }, (err, foundObj) => {
+		console.log(foundObj);
 		if (err) {
 			res.send(err);
 		}
 		console.log('Profile route hit');
-		res.render('index', { user: foundObj });
+		res.render('show', { user: foundObj });
 		// res.send('Got show profile');
 	});
 });
 
 // GET ---->   /index/:id/edit    <---- User Edit Form
-router.get('/:id/edit', (req, res) => {
-	const userId = req.params.id;
-	db.User.findById(userId, (err, foundObj) => {
+router.get('/:account/edit', (req, res) => {
+	const userAcc = req.params.account;
+	db.User.findOne({ account: userAcc }, (err, foundObj) => {
 		if (err) {
 			res.send(err);
 		}
-		res.render('index', { user: foundObj });
+		res.render('edit', { user: foundObj });
 		// res.send('Get edit Form');
 	});
 });
 // POST/PUT ---->   /index/:id    <---- User Edit/Update
-router.put('/:id', (req, res) => {
-	userId = req.params.id;
-
+router.put('/:account', (req, res) => {
 	const dataObj = {
 		newName: req.body.newName,
-		currentPassword: req.body.currentPassword,
+		currPassword: req.body.currPassword,
 		newPassword: req.body.newPassword,
-		confirmation: req.body.confirmation,
+		confirm: req.body.confirm,
 		// updated info var
 		name: req.body.newName,
 		password: req.body.newPassword,
 	};
 
-	db.User.findById(userId, (err, foundUser) => {
+	db.User.findOne({ account: req.params.account }, (err, foundUser) => {
 		if (err) {
 			console.log(err);
 		}
-		if (foundUser.password === dataObj.currentPassword) {
-			if (dataObj.newPassword === dataObj.confirmation) {
+		if (foundUser.password === dataObj.currPassword) {
+			if (dataObj.newPassword === dataObj.confirm) {
 				db.User.findByIdAndUpdate(
-					userId,
+					foundUser._id,
 					{ name: dataObj.name, password: dataObj.password },
 					{ new: true },
 					(err, updatedObj) => {
@@ -112,20 +108,16 @@ router.put('/:id', (req, res) => {
 							console.log(err);
 						}
 						console.log('Updated user :', updatedObj);
-						res.redirect(`/${updatedObj._id}`);
+						res.redirect(`/index/${updatedObj.account}`);
 					}
 				);
 			} else {
 				console.log('edit user failed new passwords dont match confirmation');
-				return res.send(
-					'new passwords doesnt match confirmation  --> cant update user info.'
-				);
+				return res.render('edit', { user: foundUser });
 			}
 		} else {
 			console.log('edit user failed passwords incorrect');
-			return res.send(
-				'passwords doesnt match database  --> cant update user info.'
-			);
+			return res.render('edit', { user: foundUser });
 		}
 	});
 });
@@ -141,7 +133,5 @@ router.delete('/:id', (req, res) => {
 		res.redirect('/');
 	});
 });
-
-express().use(`/index/:id/avatars`, avatarRoute); // Avatar index page and link to Create avatar
 
 module.exports = router;

@@ -7,12 +7,12 @@ const db = require('../config/database');
 // GET   --->   /avatars index page <-----  Gets
 router.get('/', (req, res) => {
 	console.log('in avatar index');
-	res.render('index.ejs');
+	res.render('show');
 });
 // GET  ---->  /avatars/new  <------------   Gets Create new avatar form page
 router.get('/new', (req, res) => {
 	console.log('avatars/new  create avatar form');
-	res.render('new.ejs');
+	res.render('../views/new-avatar');
 });
 
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
