@@ -608,7 +608,7 @@ function releaseKey(inp) {
 //ANCHOR global var and obj
 
 playwin = {
-    height: 500,
+    height: 450,
     width: 800,
     element: document.getElementById('play-window'),
     mute: false,
@@ -629,7 +629,7 @@ let playerCharacter = new playerClass(
 playerAttack.user = playerCharacter
 
 let enemyCharacter = new enemyClass(
-    400,200,document.getElementById('enemy'),'sdf',null
+    400,300,document.getElementById('enemy'),'sdf',null
 )
 
 

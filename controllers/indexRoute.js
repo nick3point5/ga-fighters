@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
 				password: req.body.password,
 			},
 			(err, newUser) => {
-				console.log(req.body.password);
+				console.log(req.body.name);
 				if (err) {
 					console.log('Fuck bro');
 				}
@@ -32,31 +32,30 @@ router.post('/', (req, res) => {
 			}
 		);
 	} else {
-		res.redirect('/index/new')
+		res.send('User not created wrong password.');
+		// res.redirect('/new');
 	}
-
 });
 
 // POST ---->   /index/:id  <-- redirects to  <---- User Login
 router.post('/login', (req, res) => {
+	const userName = req.body.name;
 	const passW = req.body.password;
-	db.User.findOne(
-		{
-			name: req.body.name,
-		},
-		(err, foundObj) => {
-			if (err) {
-				res.send(err);
-			}
-			if (!foundObj) {
-				return res.send('error finding user during login');
-			}
-			if (foundObj.password === passW) {
-				res.redirect(`${foundObj._id}`);
-			}
+	db.User.findOne({ name: userName }, (err, foundObj) => {
+		if (err) {
+			res.send(err);
 		}
-	);
-	// res.send('redirects to .GET  /:id');
+		if (!foundObj === {}) {
+			return res.send('error finding user during login');
+		}
+		if (foundObj.password === passW) {
+			console.log('user logged in.... Yeppy!!');
+			res.redirect(`/${foundObj._id}`);
+		} else {
+			console.log('Incorrect password.');
+			return res.redirect('/');
+		}
+	});
 });
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
