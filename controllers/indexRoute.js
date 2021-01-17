@@ -197,7 +197,7 @@ router.get('/:id/avatars/:avatarId', (req, res) => {
 			res.send(err);
 		}
 		console.log('avatar show route hit');
-		res.render('game', { avatar: foundObj });
+		res.render('game', { character: foundObj,accountId: userId });
 		// res.send('Got show profile');
 	});
 });

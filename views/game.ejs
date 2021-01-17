@@ -11,7 +11,7 @@
     <title>Game</title>
 </head>
 <body>
-    <a href="account.html">&lt</a>
+    <a href="/index/<%= accountId %> ">&lt</a>
     <main class="game-window">
         <div class="info-display">
 
@@ -43,12 +43,12 @@
 
         </div>
         <div id="play-window">
-            <div class="fighter" id="player">
+            <div class="fighter" id="player" style="background-image: url('<%= character.img %>');" >
                 <div class="player-attack hitbox" id = "player-attack"></div>
             </div>
             <div class="fighter" id="enemy"></div>
         </div>
     </main>
-    <a href="level-up.html">Level Up</a>
+    <a href="/index/<%= accountId %>/avatars/<%= character._id %>/edit">Level Up</a>
 </body>
 </html>
