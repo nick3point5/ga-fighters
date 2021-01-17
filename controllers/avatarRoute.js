@@ -4,16 +4,18 @@ const router = express.Router();
 const db = require('../config/database');
 
 // Avatar route ---------------------------------------------------------------
-// GET   --->   /avatar index page <-----  Gets
+// GET   --->   /avatars index page <-----  Gets
 router.get('/', (req, res) => {
+	console.log('in avatar index');
 	res.render('index.ejs');
 });
-// GET  ---->  /avatar/new  <------------   Gets Create new avatar form page
+// GET  ---->  /avatars/new  <------------   Gets Create new avatar form page
 router.get('/new', (req, res) => {
+	console.log('avatars/new  create avatar form');
 	res.render('new.ejs');
 });
 
-// POST ---->   /avatar/    <---- POST =  new avatar and redirects to show
+// POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
 router.post('/', (req, res) => {
 	console.log(req.body);
 

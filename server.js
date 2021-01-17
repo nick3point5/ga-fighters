@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 });
 // ALL SEPRATE ROUTES
 app.use('/index', indexRoute); // login page and link to Sign-Up
-app.use('/avatars', avatarRoute); // Avatar index page and link to Create avatar
+app.use('/index/:id/avatars', avatarRoute); // Avatar index page and link to Create avatar
 app.listen(PORT, () => {
 	console.log('Server is running on port: ' + PORT);
 });

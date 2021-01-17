@@ -84,23 +84,50 @@ router.get('/:id/edit', (req, res) => {
 });
 // POST/PUT ---->   /index/:id    <---- User Edit/Update
 router.put('/:id', (req, res) => {
-	const userId = req.params.id;
+	userId = req.params.id;
+
 	const dataObj = {
-		name: req.body.name,
-		password: req.body.password,
+		newName: req.body.newName,
+		currentPassword: req.body.currentPassword,
+		newPassword: req.body.newPassword,
+		confirmation: req.body.confirmation,
+		// updated info var
+		name: req.body.newName,
+		password: req.body.newPassword,
 	};
-	db.User.findByIdAndUpdate(
-		userId,
-		dataObj,
-		{ new: true },
-		(err, updatedObj) => {
-			if (err) {
-				console.log('Error:');
-				console.log(err);
-			}
-			res.redirect(`/${updatedObj._id}`);
+
+	db.User.findById(userId, (err, foundUser) => {
+		if (err) {
+			console.log(err);
 		}
-	);
+		if (foundUser.password === dataObj.currentPassword) {
+			if (dataObj.newPassword === dataObj.confirmation) {
+				db.User.findByIdAndUpdate(
+					userId,
+					{ name: dataObj.name, password: dataObj.password },
+					{ new: true },
+					(err, updatedObj) => {
+						if (err) {
+							console.log('Error:');
+							console.log(err);
+						}
+						console.log('Updated user :', updatedObj);
+						res.redirect(`/${updatedObj._id}`);
+					}
+				);
+			} else {
+				console.log('edit user failed new passwords dont match confirmation');
+				return res.send(
+					'new passwords doesnt match confirmation  --> cant update user info.'
+				);
+			}
+		} else {
+			console.log('edit user failed passwords incorrect');
+			return res.send(
+				'passwords doesnt match database  --> cant update user info.'
+			);
+		}
+	});
 });
 
 router.delete('/:id', (req, res) => {
