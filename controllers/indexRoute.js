@@ -45,12 +45,12 @@ router.post('/login', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		if (!foundObj === {}) {
+		if (!foundObj) {
 			return res.send('error finding user during login');
 		}
 		if (foundObj.password === passW) {
 			console.log('user logged in.... Yeppy!!');
-			res.redirect(`/${foundObj._id}`);
+			res.redirect(`${foundObj._id}`);
 		} else {
 			console.log('Incorrect password.');
 			return res.redirect('/');
@@ -89,6 +89,7 @@ router.put('/:id', (req, res) => {
 		name: req.body.name,
 		password: req.body.password,
 	};
+	if(req.body.password===req.body.confirm){
 	db.User.findByIdAndUpdate(
 		userId,
 		dataObj,
@@ -98,9 +99,12 @@ router.put('/:id', (req, res) => {
 				console.log('Error:');
 				console.log(err);
 			}
-			res.redirect(`/${updatedObj._id}`);
+			res.redirect(`/index/${updatedObj._id}`);
 		}
 	);
+	}else{
+		res.send('passwords not matching')
+	}
 });
 
 router.delete('/:id', (req, res) => {
