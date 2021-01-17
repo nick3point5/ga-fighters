@@ -100,11 +100,11 @@ class fireballClass extends interObj {
             this.element.remove()
             clearInterval(launch);
         }
-        if (this.x - this.speed <= this.xMin) {
+        if (this.x - this.xSpd <= this.xMin) {
             this.element.remove()
             clearInterval(launch);
         }
-        if (this.x + this.speed >= this.xMax) {
+        if (this.x + this.xSpd >= this.xMax) {
             this.element.remove()
             clearInterval(launch);
         }
@@ -155,7 +155,23 @@ class fighter extends interObj {
                 
 
     }
-
+    jump(){
+        this.ySpd = 20
+        this.airborne = true
+    }
+    gravity() {
+        if(this.airborne && this.y - this.ySpd >= this.yMax){
+            this.airborne=false
+            this.ySpd = 0
+            console.log('ground');
+        }
+        if(this.airborne){
+            
+            this.ySpd -= playwin.gravAcc
+            this.move.up = true
+        }else {
+        }
+    }
 
 
 }
@@ -192,12 +208,9 @@ class playerClass extends fighter {
         this.airborne = true
     }
     update(){
-        if(this.airborne && this.y + this.ySpd >= this.yMax){
-            this.airborne=false
-            this.ySpd = 0
-            console.log('ground');
-        }
+        this.gravity()
     }
+
 
 
 
@@ -471,19 +484,11 @@ function update() {
         uiUpdate();
         movement();
         playerCharacter.update();
-        gravity()
         playwin.frame++
     }
 }
 
-function gravity() {
-    if(playerCharacter.airborne){
-        playerCharacter.ySpd = 4
-        playerCharacter.move.dn = true
-    }else{
 
-    }
-}
 
 function movement() {
     playerCharacter.moveFunction()
@@ -595,7 +600,9 @@ function getKey(event) {
 function controller(inp){
     if(playerCharacter.control){
         if(inp === 'ArrowUp'){
-            playerCharacter.move.up = true
+            if (!playerCharacter.airborne) {
+                playerCharacter.jump()
+            }
         }
         if(inp === 'ArrowDown'){
             playerCharacter.move.dn = true
@@ -619,7 +626,7 @@ function controller(inp){
 
 function releaseKey(inp) {
     if(inp.key === 'ArrowUp'){
-        playerCharacter.move.up = false
+        // playerCharacter.move.up = false
     }
     if(inp.key === 'ArrowDown'){
         playerCharacter.move.dn = false
@@ -648,7 +655,8 @@ playwin = {
     frame: 0,
     framerate: 30,
     timer: 99,
-    gameOver: false
+    gameOver: false,
+    gravAcc: 1
 };
 playerEle = document.getElementById('player')
 
