@@ -5,7 +5,6 @@ const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const indexRoute = require('./controllers/indexRoute.js');
-const avatarRoute = require('./controllers/avatarRoute.js');
 const PORT = 3000;
 
 app.set('view engine', 'ejs');
@@ -21,7 +20,6 @@ app.get('/', (req, res) => {
 });
 // ALL SEPRATE ROUTES
 app.use('/index', indexRoute); // login page and link to Sign-Up
-app.use('/index/:id/avatars', avatarRoute); // Avatar index page and link to Create avatar
 app.listen(PORT, () => {
 	console.log('Server is running on port: ' + PORT);
 });

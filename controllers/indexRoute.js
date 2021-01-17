@@ -2,7 +2,7 @@ const express = require('express');
 require('body-parser');
 const router = express.Router();
 const db = require('../config/database');
-
+const avatarRoute = require('./avatarRoute.js');
 // User route ---------------------------------------------------------------
 // GET   --->   /index <-----  Gets -> Login form and sign-up page link
 router.get('/', (req, res) => {
@@ -141,5 +141,7 @@ router.delete('/:id', (req, res) => {
 		res.redirect('/');
 	});
 });
+
+express().use(`/index/:id/avatars`, avatarRoute); // Avatar index page and link to Create avatar
 
 module.exports = router;

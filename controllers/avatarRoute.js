@@ -17,8 +17,8 @@ router.get('/new', (req, res) => {
 
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
 router.post('/', (req, res) => {
-	console.log(req.body);
-	const userId = req.params.id;
+	console.log(req.params);
+	const userId = req.params._id;
 
 	const rb = req.body;
 
@@ -44,15 +44,15 @@ router.post('/', (req, res) => {
 			}
 
 			console.log(newAvatar);
-			res.redirect(`/${newAvatar._id}`);
+			res.redirect('/');
 		}
 	);
 });
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:avatarId', (req, res) => {
-	const userId = req.params.id;
-	const avatarId = req.params.avatarId;
+	const userId = req.params._id;
+	const avatarId = req.params._avatarId;
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) {
 			res.send(err);
@@ -65,8 +65,8 @@ router.get('/:avatarId', (req, res) => {
 
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:avatarId/edit', (req, res) => {
-	const userId = req.params.id;
-	const avatarId = req.params.avatarId;
+	const userId = req.params._id;
+	const avatarId = req.params._avatarId;
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) {
 			res.send(err);
@@ -76,28 +76,42 @@ router.get('/:avatarId/edit', (req, res) => {
 		// res.send('Get edit Form');
 	});
 });
-// POST/PUT ---->   /index/:id    <---- User Edit/Update
-router.put('/:id', (req, res) => {
-	const userId = req.params.id;
-	const dataObj = {
-		name: req.body.name,
-		password: req.body.password,
+// POST/PUT ---->   /avatars/:avatarId    <---- User Edit/Update
+router.put('/:avatarId', (req, res) => {
+	console.log(req.body);
+	const avaPassword = req.body.password;
+	const userId = req.params._id;
+	const avatarId = req.params._avatarId;
+	const rb = req.body;
+	const updateObj = {
+		name: rb.name,
+		info: rb.info,
+		stats: {
+			health: rb.health,
+			mana: rb.mana,
+			attack: rb.attack,
+			defence: rb.defence,
+			spclAttack: rb.spclAttack,
+			spclDefence: rb.spclDefence,
+		},
 	};
-	db.User.findByIdAndUpdate(
-		userId,
-		dataObj,
+	db.Avatar.findByIdAndUpdate(
+		avatarId,
+		updateObj,
 		{ new: true },
-		(err, updatedObj) => {
+		(err, updatedAvatar) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);
+				res.send(err);
 			}
-			res.redirect(`/${updatedObj._id}`);
+			console.log('updated avatar: ', updatedAvatar);
+			res.redirect(`/${updatedAvatar._id}`);
 		}
 	);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:avatarId', (req, res) => {
 	const userId = req.params.id;
 	db.User.findByIdAndDelete(userId, (err, deletedObj) => {
 		if (err) {
