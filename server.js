@@ -12,12 +12,14 @@ app.set('view engine', 'ejs');
 app.use((req, res, next) => {
 	next();
 });
+app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
+
 // GET AT LOCAL HOST: /
 app.get('/', (req, res) => {
 	res.render('index');
-});
+}); 
 // ALL SEPRATE ROUTES
 app.use('/index', indexRoute); // login page and link to Sign-Up
 app.listen(PORT, () => {

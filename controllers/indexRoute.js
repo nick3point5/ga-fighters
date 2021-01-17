@@ -24,12 +24,10 @@ router.post('/', (req, res) => {
 				account: mongoose.Types.ObjectId(),
 			},
 			(err, newUser) => {
-				console.log(req.body.name);
 				if (err) {
 					console.log('Fuck bro');
 				}
-				console.log(newUser);
-				res.render('index');
+				res.redirect('/index');
 			}
 		);
 	} else {
@@ -107,6 +105,7 @@ router.put('/:account', (req, res) => {
 
 	db.User.findOne({ account: req.params.account }, (err, foundUser) => {
 		if (err) {
+			console.log('Error:');
 			console.log(err);
 		}
 		if (foundUser.password === dataObj.currPassword) {
@@ -132,8 +131,13 @@ router.put('/:account', (req, res) => {
 			console.log('edit user failed passwords incorrect');
 			return res.render('edit', { user: foundUser });
 		}
+		console.log('avatar edit page', foundObj);
+		res.render('index', { avatar: foundObj });
+		// res.send('Get edit Form');
 	});
 });
+
+
 
 router.delete('/:account', (req, res) => {
 	const userAcc = req.params.account;
@@ -150,6 +154,7 @@ router.delete('/:account', (req, res) => {
 			res.redirect('/');
 		});
 	});
-});
+}); */
+
 
 module.exports = router;

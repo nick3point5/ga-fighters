@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<<<<<<< HEAD
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,3 +20,29 @@
 		<a href="/index/<%= user.account %>/new">New Character</a>
 	</body>
 </html>
+=======
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <script defer src="/js/bootstrap.bundle.js"></script>
+    <title>Profile</title>
+</head>
+<body>
+    <h1>Welcome, <%= user.name %> </h1>
+    <a href="/index/<%= user._id %>/edit">settings</a>
+    <a href="/index">Logout</a>
+    <main class="character-container">
+        <% for(i=0;i<character.length;i++){ %> 
+        <%- include('partials/avatar-show.ejs') %>
+        <% } %>  
+        
+    </main>
+
+
+    <a href="/index/<%= user._id %>/avatars/new">New Character</a>
+</body>
+</html>
+<%# console.log(character[0]) %> 
+>>>>>>> 509d9bc9312304df73968dc5dff3d85e16759e9a
