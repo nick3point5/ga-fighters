@@ -5,11 +5,10 @@ const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const indexRoute = require('./controllers/indexRoute.js');
-const avatarRoute = require('./controllers/avatarRoute.js');
 const PORT = 3000;
 
+app.use('/index', express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
-app.use('/index', express.static(__dirname + 'public'));
 app.use((req, res, next) => {
 	next();
 });
@@ -21,7 +20,6 @@ app.get('/', (req, res) => {
 });
 // ALL SEPRATE ROUTES
 app.use('/index', indexRoute); // login page and link to Sign-Up
-app.use(`/index/:account/avatars`, avatarRoute); // Avatar index page and link to Create avatar
 app.listen(PORT, () => {
 	console.log('Server is running on port: ' + PORT);
 });
