@@ -1,7 +1,7 @@
-require('../config/database');
 const express = require('express');
+require('body-parser');
 const router = express.Router();
-const db = require('../models/User');
+const db = require('../config/database');
 
 // User route ---------------------------------------------------------------
 // GET   --->   /index <-----  Gets -> Login form and sign-up page link
@@ -15,51 +15,65 @@ router.get('/new', (req, res) => {
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
-	const dataObj = {
-		name: req.body.name,
-		password: req.body.password,
-	};
-
-	db.User.create(objData, (err, obj) => {
-		if (err) {
-			res.send(err);
-		}
-		res.redirect('/');
-	});
+	console.log(req.body.name);
+	if(req.body.password===req.body.confirm){
+		db.User.create(
+			{
+				name: req.body.name,
+				password: req.body.password,
+			},
+			(err, newUser) => {
+				console.log(req.body.name);
+				if (err) {
+					console.log('Fuck bro');
+				}
+				console.log(newUser);
+				res.redirect('/index');
+			}
+		);
+	} else {
+		res.send('User not created wrong password.');
+		// res.redirect('/new');
+	}
 });
 
 // POST ---->   /index/:id  <-- redirects to  <---- User Login
 router.post('/login', (req, res) => {
-	db.User.findOne(
-		{
-			name: req.body.name,
-		},
-		(err, foundObj) => {
-			if (err) {
-				res.send(err);
-			}
-			if (!foundObj) {
-				return res.redirect('/');
-			}
-			if (foundObj.password === req.body.password) {
-				return res.redirect(`/${foundObj._id}`);
-			}
+	const userName = req.body.name;
+	const passW = req.body.password;
+	db.User.findOne({ name: userName }, (err, foundObj) => {
+		if (err) {
+			res.send(err);
 		}
-	);
+		if (!foundObj) {
+			return res.send('error finding user during login');
+		}
+		if (foundObj.password === passW) {
+			console.log('user logged in.... Yeppy!!');
+			res.redirect(`${foundObj._id}`);
+		} else {
+			console.log('Incorrect password.');
+			return res.redirect('/');
+		}
+	});
 });
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:id', (req, res) => {
 	const userId = req.params.id;
-	db.User.findById(userId)
-		.populate('avatars')
-		.excu((err, foundObj) => {
-			if (err) {
-				res.send(err);
-			}
-			res.render('index', { user: foundObj });
-		});
+	db.User.findById(userId, (err, account) => {
+		if (err) {
+			res.send(err);
+		}
+		// console.log('Profile route hit');
+		db.Avatar.find({user: account._id},(err,avatars)=>{
+			// console.log(avatars); 
+			res.render('show', { user: account, character: avatars });
+		})
+		// res.send('Got show profile');
+	});
 });
+
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:id/edit', (req, res) => {
 	const userId = req.params.id;
@@ -67,32 +81,172 @@ router.get('/:id/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		res.render('index', { user: foundObj });
+		res.render('edit', { user: foundObj });
+		// res.send('Get edit Form');
 	});
 });
 // POST/PUT ---->   /index/:id    <---- User Edit/Update
 router.put('/:id', (req, res) => {
-	const userId = req.params.id;
+	userId = req.params.id;
+
+	const dataObj = {
+		newName: req.body.newName,
+		currentPassword: req.body.currentPassword,
+		newPassword: req.body.newPassword,
+		confirmation: req.body.confirmation,
+		// updated info var
+		name: req.body.newName,
+		password: req.body.newPassword,
+	};
+	if(req.body.password===req.body.confirm){
 	db.User.findByIdAndUpdate(
-		req.body.id,
-		updateObj,
+		userId,
+		dataObj,
 		{ new: true },
-		(err, obj) => {
+		(err, updatedObj) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);
 			}
+			res.redirect(`/index/${updatedObj._id}`);
 		}
 	);
+	}else{
+		res.send('passwords not matching')
+	}
 });
 
 router.delete('/:id', (req, res) => {
-	Model.findByIdAndDelete(req.body.id, (err, obj) => {
+	const userId = req.params.id;
+	db.User.findByIdAndDelete(userId, (err, deletedObj) => {
 		if (err) {
 			console.log('Error:');
 			console.log(err);
 		}
+
+		res.redirect('/');
 	});
 });
+
+//ANCHOR //	Avatar routes		///////////////////////////////////////
+
+// router.get('/:id/avatars/', (req, res) => {
+// 	console.log('in avatar index');
+// 	res.render('show.ejs');
+// });
+// GET  ---->  /avatars/new  <------------   Gets Create new avatar form page
+router.get('/:id/avatars/new', (req, res) => {
+	console.log('avatars/new  create avatar form');
+	// console.log(req.params.id);
+	res.render('new-avatar',{accountId: req.params.id});
+});
+
+// POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
+router.post('/:id/avatars/', (req, res) => {
+	// console.log(req.body);
+	const userId = req.params.id;
+	// console.log(req.body)
+	const rb = req.body;
+	console.log(rb);
+
+	db.User.findById(
+		
+			userId
+		,
+		(err, account) => {
+			if (err) {
+				console.log('Error:');
+				console.log(err);}
+			// console.log(account);
+			db.Avatar.create(
+				{
+					name: rb.name,
+					info: rb.info,
+					img: rb.img,
+					stats: {
+						health: rb.health,
+						mana: rb.mana,
+						attack: rb.attack,
+						defence: rb.defence,
+						spclAttack: rb.spclAttack,
+						spclDefence: rb.spclDefence,
+					},
+					user: account._id,
+				},
+				(err, newAvatar) => {
+					console.log(' creating avatar');
+		
+					if (err) {
+						console.log('Fuck bro');
+					}
+		
+					console.log(newAvatar);
+					res.redirect(`/index/${req.params.id}`);
+				}
+			);
+
+	})
+});
+
+// GET/Show  ---->   /index/:id    <---- Show User Profile
+router.get('/:id/avatars/:avatarId', (req, res) => {
+	const userId = req.params.id;
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		console.log('avatar show route hit');
+		res.render('game', { character: foundObj,accountId: userId });
+		// res.send('Got show profile');
+	});
+});
+/* 
+// GET ---->   /index/:id/edit    <---- User Edit Form
+router.get('/:id/avatars/:avatarId/edit', (req, res) => {
+	const userId = req.params.id;
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		console.log('avatar edit page', foundObj);
+		res.render('index', { avatar: foundObj });
+		// res.send('Get edit Form');
+	});
+});
+// POST/PUT ---->   /:id    <---- User Edit/Update
+router.put('/:id/avatars/:id', (req, res) => {
+	const userId = req.params.id;
+	const dataObj = {
+		name: req.body.name,
+		password: req.body.password,
+	};
+	db.User.findByIdAndUpdate(
+		userId,
+		dataObj,
+		{ new: true },
+		(err, updatedObj) => {
+			if (err) {
+				console.log('Error:');
+				console.log(err);
+			}
+			res.redirect(`/${updatedObj._id}`);
+		}
+	);
+});
+
+router.delete('/:id/avatars/:id', (req, res) => {
+	const userId = req.params.id;
+	db.User.findByIdAndDelete(userId, (err, deletedObj) => {
+		if (err) {
+			console.log('Error:');
+			console.log(err);
+		}
+
+		res.redirect('/');
+	});
+}); */
+
 
 module.exports = router;

@@ -18,7 +18,7 @@ const avatarSchema = new Schema(
 			defence: { type: Number },
 			spclAttack: { type: Number },
 			spclDefence: { type: Number },
-			exp: { type: Number },
+			exp: { type: Number, default: 0 },
 		},
 		img: { type: String },
 

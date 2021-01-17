@@ -8,18 +8,18 @@ statStr.forEach(stat => {
     const eleUp=document.getElementById(`${stat}-up-stat-btn`)
     eleUp.addEventListener('click',()=>{
         if (skillpts>0) {
-            document.getElementById(stat).textContent = +document.getElementById(stat).textContent + 1
+            document.getElementById(stat).value = +document.getElementById(stat).value + 1
             skillpts -= 1
-            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').value = 'Skill Points: ' + skillpts
         }
     })
 
     const eleDn=document.getElementById(`${stat}-down-stat-btn`)
     eleDn.addEventListener('click',()=>{
-        if (+document.getElementById(stat).textContent>0) {
-            document.getElementById(stat).textContent = +document.getElementById(stat).textContent - 1
+        if (+document.getElementById(stat).value>0) {
+            document.getElementById(stat).value = +document.getElementById(stat).value - 1
             skillpts += 1
-            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').value = 'Skill Points: ' + skillpts
         }
     })
 

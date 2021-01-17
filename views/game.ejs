@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="../css/style.css" rel="stylesheet" type="text/css">
-    <script defer src="../js/bootstrap.bundle.js"></script>
-    <script defer src="../js/app.js"></script>
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <script defer src="/js/bootstrap.bundle.js"></script>
+    <script defer src="/js/app.js"></script>
     <!-- <script data-main="../js/app.js" src="../js/require.js"></script> -->
     <title>Game</title>
 </head>
 <body>
-    <a href="account.html">&lt</a>
+    <a href="/index/<%= accountId %> ">&lt</a>
     <main class="game-window">
         <div class="info-display">
 
@@ -43,12 +43,12 @@
 
         </div>
         <div id="play-window">
-            <div class="fighter" id="player">
+            <div class="fighter" id="player" style="background-image: url('<%= character.img %>');" >
                 <div class="player-attack hitbox" id = "player-attack"></div>
             </div>
             <div class="fighter" id="enemy"></div>
         </div>
     </main>
-    <a href="level-up.html">Level Up</a>
+    <a href="/index/<%= accountId %>/avatars/<%= character._id %>/edit">Level Up</a>
 </body>
 </html>

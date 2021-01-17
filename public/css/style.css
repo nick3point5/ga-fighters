@@ -19,24 +19,39 @@
 }
 
 #player{
-    background-image: url("https://picsum.photos/id/1024/200/200");
-    transform: translate(100px,100px) rotateZ(45deg);;
+    transform: translate(100px,100px) rotateZ(45deg);
     z-index: 3;
 
+}
+
+.player-attack{
+    transform: translate(100px);
+    height: 50px;
+    width: 50px;
+}
+
+.fire {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+}
+
+.hitbox {
+    background-color: red;
 }
 
 #enemy{
     background-image: url("https://picsum.photos/id/10/200/200");
 }
 
+.hidden{
+    display: none;
+}
+
 .game-window{
     background-color: gray;
     height: 100%;
     width: 100%;
-}
-
-body{
-
 }
 
 .stat-container{
@@ -79,12 +94,23 @@ p{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    height: 50px;
 }
 
 .hp{
     width: 350px;
     height: 30px;
     margin: 0 10px;
+}
+
+.mp{
+    width: 350px;
+    height: 30px;
+    margin: 0 10px;
+}
+.mp::-webkit-meter-optimum-value{
+    background-color: blue;
 }
 
 #enemy-hp{

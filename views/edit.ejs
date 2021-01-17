@@ -6,19 +6,23 @@
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
-    <title>Sign Up</title>
+    <title>Settings</title>
 </head>
 <body>
     <main>
-        <form action="/index" method="post" class="form">
+        <form action="/index/<%= user._id  %>/?_method=PUT" method="post" class="form">
             <label for="">Username</label>
-            <input type="text" name="name">
+            <input type="text" name="name" value=<%= user.name  %>>
             <label for="">Password</label>
             <input type="password" name="password">
             <label for="">Confirmation</label>
             <input type="password" name="confirm">
-            <button type="submit">Sign up</button>
+            <button type="submit">Update</button>
         </form>
+        <form action="/index/<%= user._id  %>?_method=DELETE" method="post">
+            <button type="submit">Delete</button>
+        </form>
+
     </main>
 </body>
 </html>
