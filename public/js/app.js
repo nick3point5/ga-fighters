@@ -84,6 +84,8 @@ class fireballClass extends interObj {
         }
     }
     launch(target){ 
+        this.position()
+        this.element.classList.remove('hidden')
         const launch = setInterval(()=>{
 
         this.moveFunction()
@@ -110,8 +112,8 @@ class fireballClass extends interObj {
 }
 
 class fighter extends interObj {
-    constructor(x, y, element, name) {
-        super(x, y,150, 200, element)
+    constructor(x, y, element, name, HitBox) {
+        super(x, y,100, 150, element)
         this.hp=100
         this.mp=100
         this.atk=5
@@ -119,11 +121,11 @@ class fighter extends interObj {
         this.spAtk=5
         this.spDef=5
         this.control = true
-
+        this.HitBox = HitBox
     }
     attack(target){
         
-        if (this.collision(target)) {
+        if (this.HitBox.collision(target)) {
             if(this.atk > target.def){
                 target.hp -= this.atk - target.def
             } else {
@@ -138,10 +140,11 @@ class fighter extends interObj {
             const  fire = document.createElement('div')
             fire.classList.add("fire")
             fire.classList.add("hitbox")
+            fire.classList.add("hidden")
             
             playwin.element.appendChild(fire)
             const fireball = new fireballClass(
-                this.x,this.y,fire,this.direction
+                this.x+this.width,this.y+80,fire,this.direction
             )
                 
             fireball.launch(target)
@@ -162,12 +165,21 @@ class fighter extends interObj {
 class attackClass extends interObj{
     constructor(x, y, width, height, element) {
         super(x, y, width, height, element)
-        this.speed = 5;
+    }
+    moveFunction() {
+        if(this.user.direction>0){
+
+            this.x = this.user.x+this.user.width
+            this.y = this.user.y
+        }else{
+            this.x = this.user.x-this.width
+            this.y = this.user.y
+        }
     }
 }
 class playerClass extends fighter {
-    constructor(x, y, element, name) {
-        super(x, y, element)
+    constructor(x, y, element, name, HitBox) {
+        super(x, y, element, name, HitBox)
         this.speed = 5;
     }
 
@@ -448,6 +460,7 @@ function update() {
 
 function movement() {
     playerCharacter.moveFunction()
+    playerAttack.moveFunction()
     enemyCharacter.moveFunction()
 }
 
@@ -605,18 +618,20 @@ playwin = {
     timer: 99,
     gameOver: false
 };
+let playerAttack = new attackClass(
+    100,0,50,50,document.getElementById('player-attack')
+)
 
 let playerCharacter = new playerClass(
-    0,0,document.getElementById('player'),'guy'
+    0,0,document.getElementById('player'),'guy',playerAttack
 )
+
+playerAttack.user = playerCharacter
 
 let enemyCharacter = new enemyClass(
-    400,200,document.getElementById('enemy'),'sdf'
+    400,200,document.getElementById('enemy'),'sdf',null
 )
 
-let playerAttack = new attackClass(
-    100,0,50,50,document.getElementById('enemy'),playerCharacter
-)
 
 enemyHpBar = document.getElementById('enemy-hp')
 playerHpBar = document.getElementById('player-hp')
