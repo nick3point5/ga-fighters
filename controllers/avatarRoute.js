@@ -18,6 +18,7 @@ router.get('/new', (req, res) => {
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
 router.post('/', (req, res) => {
 	console.log(req.body);
+	const userId = req.params.id;
 
 	const rb = req.body;
 
@@ -33,7 +34,7 @@ router.post('/', (req, res) => {
 				spclAttack: rb.spclAttack,
 				spclDefence: rb.spclDefence,
 			},
-			user: rb.user,
+			user: userId,
 		},
 		(err, newAvatar) => {
 			console.log(' creating avatar');
@@ -48,49 +49,30 @@ router.post('/', (req, res) => {
 	);
 });
 
-// POST ---->   /index/:id  <-- redirects to  <---- User Login
-router.post('/login', (req, res) => {
-	const passW = req.body.password;
-	db.User.findOne(
-		{
-			name: req.body.name,
-		},
-		(err, foundObj) => {
-			if (err) {
-				res.send(err);
-			}
-			if (!foundObj === '') {
-				return res.send('error finding user during login');
-			}
-			if (foundObj.password === passW) {
-				res.redirect(`/${foundObj._id}`);
-			}
-		}
-	);
-	// res.send('redirects to .GET  /:id');
-});
-
 // GET/Show  ---->   /index/:id    <---- Show User Profile
-router.get('/:id', (req, res) => {
+router.get('/:avatarId', (req, res) => {
 	const userId = req.params.id;
-	db.User.findById(userId, (err, foundObj) => {
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) {
 			res.send(err);
 		}
-		console.log('Profile route hit');
-		res.render('index', { user: foundObj });
+		console.log('avatar show route hit');
+		res.render('index', { avatar: foundObj });
 		// res.send('Got show profile');
 	});
 });
 
 // GET ---->   /index/:id/edit    <---- User Edit Form
-router.get('/:id/edit', (req, res) => {
+router.get('/:avatarId/edit', (req, res) => {
 	const userId = req.params.id;
-	db.User.findById(userId, (err, foundObj) => {
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) {
 			res.send(err);
 		}
-		res.render('index', { user: foundObj });
+		console.log('avatar edit page', foundObj);
+		res.render('index', { avatar: foundObj });
 		// res.send('Get edit Form');
 	});
 });
