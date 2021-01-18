@@ -1,6 +1,13 @@
 .body{
+    width: 80%;
+    height: 90vh;
+    margin: 2em auto;
     font-size: 25px;
     background-color: #345472;
+    background-image: url(https://image.freepik.com/free-vector/blue-abstract-futuristic-background_23-2148705451.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: rgb(255, 255, 255);
     font-weight: 700;
@@ -8,8 +15,11 @@
 .header{
     font-size: 1.2em;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    background-color: rgba(53, 43, 19, 0.522);
-    color: rgb(191, 180, 180);
+    background-color: rgba(8, 11, 80, 0.063);
+    background-image: url(https://image.freepik.com/free-vector/abstract-digital-low-angle-view-skyscrapers-polygons-lines-particles-connected-dots-isolated-business-buildings-white-background-3d-technology-concept-success-business-polygon_201274-14.jpg);
+    background-position: inherit;
+    background-size: cover;
+    color: rgba(14, 41, 100, 0.913);
 
 }
 .form {
@@ -30,6 +40,13 @@
     color: black;
     padding: 3em;
     background-color: rgba(250, 235, 215, 0.159);
+}
+.main-show{
+    background-color: rgb(237, 237, 237);
+    background-image: url(https://image.freepik.com/free-vector/stylish-blue-technology-circuit-diagram-lines-background_1017-28406.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 .notification{
     background-color: rgba(255,255,255,0.5);
