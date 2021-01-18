@@ -10,17 +10,28 @@
 </head>
 <body>
     <h1>Welcome, <%= user.name %> </h1>
-    <a href="/index/<%= user._id %>/edit">settings</a>
+    <a href="/index/<%= user.account %>/edit">settings</a>
     <a href="/index">Logout</a>
     <main class="character-container">
-        <% for(i=0;i<character.length;i++){ %> 
-        <%- include('partials/avatar-show.ejs') %>
+        <% for(i = 0; i < user.avatars.length ; i++){ %> 
+        <!-- <%- include('partials/avatar-show.ejs') %> -->
+        <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
+            <button type="submit">
+                <div class="character">
+                    <img src="<%= user.avatars[i].url %>" alt="" class="character-image">
+                    <div>
+                        <h1 class="character-name"><%= user.avatars[i].name %></h1>
+                        <p class="character-text"><%= user.avatars[i].info %> </p>
+                    </div>
+                </div>
+            </button>   
+        </form>
         <% } %>  
         
     </main>
 
 
-    <a href="/index/<%= user._id %>/avatars/new">New Character</a>
+    <a href="/index/<%= user.account %>/new">New Character</a>
 </body>
 </html>
 <%# console.log(character[0]) %> 

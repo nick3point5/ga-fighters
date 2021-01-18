@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="../css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
     <script defer src="/js/dom_manipulation.js"></script>
 
@@ -13,12 +13,12 @@
 <body>
     <main>
         <form action="/index/<%= accountId %>/avatars" method="post" class="form">
-            <label for="">Character Name</label>
-            <input type="text" name="name">
-            <label for="">Image Url</label>
-            <input type="text" name="img">
-            <label for="">Bio</label>
-            <input type="text" name="info">
+            <label for="name">Character Name</label>
+            <input id="name" type="text" name="name">
+            <label for="img">Image Url</label>
+            <input id="img" type="text" name="img">
+            <label for="info">Bio</label>
+            <input id="info" type="text" name="info">
             <h2 id="skillpoints">Skill Points: ###</h2>
 
             <div class="stat-container">

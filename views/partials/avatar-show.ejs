@@ -1,11 +1,11 @@
-<form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>  " method="get">
+<form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
     
     <button type="submit">
         <div class="character">
-            <img src="<%= character[i].img %>" alt="" class="character-image">
+            <img src="<%= user.avatars[i].url %>" alt="" class="character-image">
             <div>
-                <h1 class="character-name"><%= character[i].name %></h1>
-                <p class="character-text"><%= character[i].info %> </p>
+                <h1 class="character-name"><%= user.avatars[i].name %></h1>
+                <p class="character-text"><%= user.avatars[i].info %> </p>
             </div>
         </div>
     </button>
