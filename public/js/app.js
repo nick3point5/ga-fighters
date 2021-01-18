@@ -230,10 +230,12 @@ class enemyClass extends fighter {
         this.spAtk=spAtk
         this.spDef=spDef
         this.xSpd  = 5;
+        this.control = true
         this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
-        this.currentState = 'fireball'
+        this.currentState = 'idle'
     }
     Ai() {
+
         if (this.control) {
             
             
@@ -258,8 +260,15 @@ class enemyClass extends fighter {
         }
 
     }
+    AiStart(){
+        const stateChange = setInterval(()=>{
+            const behavior = getRand(5,0)
+            this.currentState = this.conditions[behavior]
+            console.log(this.currentState);
+            // clearInterval(stateChange)
+        },1000)
+    }
     stateAttack(){
-        // console.log('atk');
         this.attack(this.opponent)
     }
     stateFireball(){
@@ -469,6 +478,7 @@ function assignEvents() {
     //         game()
     //     }
     // })
+
     window.addEventListener("keydown", getKey);
     window.addEventListener("keyup", releaseKey);
 }
@@ -617,6 +627,7 @@ enemyAttack.user = enemyCharacter
 playerCharacter.opponent = enemyCharacter
 enemyCharacter.opponent = playerCharacter
 
+enemyCharacter.AiStart()
 
 game()
 assignEvents()
