@@ -1,11 +1,23 @@
+.body{
+    background-color: #345472;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 5em;
+    color: rgb(255, 255, 255);
+    font-weight: 900;
+}
 .form {
     display: flex;
     flex-direction: column;
     width: 50%;
-    /* justify-content: center; */
-    align-items: center;
-    /* align-content: center; */
+    color: aliceblue;
+    margin: 10em auto;
     border: black solid 2px;
+    background-color: rgba(252, 252, 252, 0.159);
+    border-radius: 1em;
+    -webkit-border-radius: 1em;
+    -moz-border-radius: 1em;
+    -ms-border-radius: 1em;
+    -o-border-radius: 1em;
 }
 
 .notification{
@@ -163,7 +175,8 @@ p{
 }
 
 .btn{
-    background-color: rgb(158, 158, 158);
+    background-color: rgb(143, 128, 128);
+    margin: 1em;
     border: 1px solid black;
 }
 
