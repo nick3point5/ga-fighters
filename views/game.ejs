@@ -52,6 +52,9 @@
                 <%- include('partials/player.ejs') %> 
             <div class="fighter" id="enemy"></div>
         </div>
+        <div class="notification hidden" id="notification-area">
+            <p id='notification-message'>notification</p>
+        </div>
     </main>
     <a href="/index/<%= accountId %>/avatars/<%= character._id %>/edit">Level Up</a>
 </body>

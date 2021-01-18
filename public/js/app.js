@@ -77,6 +77,7 @@ class interObj {
 class fighter extends interObj {
     constructor(x, y, element, name, HitBox) {
         super(x, y,100, 150, element)
+        this.name = name
         this.hp=100
         this.mp=100
         this.atk=5
@@ -511,6 +512,9 @@ function update() {
         movement();
         playerCharacter.update();
         enemyCharacter.update();
+        if(playerCharacter.hp<=0 || enemyCharacter.hp <=0 || playwin.timer <= 0){
+            playwin.gameOver = true
+        }
         playwin.frame++
     }
 }
@@ -564,6 +568,14 @@ function gameOver() {
     // $("#music")[0].pause();
     // $("#music")[0].currentTime = 0;
     playwin.pause = true
+    if (enemyCharacter.hp > playerCharacter.hp) {
+        document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
+    } else if (enemyCharacter.hp < playerCharacter.hp) {
+        document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
+    } else{
+        document.getElementById('notification-message').innerHTML=`Tie`
+    }
+    document.getElementById('notification-area').classList.remove('hidden')
 
 }
 
@@ -685,7 +697,9 @@ let playerAttack = new attackClass(
 )
 
 let playerCharacter = new playerClass(
-    0,0,playerEle,'guy',playerAttack, 
+    0,0,playerEle,
+    playerEle.getAttribute('name'),
+    playerAttack, 
     +playerEle.getAttribute('hp'), 
     +playerEle.getAttribute('mp'), 
     +playerEle.getAttribute('atk'), 
