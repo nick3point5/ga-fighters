@@ -10,7 +10,7 @@ statStr.forEach(stat => {
         if (skillpts>0) {
             document.getElementById(stat).value = +document.getElementById(stat).value + 1
             skillpts -= 1
-            document.getElementById('skillpoints').value = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
         }
     })
 
@@ -19,7 +19,7 @@ statStr.forEach(stat => {
         if (+document.getElementById(stat).value>0) {
             document.getElementById(stat).value = +document.getElementById(stat).value - 1
             skillpts += 1
-            document.getElementById('skillpoints').value = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
         }
     })
 

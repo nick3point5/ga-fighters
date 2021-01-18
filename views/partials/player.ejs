@@ -4,6 +4,7 @@
         <% for(i=0;i<statStr.length;i++){ %>   
             <%= statAttr[i] %> = "<%= character.stats[statStr[i]] %>" 
         <% } %> 
+        name= "<%= character.name %>" 
     >
     <div class="player-attack hitbox" id = "player-attack"></div>
 </div>

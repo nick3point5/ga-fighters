@@ -3,74 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="../css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
     <script defer src="/js/dom_manipulation.js"></script>
 
-    <title>Edit Character</title>
+    <title>New Character</title>
 </head>
 <body>
     <main>
-        <form action="/index/<%= userAcc  %>/avatars/<%= avatar.id %>?_method=PUT" method="POST" class="form">
-            <label for="name">Character Name</label>
-            <input id="name" type="text" name="name" value="<%= avatar.name  %> ">
-            <label for="img">Image Url</label>
-            <input id="img" type="text" name="img" value="<%= avatar.url  %> ">
-            <label for="info">Bio</label>
-            <input id="info" type="text" name="info" value="<%= avatar.info  %> ">
+        <form action="/index/<%= avatar.user %>/avatars/<%= avatar._id %>?_method=PUT" method="post" class="form">
+            <label for="">Character Name</label>
+            <input type="text" name="name" value="<%= avatar.name %> ">
+            <label for="">Image Url</label>
+            <input type="text" name="img" value="<%= avatar.img %> ">
+            <label for="">Bio</label>
+            <input type="text" name="info" value="<%= avatar.info %> ">
             <h2 id="skillpoints">Skill Points: ###</h2>
 
-            <div class="stat-container">
-                <label for="" class="stat-label">HP</label>
-                <div class="stat-control">
-                    <div class="btn" id="health-down-stat-btn">&lt;</div>
-                    <input type="number" name="health" id="health" class="stat-input" value="<%= avatar.health  %> "></input>
-                    <div class="btn" id="health-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">MP</label>
-                <div class="stat-control">
-                    <div class="btn" id="mana-down-stat-btn">&lt;</div>
-                    <input type="number" name="mana" id="mana" class="stat-input" value="<%= avatar.mana  %> "></input>
-                    <div class="btn" id="mana-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">Atk</label>
-                <div class="stat-control">
-                    <div class="btn" id="attack-down-stat-btn">&lt;</div>
-                    <input type="number" name="attack" id="attack" class="stat-input" value="<%= avatar.attack  %> "></input>
-                    <div class="btn" id="attack-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">Def</label>
-                <div class="stat-control">
-                    <div class="btn" id="defence-down-stat-btn">&lt;</div>
-                    <input type="number" name="defence" id="defence" class="stat-input" value="<%= avatar.defence  %> "></input>
-                    <div class="btn" id="defence-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">SpAtk</label>
-                <div class="stat-control">
-                    <div class="btn" id="spclAttack-down-stat-btn">&lt;</div>
-                    <input type="number" name="spclAttack" id="spclAttack" class="stat-input" value="<%= avatar.spclAttack  %> "></input>
-                    <div class="btn" id="spclAttack-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">SpDef</label>
-                <div class="stat-control">
-                    <div class="btn" id="spclDefence-down-stat-btn">&lt;</div>
-                    <input type="number" name="spclDefence" id="spclDefence" class="stat-input" value="<%= avatar.spclDefence  %> "></input>
-                    <div class="btn" id="spclDefence-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <button type="submit"> update </button>
+            <%- include('partials/avatar-stat.ejs') %>
+
+
+
+
+            <button type="submit"> Level Up </button>
         </form>
     </main>
+
 </body>
 </html>
+
+<% console.log(avatar) %> 
