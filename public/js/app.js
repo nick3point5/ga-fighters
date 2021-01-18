@@ -85,6 +85,7 @@ class fighter extends interObj {
         this.spDef=5
         this.control = true
         this.HitBox = HitBox
+        this.airborne = true
     }
     attack(target){
         
@@ -177,7 +178,7 @@ class playerClass extends fighter {
         this.spAtk=spAtk
         this.spDef=spDef
         this.xSpd = 5;
-        this.airborne = true
+
     }
 
 
@@ -666,7 +667,7 @@ playerMpBar = document.getElementById('player-mp')
 timerEle = document.getElementById('timer')
 
 playwin = {
-    height: 450,
+    height: 400,
     width: 800,
     element: document.getElementById('play-window'),
     mute: false,
@@ -694,7 +695,7 @@ let playerCharacter = new playerClass(
 )
 
 let enemyCharacter = new enemyClass(
-    400,300,document.getElementById('enemy'),'sdf',null, 100, 100, 10, 5, 5, 5
+    400,0,document.getElementById('enemy'),'sdf',null, 100, 100, 10, 5, 5, 5
 )
 
 playerAttack.user = playerCharacter

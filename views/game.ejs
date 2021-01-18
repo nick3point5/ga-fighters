@@ -16,6 +16,7 @@
         <div class="info-display">
 
         <div class="bar-container player-bar-container">
+
             <meter class="hp" id="player-hp"
                 min="0" max="<%= character.stats.health %>"
                 low="<%= character.stats.health*0.2 %>" high="<%= character.stats.health*0.5 %>" optimum="<%= character.stats.health*0.8 %>"
@@ -30,6 +31,7 @@
         <h3 id="timer">12</h3>
 
         <div class="bar-container enemy-bar-container">
+
             <meter class="hp" id="enemy-hp"
                 min="0" max="100"
                 low="33" high="66" optimum="80"
@@ -41,6 +43,10 @@
             </meter>
         </div>
 
+        </div>
+        <div class="name-tag">
+            <h4><%= character.name %></h4>
+            <h4>Evil Man</h4>
         </div>
         <div id="play-window">
                 <%- include('partials/player.ejs') %> 
