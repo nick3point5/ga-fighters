@@ -205,18 +205,17 @@ class playerClass extends fighter {
 
 }
 class enemyClass extends fighter {
-    constructor(x, y, element, name) {
-        super(x, y, element)
+    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef) {
+        super(x, y, element, name, HitBox)
+        this.hp=hp
+        this.mp=mp
+        this.atk=atk
+        this.def=def
+        this.spAtk=spAtk
+        this.spDef=spDef
         this.xSpd  = 5;
         this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
-        this.currentState = 'jump'
-    }
-    facing(){
-        if(this.x < this.opponent.x){
-            this.direction = -1
-        }else {
-            this.direction = 1
-        }
+        this.currentState = 'attack'
     }
     Ai() {
         if (this.currentState === this.conditions[0]) {
@@ -240,7 +239,8 @@ class enemyClass extends fighter {
 
     }
     stateAttack(){
-        console.log('atk');
+        // console.log('atk');
+        this.attack(this.opponent)
     }
     stateFireball(){
         console.log('fire');
@@ -532,6 +532,7 @@ function update() {
 
 function movement() {
     playerAttack.moveFunction()
+    enemyAttack.moveFunction()
 }
 
 function uiUpdate() {
@@ -754,6 +755,9 @@ playerEle = document.getElementById('player')
 let playerAttack = new attackClass(
     100,0,50,50,document.getElementById('player-attack')
 )
+let enemyAttack = new attackClass(
+    350,0,50,50,document.getElementById('enemy-attack')
+)
 
 let playerCharacter = new playerClass(
     0,0,playerEle,
@@ -768,10 +772,12 @@ let playerCharacter = new playerClass(
 )
 
 let enemyCharacter = new enemyClass(
-    400,0,document.getElementById('enemy'),'sdf',null, 100, 100, 10, 5, 5, 5
+    400,0,document.getElementById('enemy'),'Evil Man',enemyAttack, 100, 100, 10, 5, 5, 5
 )
 
 playerAttack.user = playerCharacter
+enemyAttack.user = enemyCharacter
+
 playerCharacter.opponent = enemyCharacter
 enemyCharacter.opponent = playerCharacter
 
