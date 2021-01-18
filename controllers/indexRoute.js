@@ -147,42 +147,43 @@ router.put('/:account', (req, res) => {
 	});
 	
 	//============================================================================================================================
-	// Avatar route ---------------------------------------------------------------
-// GET   --->   /avatars index page <-----  Gets
-router.get('/:account/avatars', (req, res) => {
-	console.log(req.params.account)
-	console.log('in avatar index');
-	const account = req.params.account;
-	db.User.findOne({account: account})
-	.populate('avatars')
-	.exec((err, foundUser) => {
-		console.log(foundUser)
-		if (err) {
-			res.send(err);
-		}
-		return res.render('show', { user: foundUser });
-	});
-});
+	// Avatar GET index ---------------------------------------------------------------
+	// GET   --->   /avatars index page <-----  Gets
+	router.get('/:account/avatars', (req, res) => {
 
-	//             -->  Avatar New <--
-	// GET  ---->  /:account/new  <------------   Gets Create new avatar form page
+		const account = req.params.account;
+
+		db.User.findOne({account: account})
+		.populate('avatars')
+		.exec((err, foundUser) => {
+			console.log(foundUser)
+			if (err) {
+				res.send(err);
+			}
+			return res.render('avatar-index', { user: foundUser });
+		});
+	});
+	
+	// Avatar GET new ---------------------------------------------------------------
+
 	router.get('/:account/new', (req, res) => {
 		console.log(req.params.account)
 		console.log('avatars/new  create avatar form');
-			res.render('new-avatar.ejs', { accountId: req.params.account });
+		return res.render('new-avatar.ejs', { accountId: req.params.account });
 		
 	});
-
-// POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
-router.post('/:account/avatars', (req, res) => {
-	console.log(req.params);
-	const rb = req.body;
-
-	db.User.findOne({account: req.params.account},(err,foundUser)=>{
-		if (err) {
-			res.send(err);
-		}
-		db.Avatar.create(
+	
+	// Avatar POST new ---------------------------------------------------------------
+	// POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
+	router.post('/:account/avatars', (req, res) => {
+		console.log(req.params);
+		const rb = req.body;
+		
+		db.User.findOne({account: req.params.account},(err,foundUser)=>{
+			if (err) {
+				res.send(err);
+			}
+			db.Avatar.create(
 		{
 			name: rb.name,
 			url: rb.img,
@@ -199,23 +200,110 @@ router.post('/:account/avatars', (req, res) => {
 		},
 		(err, newAvatar) => {
 			console.log(' creating avatar');
-
+			
 			if (err) {
 				console.log('Fuck bro');
 				res.send(err);
 			}
 			db.User.findByIdAndUpdate(foundUser._id,{avatars: newAvatar._id},{new:true},(err, updatedUser)=>{
 				console.log(newAvatar,updatedUser);
-
-			res.redirect(`/index/${updatedUser.account}/avatars`);
+				
+				res.redirect(`/index/${updatedUser.account}/avatars`);
 			})
-
+			
 			
 		}
 	);
+})
+
+});
+// Avatar GET show ---------------------------------------------------------------
+
+router.get('/:account/avatars/:avatarId', (req, res) => {
+	const userAcc = req.params.account;
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		console.log('avatar show route hit');
+		return res.render('avatarShow', { avatar: foundObj });
+	});
+});
+
+// Avatar GET edit  ---------------------------------------------------------------
+
+router.get('/:account/avatars/:avatarId/edit', (req, res) => {
+	const userAcc = req.params.account;
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		console.log('avatar edit page', foundObj);
+		res.render('avatarEdit', { avatar: foundObj });
+	});
+});
+
+// Avatar POST update  ---------------------------------------------------------------
+router.put('/:account/avatars/:avatarId', (req, res) => {
+	console.log(req.body);
+	const password = req.body.password;
+	const userAcc = req.params.account;
+	const avatarId = req.params.avatarId;
+	const rb = req.body;
+	const updateObj = {
+		name: rb.name,
+		info: rb.info,
+		stats: {
+			health: rb.health,
+			mana: rb.mana,
+			attack: rb.attack,
+			defence: rb.defence,
+			spclAttack: rb.spclAttack,
+			spclDefence: rb.spclDefence,
+		},
+	};
+		db.User.findOne({account:userAcc},(err, foundUser)=>{
+			if (err) {
+				res.send(err);
+			}
+			if(foundUser.password === password){
+				db.Avatar.findByIdAndUpdate(
+			avatarId,
+			updateObj,
+			{ new: true },
+			(err, updatedAvatar) => {
+				if (err) {
+					console.log('Error:');
+					console.log(err);
+					res.send(err);
+				}
+				console.log('updated avatar: ', updatedAvatar);
+				return res.redirect(`/index/${userAcc}/avatars/${avatarId}`);
+			}
+			);
+			}else{
+				return res.redirect(`/index/${userAcc}/avatars/${avatarId}/edit`)
+			}
+			
+		})
+		
+	});
+	
+	router.delete('/:account/avatars/:avatarId', (req, res) => {
+		const userAcc = req.params.account
+		const avatarId = req.params.avatarId
+		db.Avatar.findByIdAndDelete(avatarId,(err,deletedAvatar)=>{
+			if (err) {
+				res.send(err);
+			}
+			
+			return res.redirect(`/index/${userAcc}/avatars`)
 	})
 	
 });
+
 	//============================================================================================================================
 	
 	module.exports = router;

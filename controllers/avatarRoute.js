@@ -49,7 +49,7 @@ router.post('/', (req, res) => {
 });
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
-router.get('/:avatarId', (req, res) => {
+router.get('/:account/avatars/:avatarId', (req, res) => {
 	const userId = req.params._id;
 	const avatarId = req.params._avatarId;
 	db.Avatar.findById(avatarId, (err, foundObj) => {

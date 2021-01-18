@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatars Index</title>
+</head>
+<body>
+    <header>
+        <h1>Avatars</h1>
+    </header>
+    <main>
+        <% user.avatars.forEach(avatar => { %> 
+             <div>
+            <a href="/index/<%= user.account  %>/avatars/<% avatar._id %>  "><h3> <%= avatar.name %> </h3></a>
+            </div>
+        <% });  %> 
+
+    </main>
+</body>
+</html>
