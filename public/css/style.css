@@ -1,16 +1,23 @@
 .body{
+    font-size: 25px;
     background-color: #345472;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    padding: 5em;
     color: rgb(255, 255, 255);
-    font-weight: 900;
+    font-weight: 700;
+}
+.header{
+    font-size: 1.2em;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background-color: rgba(53, 43, 19, 0.522);
+    color: rgb(191, 180, 180);
+
 }
 .form {
     display: flex;
     flex-direction: column;
     width: 50%;
     color: aliceblue;
-    margin: 10em auto;
+    margin: 3em auto;
     border: black solid 2px;
     background-color: rgba(252, 252, 252, 0.159);
     border-radius: 1em;
@@ -19,7 +26,11 @@
     -ms-border-radius: 1em;
     -o-border-radius: 1em;
 }
-
+.main{
+    color: black;
+    padding: 3em;
+    background-color: rgba(250, 235, 215, 0.159);
+}
 .notification{
     background-color: rgba(255,255,255,0.5);
     align-self: center;
