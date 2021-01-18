@@ -138,8 +138,10 @@ class fighter extends interObj {
 
     }
     jump(){
-        this.ySpd = 20
-        this.airborne = true
+        if(!this.airborne){
+            this.ySpd = 20
+            this.airborne = true
+        }
     }
     gravity() {
         if(this.airborne && this.y - this.ySpd >= this.yMax){
@@ -191,7 +193,7 @@ class enemyClass extends fighter {
         super(x, y, element)
         this.xSpd  = 5;
         this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
-        this.currentState = 'backoff'
+        this.currentState = 'jump'
     }
     facing(){
         if(this.x < this.opponent.x){
@@ -211,10 +213,10 @@ class enemyClass extends fighter {
             this.stateApproach()
         }
         if (this.currentState === this.conditions[3]) {
-            this.stateJump()
+            this.stateBackoff()
         }
         if (this.currentState === this.conditions[4]) {
-            this.stateBackoff()
+            this.stateJump()
         }
         if (this.currentState === this.conditions[5]) {
             this.stateIdle()
@@ -222,10 +224,10 @@ class enemyClass extends fighter {
 
     }
     stateAttack(){
-        
+        console.log('atk');
     }
     stateFireball(){
-
+        console.log('fire');
     }
     stateApproach(){
         this.trackdown(this.opponent)
@@ -234,10 +236,10 @@ class enemyClass extends fighter {
         this.runFrom(this.opponent)
     }
     stateJump(){
-
+        console.log('jump');
     }
     stateIdle(){
-
+        console.log('idle');
     }
     trackdown(target) {
         if (this.x < target.x) {
