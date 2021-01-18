@@ -1,38 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
-		<link href="/css/style.css" rel="stylesheet" type="text/css" />
-		<script defer src="/js/bootstrap.bundle.js"></script>
-		<title>Settings</title>
-	</head>
-	<body>
-		<main>
-			<form
-				action="/index/<%= user.account  %>/?_method=PUT"
-				method="post"
-				class="form"
-			>
-				<label for="name">Username</label>
-				<input type="text" name="newName" value=" <%= user.name%>" />
-				<label for="currPassword">Current Password</label>
-				<input id="currPassword" name="currPassword" type="text" />
-				<label for="newPassword">New Password</label>
-				<input id="newPassword" name="newPassword" type="text" />
-				<label for="confirm">Confirmation</label>
-				<input id="confirm" name="confirm" type="text" />
-				<button type="submit">Update</button>
-			</form>
-			<form action="/index/<%= user.account  %>?_method=DELETE" method="post">
-				<button type="submit">Delete</button>
-			</form>
-		</main>
-	</body>
-</html>
-=======
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,20 +10,26 @@
 </head>
 <body>
     <main>
-        <form action="/index/<%= user._id  %>/?_method=PUT" method="post" class="form">
-            <label for="">Username</label>
-            <input type="text" name="name" value=<%= user.name  %>>
-            <label for="">Password</label>
-            <input type="password" name="password">
-            <label for="">Confirmation</label>
-            <input type="password" name="confirm">
+        <form action="/index/<%= user.account  %>/?_method=PUT" method="post" class="form">
+
+            <label for="newName">Username</label>
+            <input id="newName" type="text" name="newName" value=<%= user.name  %>>
+
+            <label for="currPassword">Currnet Password</label>
+            <input id="currPassword" type="password" name="currPassword">
+            
+            <label for="newPassword">New Password</label>
+            <input id="newPassword" type="password" name="newPassword">
+
+            <label for="confirm">Confirmation</label>
+            <input id="confirm" type="password" name="confirm">
+
             <button type="submit">Update</button>
         </form>
-        <form action="/index/<%= user._id  %>?_method=DELETE" method="post">
+        <form action="/index/<%= user.account  %>?_method=DELETE" method="post">
             <button type="submit">Delete</button>
         </form>
 
     </main>
 </body>
 </html>
->>>>>>> 509d9bc9312304df73968dc5dff3d85e16759e9a

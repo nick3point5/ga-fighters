@@ -1,24 +1,13 @@
-<<<<<<< HEAD
-<a href="game.html" class="game-link">
-    <div class="character">
-        <img src="https://picsum.photos/id/10/200/200" alt="" class="character-image">
-        <div>
-            <p class="character-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam in cum velit perferendis corrupti laudantium! Natus exercitationem nobis itaque ipsum necessitatibus illo, maxime, neque numquam alias ipsam deleniti voluptate quibusdam!</p>
-        </div>
-    </div>
-</a>
-=======
-<form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>  " method="get">
+<form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
     
     <button type="submit">
         <div class="character">
-            <img src="<%= character[i].img %>" alt="" class="character-image">
+            <img src="<%= user.avatars[i].url %>" alt="" class="character-image">
             <div>
-                <h1 class="character-name"><%= character[i].name %></h1>
-                <p class="character-text"><%= character[i].info %> </p>
+                <h1 class="character-name"><%= user.avatars[i].name %></h1>
+                <p class="character-text"><%= user.avatars[i].info %> </p>
             </div>
         </div>
     </button>
         
 </form>
->>>>>>> 509d9bc9312304df73968dc5dff3d85e16759e9a

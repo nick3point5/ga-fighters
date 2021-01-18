@@ -59,7 +59,10 @@ router.post('/login', (req, res) => {
 
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:account', (req, res) => {
-	db.User.findOne({ account: req.params.account }, (err, foundObj) => {
+
+	db.User.findOne({ account: req.params.account })
+	.populate('avatars')
+	.exec((err, foundObj) => {
 		console.log(foundObj);
 		if (err) {
 			res.send(err);
@@ -69,21 +72,10 @@ router.get('/:account', (req, res) => {
 		// res.send('Got show profile');
 	});
 });
-//============================================================================================================================
-//             -->  Avatar New <--
-// GET  ---->  /:account/new  <------------   Gets Create new avatar form page
-router.get('/:account/new', (req, res) => {
-	console.log('avatars/new  create avatar form');
-	db.User.findOne({ account: req.params.account }, (err, foundUser) => {
-		res.render('new-avatar.ejs', { user: foundUser });
-	});
-});
-//============================================================================================================================
 
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:account/edit', (req, res) => {
-	const userAcc = req.params.account;
-	db.User.findOne({ account: userAcc }, (err, foundObj) => {
+	db.User.findOne({ account: req.params.account }, (err, foundObj) => {
 		if (err) {
 			res.send(err);
 		}
@@ -102,7 +94,7 @@ router.put('/:account', (req, res) => {
 		name: req.body.newName,
 		password: req.body.newPassword,
 	};
-
+	
 	db.User.findOne({ account: req.params.account }, (err, foundUser) => {
 		if (err) {
 			console.log('Error:');
@@ -122,39 +114,108 @@ router.put('/:account', (req, res) => {
 						console.log('Updated user :', updatedObj);
 						res.redirect(`/index/${updatedObj.account}`);
 					}
-				);
+					);
+				} else {
+					console.log('edit user failed new passwords dont match confirmation');
+					return res.render('edit', { user: foundUser });
+				}
 			} else {
-				console.log('edit user failed new passwords dont match confirmation');
+				console.log('edit user failed passwords incorrect');
 				return res.render('edit', { user: foundUser });
 			}
-		} else {
-			console.log('edit user failed passwords incorrect');
-			return res.render('edit', { user: foundUser });
+			
+		});
+	});
+
+	
+	
+	router.delete('/:account', (req, res) => {
+		const userAcc = req.params.account;
+		db.User.findOne({ account: userAcc }, (err, foundObj) => {
+			if (err) {
+				console.log('Error:');
+				console.log(err);
+			}
+			db.User.findByIdAndDelete(foundObj._id, (err, deletedObj) => {
+				if (err) {
+					return res.send(err);
+				}
+				console.log(deletedObj);
+				res.redirect('/');
+			});
+		});
+	});
+	
+	//============================================================================================================================
+	// Avatar route ---------------------------------------------------------------
+// GET   --->   /avatars index page <-----  Gets
+router.get('/:account/avatars', (req, res) => {
+	console.log(req.params.account)
+	console.log('in avatar index');
+	const account = req.params.account;
+	db.User.findOne({account: account})
+	.populate('avatars')
+	.exec((err, foundUser) => {
+		console.log(foundUser)
+		if (err) {
+			res.send(err);
 		}
-		console.log('avatar edit page', foundObj);
-		res.render('index', { avatar: foundObj });
-		// res.send('Get edit Form');
+		return res.render('show', { user: foundUser });
 	});
 });
 
-
-
-router.delete('/:account', (req, res) => {
-	const userAcc = req.params.account;
-	db.User.findOne({ account: userAcc }, (err, foundObj) => {
-		if (err) {
-			console.log('Error:');
-			console.log(err);
-		}
-		db.User.findByIdAndDelete(foundObj._id, (err, deletedObj) => {
-			if (err) {
-				return res.send(err);
-			}
-			console.log(deletedObj);
-			res.redirect('/');
-		});
+	//             -->  Avatar New <--
+	// GET  ---->  /:account/new  <------------   Gets Create new avatar form page
+	router.get('/:account/new', (req, res) => {
+		console.log(req.params.account)
+		console.log('avatars/new  create avatar form');
+			res.render('new-avatar.ejs', { accountId: req.params.account });
+		
 	});
-}); */
 
+// POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
+router.post('/:account/avatars', (req, res) => {
+	console.log(req.params);
+	const rb = req.body;
 
-module.exports = router;
+	db.User.findOne({account: req.params.account},(err,foundUser)=>{
+		if (err) {
+			res.send(err);
+		}
+		db.Avatar.create(
+		{
+			name: rb.name,
+			url: rb.img,
+			info: rb.info,
+			stats: {
+				health: rb.health,
+				mana: rb.mana,
+				attack: rb.attack,
+				defence: rb.defence,
+				spclAttack: rb.spclAttack,
+				spclDefence: rb.spclDefence,
+			},
+			user: foundUser._id,
+		},
+		(err, newAvatar) => {
+			console.log(' creating avatar');
+
+			if (err) {
+				console.log('Fuck bro');
+				res.send(err);
+			}
+			db.User.findByIdAndUpdate(foundUser._id,{avatars: newAvatar._id},{new:true},(err, updatedUser)=>{
+				console.log(newAvatar,updatedUser);
+
+			res.redirect(`/index/${updatedUser.account}/avatars`);
+			})
+
+			
+		}
+	);
+	})
+	
+});
+	//============================================================================================================================
+	
+	module.exports = router;
