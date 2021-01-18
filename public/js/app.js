@@ -143,8 +143,9 @@ class fighter extends interObj {
             fire.classList.add("hidden")
             
             playwin.element.appendChild(fire)
+            
             const fireball = new fireballClass(
-                this.x+this.width,this.y+80,fire,this.direction,this
+                this.x+this.width*(this.direction>0)*this.direction,this.y+80,fire,this.direction,this
             )
                 
             fireball.launch(target)
@@ -215,7 +216,7 @@ class enemyClass extends fighter {
         this.spDef=spDef
         this.xSpd  = 5;
         this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
-        this.currentState = 'attack'
+        this.currentState = 'fireball'
     }
     Ai() {
         if (this.currentState === this.conditions[0]) {
@@ -243,7 +244,7 @@ class enemyClass extends fighter {
         this.attack(this.opponent)
     }
     stateFireball(){
-        console.log('fire');
+        this.fireball(this.opponent)
     }
     stateApproach(){
         this.trackdown(this.opponent)
@@ -277,196 +278,12 @@ class enemyClass extends fighter {
     }
 
 }
-class petClass extends interObj {
-
-
-
-
-
-
-    stateHappy() {
-        this.speed = 5
-        if (this.x >= this.xMax - 4) {
-            this.move.ri = false;
-            this.move.lf = true;
-        }
-        if (this.x <= this.xMin + 4) {
-            this.move.ri = true;
-            this.move.lf = false;
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 2
-    }
-
-    stateHungry() {
-        this.speed = 10
-        this.trackdown(food)
-        if (this.collision(food)) {
-            this.spriteFrame = 0
-            this.stateEating()
-            this.currentState = this.conditions[5]
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 1
-    }
-
-    stateSleepy() {
-        this.speed = 1
-        if (this.x >= this.xMax) {
-            this.move.ri = false;
-            this.move.lf = true;
-        }
-        if (this.x <= this.xMin) {
-            this.move.ri = true;
-            this.move.lf = false;
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 3
-    }
-
-    stateBored() {
-        this.speed = 3
-        if (this.x >= this.xMax - 4) {
-            this.move.ri = false;
-            this.move.lf = true;
-        }
-        if (this.x <= this.xMin + 4) {
-            this.move.ri = true;
-            this.move.lf = false;
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 2
-    }
-
-    stateSleeping() {
-        this.stop()
-        this.spriteFrameMax = this.spriteAnimationLength.sleeping
-        this.spriteFrameRate = 3
-    }
-
-    stateEating() {
-        this.stop()
-        this.spriteFrameMax = this.spriteAnimationLength.eating
-        this.spriteFrameRate = 1
-    }
-
-    stateSinging() {
-        this.speed = 10
-        this.spriteFrameRate = 1
-        if (!this.collision(stage)) {
-            this.trackdown(stage)
-        } else {
-            this.stop()
-            this.spriteFrameMax = this.spriteAnimationLength.singing
-            this.spriteFrameRate = 2
-        }
-
-    }
-
-    petUpdate() {
-        this.belly -= this.appetite;
-        this.energy -= this.stamina;
-        this.fun -= this.attention;
-        this.age += 1 / playwin.framerate;
-        this.name = document.getElementById('name').value
-        this.aging()
-        if (this.belly <= 0 || this.energy <= 0 || this.fun <= 0) {
-            this.alive = false;
-        }
-        this.conditionCheck()
-        if (!(playwin.frame % this.spriteFrameRate)) {
-            this.drawSprite()
-        }
-        this.moveFunction();
-        this.petAi();
-    }
-
-    conditionCheck() {
-        if (this.currentState === this.conditions[4]) {
-            if (this.energy < 10) {
-                this.belly += this.appetite;
-                this.energy += 0.2 + this.stamina;
-                this.fun += this.attention;
-                if (this.energy > 10) {
-                    this.energy = 10
-                    this.move.ri = true
-                    this.currentState = ''
-                    this.conditionCheck()
-                }
-                return
-            }
-        }
-
-
-        if (this.currentState === this.conditions[5]) {
-            if (this.spriteFrame < 5) {
-                food.trackdown(pet)
-                food.moveFunction()
-                food.element.style.transform = `scale(1)`
-            }
-
-            if (this.spriteFrame === 5) {
-                $('#food').addClass('hidden')
-                food.x = -food.width
-                food.y = food.yMax + food.height
-                food.position()
-            }
-
-
-            if (this.spriteFrame === this.spriteAnimationLength.eating) {
-                this.move.ri = true
-                this.currentState = ''
-                this.belly = 10
-                this.spriteFrame = 0
-                this.conditionCheck()
-            } else {
-                this.belly += this.appetite;
-                this.energy += this.stamina;
-                this.fun += this.attention;
-
-                return
-            }
-        }
-
-        if (this.currentState === this.conditions[6]) {
-            if (this.spriteFrame === this.spriteAnimationLength.singing) {
-                this.move.ri = true
-                this.currentState = ''
-                this.fun = 10
-                this.spriteFrame = 0
-                this.conditionCheck()
-            } else {
-                this.belly += this.appetite;
-                this.energy += this.stamina;
-                this.fun += this.attention;
-
-                return
-            }
-        }
-
-
-
-        if (this.belly >= 5 && this.energy >= 5 && this.fun >= 5) {
-            this.currentState = this.conditions[0]
-        } else
-            if (this.belly < 5 && this.belly <= this.energy && this.belly <= this.fun) {
-                this.currentState = this.conditions[1]
-            } else
-                if (this.energy < 5 && this.energy <= this.fun && this.energy <= this.belly) {
-                    this.currentState = this.conditions[2]
-                } else
-                    if (this.fun < 5 && this.fun <= this.energy && this.fun <= this.belly) {
-                        this.currentState = this.conditions[3]
-                    }
-
-    }
-}
 class fireballClass extends interObj {
     constructor(x, y, element, direction,user) {
         super(x, y, 20, 20, element)
         this.xSpd = 3;
         this.user = user
-        if(this.direction>0){
+        if(direction>0){
             this.move.ri = true
         }else{
             this.move.lf = true
