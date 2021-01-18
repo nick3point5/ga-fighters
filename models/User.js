@@ -9,7 +9,6 @@ const userSchema = new Schema(
 		password: {
 			type: String,
 		},
-		account: { type: String, required: true },
 		avatars: [{ type: Schema.Types.ObjectId, ref: 'Avatar' }],
 	},
 	{ timestamps: true }

@@ -52,7 +52,7 @@ router.post('/login', (req, res) => {
 			res.redirect('/');
 		} else {
 			console.log('user logged in.... Yeppy!!');
-			res.redirect(`/index/${foundObj.account}`);
+			res.redirect(`/index/${foundObj._id}`);
 		}
 	});
 });
@@ -60,7 +60,7 @@ router.post('/login', (req, res) => {
 // GET/Show  ---->   /index/:id    <---- Show User Profile
 router.get('/:account', (req, res) => {
 
-	db.User.findOne({ account: req.params.account })
+	db.User.findById(req.params.account)
 	.populate('avatars')
 	.exec((err, foundObj) => {
 		console.log(foundObj);
@@ -68,6 +68,7 @@ router.get('/:account', (req, res) => {
 			res.send(err);
 		}
 		console.log('Profile route hit');
+		
 		res.render('show', { user: foundObj });
 		// res.send('Got show profile');
 	});
