@@ -157,7 +157,7 @@ class fighter extends interObj {
         this.gravity()
         this.facing()
         this.moveFunction()
-
+        this.Ai()
     }
     facing(){
         if(this.x < this.opponent.x){
@@ -181,13 +181,17 @@ class playerClass extends fighter {
         this.xSpd = 5;
 
     }
+    Ai(){
 
+    }
 
 }
 class enemyClass extends fighter {
     constructor(x, y, element, name) {
         super(x, y, element)
         this.xSpd  = 5;
+        this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
+        this.currentState = 'approach'
     }
     facing(){
         if(this.x < this.opponent.x){
@@ -196,82 +200,62 @@ class enemyClass extends fighter {
             this.direction = 1
         }
     }
+    Ai() {
+        if (this.currentState === this.conditions[0]) {
+            this.stateAttack()
+        }
+        if (this.currentState === this.conditions[1]) {
+            this.stateFireball()
+        }
+        if (this.currentState === this.conditions[2]) {
+            this.stateApproach()
+        }
+        if (this.currentState === this.conditions[3]) {
+            this.stateJump()
+        }
+        if (this.currentState === this.conditions[4]) {
+            this.stateBackoff()
+        }
+        if (this.currentState === this.conditions[5]) {
+            this.stateIdle()
+        }
 
+    }
+    stateAttack(){
+        
+    }
+    stateFireball(){
 
+    }
+    stateApproach(){
+        this.trackdown(this.opponent)
+    }
+    stateBackoff(){
+
+    }
+    stateJump(){
+
+    }
+    stateIdle(){
+
+    }
+    trackdown(target) {
+        if (this.x < target.x) {
+            this.move.ri = true;
+            this.move.lf = false;
+        } else {
+            this.move.ri = false;
+            this.move.lf = true;
+        }
+    }
 
 }
 class petClass extends interObj {
-    constructor(x, y, width, height, element, name) {
-        super(x, y, width, height, element);
-        this.name = name
-        this.speed = 5;
-        this.growth = 1;
-        this.conditions = ['happy', 'hungry', 'sleepy', 'bored', 'sleeping', 'eating', 'singing']
-        this.currentState = 'happy'
-        this.spriteFrame = 0
-        this.spriteFrameRate = 1
-        this.spriteAnimationLength = {
-            walking: 9,
-            sleeping: 4,
-            eating: 12,
-            singing: 30,
-        }
-        this.spriteFrameMax = 9
 
-        this.move = {
-            up: false,
-            ri: true,
-            dn: false,
-            lf: false,
-        };
 
-        this.alive = false;
-    }
-    spriteFile() {
-        let imgURL = ['assets/sprites/walking/', 'assets/sprites/sleeping/', 'assets/sprites/eating/', 'assets/sprites/sing/']
-        if (this.currentState === pet.conditions[4]) {
-            return `${imgURL[1]}${this.spriteFrame}.png`
-        } else if (this.currentState === pet.conditions[5]) {
-            return `${imgURL[2]}${this.spriteFrame}.png`
-        } else if (this.currentState === pet.conditions[6] && pet.collision(stage)) {
-            return `${imgURL[3]}${this.spriteFrame}.png`
-        } else {
-            return `${imgURL[0]}${this.spriteFrame}.png`
-        }
-    }
-    drawSprite() {
-        if (this.spriteFrame > this.spriteFrameMax) {
-            this.spriteFrame = 0
-        }
-        this.element.setAttribute('src', this.spriteFile())
 
-        this.spriteFrame++
-    }
 
-    petAi() {
-        if (this.currentState === this.conditions[0]) {
-            this.stateHappy()
-        }
-        if (this.currentState === this.conditions[1]) {
-            this.stateHungry()
-        }
-        if (this.currentState === this.conditions[2]) {
-            this.stateSleepy()
-        }
-        if (this.currentState === this.conditions[3]) {
-            this.stateBored()
-        }
-        if (this.currentState === this.conditions[4]) {
-            this.stateSleeping()
-        }
-        if (this.currentState === this.conditions[5]) {
-            this.stateEating()
-        }
-        if (this.currentState === this.conditions[6]) {
-            this.stateSinging()
-        }
 
-    }
 
     stateHappy() {
         this.speed = 5
@@ -631,24 +615,24 @@ function getKey(event) {
 
 function controller(inp){
     if(playerCharacter.control){
-        if(inp === 'ArrowUp'){
+        if(inp === 'w'){
             if (!playerCharacter.airborne) {
                 playerCharacter.jump()
             }
         }
-        if(inp === 'ArrowDown'){
+        if(inp === 's'){
             playerCharacter.move.dn = true
         }
-        if(inp === 'ArrowLeft'){
+        if(inp === 'a'){
             playerCharacter.move.lf = true
         }
-        if(inp === 'ArrowRight'){
+        if(inp === 'd'){
             playerCharacter.move.ri = true
         }
         if(inp === ' '){
             playerCharacter.attack(enemyCharacter)
         }
-        if(inp === 'z'){
+        if(inp === 'Shift'){
             playerCharacter.fireball(enemyCharacter)
         }
     }
@@ -657,16 +641,16 @@ function controller(inp){
 }
 
 function releaseKey(inp) {
-    if(inp.key === 'ArrowUp'){
+    if(inp.key === 'w'){
         // playerCharacter.move.up = false
     }
-    if(inp.key === 'ArrowDown'){
+    if(inp.key === 's'){
         playerCharacter.move.dn = false
     }
-    if(inp.key === 'ArrowLeft'){
+    if(inp.key === 'a'){
         playerCharacter.move.lf = false
     }
-    if(inp.key === 'ArrowRight'){
+    if(inp.key === 'd'){
         playerCharacter.move.ri = false
     }
     // console.log(inp)
