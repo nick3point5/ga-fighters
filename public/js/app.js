@@ -65,6 +65,22 @@ class interObj {
             this.move.dn = true;
         }
     }
+    runFrom(target) {
+        if (this.x > target.x) {
+            this.move.ri = true;
+            this.move.lf = false;
+        } else {
+            this.move.ri = false;
+            this.move.lf = true;
+        }
+        if (this.y < target.y) {
+            this.move.up = true;
+            this.move.dn = false;
+        } else {
+            this.move.up = false;
+            this.move.dn = true;
+        }
+    }
     stop() {
         this.ySpd = 0
         this.xSpd = 0
@@ -236,7 +252,7 @@ class enemyClass extends fighter {
         this.runFrom(this.opponent)
     }
     stateJump(){
-        console.log('jump');
+        this.jump()
     }
     stateIdle(){
         console.log('idle');
