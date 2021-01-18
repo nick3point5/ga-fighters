@@ -181,3 +181,7 @@ p{
     margin: 0;
 }
 
+.character-image{
+    height: 150px;
+    width: 100px;
+}
