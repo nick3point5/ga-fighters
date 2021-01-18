@@ -191,7 +191,7 @@ class enemyClass extends fighter {
         super(x, y, element)
         this.xSpd  = 5;
         this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
-        this.currentState = 'approach'
+        this.currentState = 'backoff'
     }
     facing(){
         if(this.x < this.opponent.x){
@@ -231,7 +231,7 @@ class enemyClass extends fighter {
         this.trackdown(this.opponent)
     }
     stateBackoff(){
-
+        this.runFrom(this.opponent)
     }
     stateJump(){
 
@@ -241,6 +241,15 @@ class enemyClass extends fighter {
     }
     trackdown(target) {
         if (this.x < target.x) {
+            this.move.ri = true;
+            this.move.lf = false;
+        } else {
+            this.move.ri = false;
+            this.move.lf = true;
+        }
+    }
+    runFrom(target) {
+        if (this.x > target.x) {
             this.move.ri = true;
             this.move.lf = false;
         } else {
@@ -615,46 +624,93 @@ function getKey(event) {
 
 function controller(inp){
     if(playerCharacter.control){
-        if(inp === 'w'){
+    if(playwin.controlMode === 'arrow'){
+        if(inp === 'ArrowUp'){
             if (!playerCharacter.airborne) {
                 playerCharacter.jump()
             }
         }
-        if(inp === 's'){
+        if(inp === 'ArrowDown'){
             playerCharacter.move.dn = true
         }
-        if(inp === 'a'){
+        if(inp === 'ArrowLeft'){
             playerCharacter.move.lf = true
         }
-        if(inp === 'd'){
+        if(inp === 'ArrowRight'){
             playerCharacter.move.ri = true
         }
         if(inp === ' '){
             playerCharacter.attack(enemyCharacter)
         }
-        if(inp === 'Shift'){
+        if(inp === 'z'){
             playerCharacter.fireball(enemyCharacter)
         }
+    } else if(playwin.controlMode === 'wasd'){
+
+            if(inp === 'w'){
+                if (!playerCharacter.airborne) {
+                    playerCharacter.jump()
+                }
+            }
+            if(inp === 's'){
+                playerCharacter.move.dn = true
+            }
+            if(inp === 'a'){
+                playerCharacter.move.lf = true
+            }
+            if(inp === 'd'){
+                playerCharacter.move.ri = true
+            }
+            if(inp === ' '){
+                playerCharacter.attack(enemyCharacter)
+            }
+            if(inp === 'Shift'){
+                playerCharacter.fireball(enemyCharacter)
+            }
+        
+        }
     }
+    
     // console.log(inp)
     // console.log(playerCharacter.move);
 }
 
 function releaseKey(inp) {
-    if(inp.key === 'w'){
-        // playerCharacter.move.up = false
+    if(playerCharacter.control){
+        if(playwin.controlMode === 'arrow'){
+            if(inp.key === 'ArrowUp'){
+                // playerCharacter.move.up = false
+            }
+            if(inp.key === 'ArrowDown'){
+                playerCharacter.move.dn = false
+            }
+            if(inp.key === 'ArrowLeft'){
+                playerCharacter.move.lf = false
+            }
+            if(inp.key === 'ArrowRight'){
+                playerCharacter.move.ri = false
+            }
+        } else if(playwin.controlMode === 'wasd'){
+    
+            if(inp.key === 'w'){
+                // playerCharacter.move.up = false
+            }
+            if(inp.key === 's'){
+                playerCharacter.move.dn = false
+            }
+            if(inp.key === 'a'){
+                playerCharacter.move.lf = false
+            }
+            if(inp.key === 'd'){
+                playerCharacter.move.ri = false
+            
+            }
+        }
+
     }
-    if(inp.key === 's'){
-        playerCharacter.move.dn = false
-    }
-    if(inp.key === 'a'){
-        playerCharacter.move.lf = false
-    }
-    if(inp.key === 'd'){
-        playerCharacter.move.ri = false
-    }
-    // console.log(inp)
 }
+
+
 //ANCHOR global var and obj
 enemyHpBar = document.getElementById('enemy-hp')
 playerHpBar = document.getElementById('player-hp')
@@ -672,7 +728,8 @@ playwin = {
     framerate: 30,
     timer: 99,
     gameOver: false,
-    gravAcc: 1
+    gravAcc: 1,
+    controlMode: 'arrow'
 };
 playerEle = document.getElementById('player')
 
