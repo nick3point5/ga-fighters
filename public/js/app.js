@@ -100,12 +100,14 @@ class fighter extends interObj {
         this.def=5
         this.spAtk=5
         this.spDef=5
+        this.Ospd =5
         this.control = true
         this.HitBox = HitBox
         this.airborne = true
+        this.cooldown = false
     }
     attack(target){
-        
+        this.moveLag(5)
         if (this.HitBox.collision(target)) {
             if(this.atk > target.def){
                 target.hp -= this.atk - target.def
@@ -115,26 +117,39 @@ class fighter extends interObj {
             this.hitstun(5,20,target)
         }
     }
-    hitstun(stunFrames,knockback,target){
-        const Ospd = target.xSpd
+    hitstun(frames,knockback,target){
         target.xSpd = knockback*this.direction
         target.move.ri = false
         const stun = setInterval(()=>{
             if (target.move.ri) {
                 target.move.ri = false
                 target.control = true
-                target.xSpd = Ospd
+                target.xSpd = target.Ospd
                 clearInterval(stun)
             }
 
-        },1000/playwin.framerate*stunFrames)
+        },1000/playwin.framerate*frames)
         target.move.ri = true
         target.control = false
     }
 
+    moveLag(frames){
+        this.stop()
+        const cooldown = setInterval(()=>{
+            if (this.cooldown) {
+                this.cooldown = false
+                this.control = true
+                this.xSpd = this.Ospd
+                clearInterval(cooldown)
+            }
+        },1000/playwin.framerate*frames)
+        this.cooldown = true
+        this.control = false
+    }
+
 
     fireball(target){
-
+        this.moveLag(30)
         if (this.mp >= 10) {
             
             const  fire = document.createElement('div')
@@ -219,23 +234,27 @@ class enemyClass extends fighter {
         this.currentState = 'fireball'
     }
     Ai() {
-        if (this.currentState === this.conditions[0]) {
-            this.stateAttack()
-        }
-        if (this.currentState === this.conditions[1]) {
-            this.stateFireball()
-        }
-        if (this.currentState === this.conditions[2]) {
-            this.stateApproach()
-        }
-        if (this.currentState === this.conditions[3]) {
-            this.stateBackoff()
-        }
-        if (this.currentState === this.conditions[4]) {
-            this.stateJump()
-        }
-        if (this.currentState === this.conditions[5]) {
-            this.stateIdle()
+        if (this.control) {
+            
+            
+            if (this.currentState === this.conditions[0]) {
+                this.stateAttack()
+            }
+            if (this.currentState === this.conditions[1]) {
+                this.stateFireball()
+            }
+            if (this.currentState === this.conditions[2]) {
+                this.stateApproach()
+            }
+            if (this.currentState === this.conditions[3]) {
+                this.stateBackoff()
+            }
+            if (this.currentState === this.conditions[4]) {
+                this.stateJump()
+            }
+            if (this.currentState === this.conditions[5]) {
+                this.stateIdle()
+            }
         }
 
     }
