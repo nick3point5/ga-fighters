@@ -3,30 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avatars Index</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <script defer src="/js/bootstrap.bundle.js"></script>
+    <title>Avatars Details</title>
 </head>
-<body>
-    <header>
-        <h1>Avatar</h1>
+<body class="body">
+    <header class="header">
+        <h1 class="display-1 text-center">Avatar</h1>
+        <a href="/index/<%= userAcc %>/" class="btn btn-outline-success">Back</a>
     </header>
-    <a href="/index/<%= userAcc  %>/avatars">Back</a>
-    <main>
-        <div>
-            <img href="<%= avatar.url %>" />
-            <h3> Name: <%= avatar.name %> </h3>
-            <h3> Bio: <%= avatar.info %> </h3>
-            <h3> HP: <%= avatar.stats.health %> </h3>
-            <h3> Mp: <%= avatar.stats.mana %> </h3>
-            <h3> Att: <%= avatar.stats.attack %> </h3>
-            <h3> Def: <%= avatar.stats.defence %> </h3>
-            <h3> SpclAtt: <%= avatar.stats.spclAttack %> </h3>
-            <h3> SpclDef: <%= avatar.stats.spclDefence %> </h3>
+    
+    
+    <main class="main d-flex  justify-content-center">
+        <div class="card" style="width: 20rem;">
+            <img src="<%= avatar.img %>" alt="Hero" class="card-img-top" style="width: 10em;"/>
+            <div class="card-body">
+                <h3 class="card-title"> Name: <%= avatar.name %> </h3>
+                <h3 class=""> Bio: <%= avatar.info %> </h3>
+                <h3 class=""> HP: <%= avatar.stats.health %> </h3>
+                <h3 class=""> Mp: <%= avatar.stats.mana %> </h3>
+                <h3 class=""> Att: <%= avatar.stats.attack %> </h3>
+                <h3 class=""> Def: <%= avatar.stats.defence %> </h3>
+                <h3 class=""> SpclAtt: <%= avatar.stats.spclAttack %> </h3>
+                <h3 class=""> SpclDef: <%= avatar.stats.spclDefence %> </h3>
+            </div>
+            <form action="/index/<%= userAcc  %>/avatars/<%= avatar._id %>?_method=DELETE" method="post" class="form-group">
+                <a href="/index/<%= userAcc %>/avatars/<%= avatar._id %>/game" class="btn btn-outline-primary">Play</a>
+                <a href="/index/<%= userAcc %>/avatars/<%= avatar._id %>/edit" class="btn btn-outline-warning">Edit</a>
+                <button type="submit" class="btn btn-outline-danger">Delete</button>
+            </form>
         </div>
     </main>
 
-    <a href="/index/<%= userAcc %>/avatars/<%= avatar._id %>/edit">Edit</a>
-    <form action="/index/<%= userAcc  %>/avatars/<%= avatar._id %>?_method=DELETE" method="post">
-        <button type="submit">Delete</button>
-    </form>
 </body>
 </html>

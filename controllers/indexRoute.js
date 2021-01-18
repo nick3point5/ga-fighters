@@ -151,9 +151,9 @@ router.put('/:account', (req, res) => {
 	// GET   --->   /avatars index page <-----  Gets
 	router.get('/:account/avatars', (req, res) => {
 
-		const account = req.params.account;
+		const accountId = req.params.account;
 
-		db.User.findOne({account: account})
+		db.User.findOne({ account : accountId})
 		.populate('avatars')
 		.exec((err, foundUser) => {
 			console.log(foundUser)
@@ -186,7 +186,7 @@ router.put('/:account', (req, res) => {
 			db.Avatar.create(
 		{
 			name: rb.name,
-			url: rb.img,
+			img: rb.img,
 			info: rb.info,
 			stats: {
 				health: rb.health,
@@ -226,31 +226,44 @@ router.get('/:account/avatars/:avatarId', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-
-		res.render('game', { character: foundObj,accountId: userId });
+		console.log('avatar show route hit');
+		return res.render('avatar-Show', { avatar: foundObj, userAcc: userAcc });
 	});
 });
 
-// GET ---->   /index/:id/edit    <---- User Edit Form
-router.get('/:id/avatars/:avatarId/edit', (req, res) => {
-	const userId = req.params.id;
+// Avatar GET edit  ---------------------------------------------------------------
+
+router.get('/:account/avatars/:avatarId/edit', (req, res) => {
+	const userAcc = req.params.account;
 	const avatarId = req.params.avatarId;
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) {
 			res.send(err);
 		}
-		// console.log('avatar edit page', foundObj);
-		res.render('avatar-edit', { avatar: foundObj });
-		// res.send('Get edit Form');
+		console.log('avatar edit page', foundObj);
+		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: userAcc});
 	});
 });
-// POST/PUT ---->   /avatars/:avatarId    <---- User Edit/Update
-router.put('/:id/avatars/:avatarId', (req, res) => {
-	// console.log(req.body);
-	const userId = req.params.id;
+// Avatar GET game  ---------------------------------------------------------------
+
+router.get('/:account/avatars/:avatarId/game', (req, res) => {
+	const userAcc = req.params.account;
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		console.log('game page', foundObj);
+		return res.render('game', { avatar: foundObj , avatarId : avatarId, accountId: userAcc});
+	});
+});
+
+// Avatar POST update  ---------------------------------------------------------------
+router.put('/:account/avatars/:avatarId', (req, res) => {
+	console.log(req.body);
+	const userAcc = req.params.account;
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
-	console.log(rb);
 	const updateObj = {
 		name: rb.name,
 		info: rb.info,
@@ -262,32 +275,50 @@ router.put('/:id/avatars/:avatarId', (req, res) => {
 			spclAttack: rb.spclAttack,
 			spclDefence: rb.spclDefence,
 		},
+		img: rb.img,
 	};
-	db.Avatar.findByIdAndUpdate(
-		avatarId,
-		updateObj,
-		{ new: true },
-		(err, updatedAvatar) => {
+		db.User.findOne({account : userAcc},(err, foundUser)=>{
 			if (err) {
-				console.log('Error:');
-				console.log(err);
 				res.send(err);
 			}
-			res.redirect(`/index/${userId}/avatars/${avatarId}`);
-		}
-	);
-});
-
-router.delete('/:id/avatars/:avatarId', (req, res) => {
-	const userId = req.params.id;
-	const avatarId = req.params.avatarId;
-	db.Avatar.findByIdAndDelete(avatarId, (err, deletedObj) => {
-		if (err) {
-			console.log('Error:');
-			console.log(err);
-		}
-		res.redirect(`/index/${userId}`);
+				db.Avatar.findByIdAndUpdate(
+			avatarId,
+			updateObj,
+			{ new: true },
+			(err, updatedAvatar) => {
+				if (err) {
+					console.log('Error:');
+					console.log(err);
+					res.send(err);
+				}
+				console.log('updated avatar: ', updatedAvatar);
+				return res.redirect(`/index/${userAcc}/avatars`);
+			}
+			);
+			
+		})
+		
 	});
+	
+	router.delete('/:account/avatars/:avatarId', (req, res) => {
+		const userAcc = req.params.account
+		const avatarId = req.params.avatarId
+		db.User.findOne({account: userAcc},(err, foundUser)=>{
+			if (err) {
+				res.send(err);
+			}
+				db.Avatar.findByIdAndDelete(avatarId,(err, deletedAvatar)=>{
+				if (err) {
+					res.send(err);
+				}
+				db.User.findByIdAndUpdate(foundUser._id, { $pull:{ avatars: deletedAvatar._id}},{new:true},(err, updatedUser)=>{
+
+					return res.render('show',{user: foundUser});
+				})
+	})
+		})
+	
+	
 });
 
 

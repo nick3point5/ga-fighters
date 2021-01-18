@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="../css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
@@ -76,6 +77,8 @@
 </body>
 </html>
 =======
+=======
+>>>>>>> 025ae83cea5662238e2f86426c4e51445563f5b8
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
@@ -83,15 +86,26 @@
 
     <title>New Character</title>
 </head>
-<body>
-    <main>
-        <form action="/index/<%= avatar.user %>/avatars/<%= avatar._id %>?_method=PUT" method="post" class="form">
-            <label for="">Character Name</label>
-            <input type="text" name="name" value="<%= avatar.name %> ">
-            <label for="">Image Url</label>
-            <input type="text" name="img" value="<%= avatar.img %> ">
-            <label for="">Bio</label>
-            <input type="text" name="info" value="<%= avatar.info %> ">
+<body class="body">
+    <header class="header">
+        <h1 class="display-1 text-center">Avatar</h1>
+        <a href="/index/<%= accountId %>/avatars/<%= avatar._id  %> " class="btn btn-outline-success">Back</a>
+    </header>
+    <h3 class="text-center">Edit Your Hero</h3>
+    <main class="main d-flex  justify-content-center">
+        <form action="/index/<%= accountId %>/avatars/<%= avatarId %>?_method=PUT" method="post" class="form p-5">
+            <div class="form-group">
+                <label for="name">Character Name</label>
+                <input id="name" type="text" name="name" class="form-control" value="<%= avatar.name %> ">
+            </div>
+            <div class="form-group">
+                <label for="img">Image Url</label>
+                <input id="img" type="text" name="img" class="form-control" value="<%= avatar.img %> ">
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <input id="bio" type="text" name="info" class="form-control" value="<%= avatar.info %> ">
+            </div>
             <h2 id="skillpoints">Skill Points: ###</h2>
 
             <%- include('partials/avatar-stat.ejs') %>
@@ -99,7 +113,7 @@
 
 
 
-            <button type="submit"> Level Up </button>
+            <button type="submit" class="btn btn-outline-primary"> Level Up </button>
         </form>
     </main>
 
@@ -107,4 +121,7 @@
 </html>
 
 <% console.log(avatar) %> 
+<<<<<<< HEAD
 >>>>>>> 7b1422b45dcb686c1a682f16847c53945f570020
+=======
+>>>>>>> 025ae83cea5662238e2f86426c4e51445563f5b8

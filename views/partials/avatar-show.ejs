@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
     
     <button type="submit">
@@ -25,10 +26,25 @@
 <<<<<<< HEAD
 </form>
 =======
+=======
+<section>
+    <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
+        <button type="submit" class="btn btn-success">
+            <div class="character card">
+                <img src="<%= user.avatars[i].img %>" alt="avatar-img" style="width: 10em;" class="character-image card-img-top">
+                <div class="car-body">
+                    <h1 class="character-name card-title"><%= user.avatars[i].name %></h1>
+                    <p class="character-text card-text"><%= user.avatars[i].info %> </p>
+                </div> 
+            </div>
+        </button>        
+>>>>>>> 025ae83cea5662238e2f86426c4e51445563f5b8
     </form>
-
-    <form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>?_method=DELETE" method="post">
-        <button type="submit">Delete</button>
+    <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>?_method=DELETE" method="post">
+        <button type="submit" class="btn btn-danger">Delete</button>
     </form>
 </section>
+<<<<<<< HEAD
 >>>>>>> 7b1422b45dcb686c1a682f16847c53945f570020
+=======
+>>>>>>> 025ae83cea5662238e2f86426c4e51445563f5b8
