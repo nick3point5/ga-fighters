@@ -119,17 +119,25 @@ class fighter extends interObj {
     }
     hitstun(frames,knockback,target){
         target.xSpd = knockback*this.direction
-        target.move.ri = false
+        let knockbackDirection = null
+        if (this.direction>0) {
+            knockbackDirection = target.move.ri
+        } else {
+            knockbackDirection = target.move.lf
+        }
+        
+
+        knockbackDirection = false
         const stun = setInterval(()=>{
-            if (target.move.ri) {
-                target.move.ri = false
+            if (knockbackDirection) {
+                knockbackDirection = false
                 target.control = true
                 target.xSpd = target.Ospd
                 clearInterval(stun)
             }
 
         },1000/playwin.framerate*frames)
-        target.move.ri = true
+        knockbackDirection = true
         target.control = false
     }
 
@@ -265,7 +273,9 @@ class enemyClass extends fighter {
             const behavior = getRand(5,0)
             this.currentState = this.conditions[behavior]
             console.log(this.currentState);
-            // clearInterval(stateChange)
+            if (playwin.gameOver) {
+                clearInterval(stateChange)
+            }
         },1000)
     }
     stateAttack(){
@@ -439,9 +449,21 @@ function gameOver() {
 function Init() {
 
     // $("#music")[0].play();
-
-
+    playerCharacter.hp = +playerHpBar.getAttribute('max')
+    enemyCharacter.hp = +enemyHpBar.getAttribute('max')
+    playerCharacter.mp = +playerMpBar.getAttribute('max')
+    enemyCharacter.mp = +enemyMpBar.getAttribute('max')
+    playerCharacter.x = playerInit.x
+    playerCharacter.y = playerInit.y
+    enemyCharacter.x = enemyInit.x
+    enemyCharacter.y = enemyInit.y
+    playerCharacter.airborne = true
+    enemyCharacter.airborne = true
+    playwin.gameOver = false
     playwin.pause = false
+    playwin.timer = 99
+    enemyCharacter.AiStart()
+    document.getElementById('notification-area').classList.add('hidden')
 }
 
 function pause() {
@@ -479,8 +501,10 @@ function assignEvents() {
     //     }
     // })
 
+    document.getElementById('notification-area').addEventListener('click',game)
     window.addEventListener("keydown", getKey);
     window.addEventListener("keyup", releaseKey);
+
 }
 
 function getKey(event) {
@@ -598,15 +622,24 @@ playwin = {
 };
 playerEle = document.getElementById('player')
 
+playerInit= {
+    x:0,
+    y:0
+}
+enemyInit= {
+    x:700,
+    y:0
+}
+
 let playerAttack = new attackClass(
-    100,0,50,50,document.getElementById('player-attack')
+    playerInit.x+100,playerInit.y,50,50,document.getElementById('player-attack')
 )
 let enemyAttack = new attackClass(
-    350,0,50,50,document.getElementById('enemy-attack')
+    enemyInit.x-50,enemyInit.y,50,50,document.getElementById('enemy-attack')
 )
 
 let playerCharacter = new playerClass(
-    0,0,playerEle,
+    playerInit.x,playerInit.y,playerEle,
     playerEle.getAttribute('name'),
     playerAttack, 
     +playerEle.getAttribute('hp'), 
@@ -618,7 +651,7 @@ let playerCharacter = new playerClass(
 )
 
 let enemyCharacter = new enemyClass(
-    400,0,document.getElementById('enemy'),'Evil Man',enemyAttack, 100, 100, 10, 5, 5, 5
+    enemyInit.x,enemyInit.y,document.getElementById('enemy'),'Evil Man',enemyAttack, 100, 100, 10, 5, 5, 5
 )
 
 playerAttack.user = playerCharacter
@@ -627,7 +660,7 @@ enemyAttack.user = enemyCharacter
 playerCharacter.opponent = enemyCharacter
 enemyCharacter.opponent = playerCharacter
 
-enemyCharacter.AiStart()
+
 
 game()
 assignEvents()
