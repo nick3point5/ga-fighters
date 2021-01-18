@@ -185,10 +185,9 @@ router.get('/:id/avatars/:avatarId', (req, res) => {
 		}
 
 		res.render('game', { character: foundObj,accountId: userId });
-		// res.send('Got show profile');
 	});
 });
-/* 
+
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:id/avatars/:avatarId/edit', (req, res) => {
 	const userId = req.params.id;
@@ -197,43 +196,56 @@ router.get('/:id/avatars/:avatarId/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		console.log('avatar edit page', foundObj);
-		res.render('index', { avatar: foundObj });
+		// console.log('avatar edit page', foundObj);
+		res.render('avatar-edit', { avatar: foundObj });
 		// res.send('Get edit Form');
 	});
 });
-// POST/PUT ---->   /:id    <---- User Edit/Update
-router.put('/:id/avatars/:id', (req, res) => {
+// POST/PUT ---->   /avatars/:avatarId    <---- User Edit/Update
+router.put('/:id/avatars/:avatarId', (req, res) => {
+	// console.log(req.body);
 	const userId = req.params.id;
-	const dataObj = {
-		name: req.body.name,
-		password: req.body.password,
+	const avatarId = req.params.avatarId;
+	const rb = req.body;
+	console.log(rb);
+	const updateObj = {
+		name: rb.name,
+		info: rb.info,
+		stats: {
+			health: rb.health,
+			mana: rb.mana,
+			attack: rb.attack,
+			defence: rb.defence,
+			spclAttack: rb.spclAttack,
+			spclDefence: rb.spclDefence,
+		},
 	};
-	db.User.findByIdAndUpdate(
-		userId,
-		dataObj,
+	db.Avatar.findByIdAndUpdate(
+		avatarId,
+		updateObj,
 		{ new: true },
-		(err, updatedObj) => {
+		(err, updatedAvatar) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);
+				res.send(err);
 			}
-			res.redirect(`/${updatedObj._id}`);
+			res.redirect(`/index/${userId}/avatars/${avatarId}`);
 		}
 	);
 });
 
-router.delete('/:id/avatars/:id', (req, res) => {
+router.delete('/:id/avatars/:avatarId', (req, res) => {
 	const userId = req.params.id;
-	db.User.findByIdAndDelete(userId, (err, deletedObj) => {
+	const avatarId = req.params.avatarId;
+	db.Avatar.findByIdAndDelete(avatarId, (err, deletedObj) => {
 		if (err) {
 			console.log('Error:');
 			console.log(err);
 		}
-
-		res.redirect('/');
+		res.redirect(`/index/${userId}`);
 	});
-}); */
+});
 
 
 module.exports = router;
