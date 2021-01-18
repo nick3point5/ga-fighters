@@ -15,7 +15,6 @@ router.get('/new', (req, res) => {
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
-	console.log(req.body.name);
 	if(req.body.password===req.body.confirm){
 		db.User.create(
 			{
@@ -23,11 +22,9 @@ router.post('/', (req, res) => {
 				password: req.body.password,
 			},
 			(err, newUser) => {
-				console.log(req.body.name);
 				if (err) {
 					console.log('Fuck bro');
 				}
-				console.log(newUser);
 				res.redirect('/index');
 			}
 		);
@@ -65,12 +62,9 @@ router.get('/:id', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		// console.log('Profile route hit');
 		db.Avatar.find({user: account._id},(err,avatars)=>{
-			// console.log(avatars); 
 			res.render('show', { user: account, character: avatars });
 		})
-		// res.send('Got show profile');
 	});
 });
 
@@ -136,18 +130,13 @@ router.delete('/:id', (req, res) => {
 // });
 // GET  ---->  /avatars/new  <------------   Gets Create new avatar form page
 router.get('/:id/avatars/new', (req, res) => {
-	console.log('avatars/new  create avatar form');
-	// console.log(req.params.id);
 	res.render('new-avatar',{accountId: req.params.id});
 });
 
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
 router.post('/:id/avatars/', (req, res) => {
-	// console.log(req.body);
 	const userId = req.params.id;
-	// console.log(req.body)
 	const rb = req.body;
-	console.log(rb);
 
 	db.User.findById(
 		
@@ -157,7 +146,6 @@ router.post('/:id/avatars/', (req, res) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);}
-			// console.log(account);
 			db.Avatar.create(
 				{
 					name: rb.name,
@@ -180,7 +168,6 @@ router.post('/:id/avatars/', (req, res) => {
 						console.log('Fuck bro');
 					}
 		
-					console.log(newAvatar);
 					res.redirect(`/index/${req.params.id}`);
 				}
 			);
@@ -196,12 +183,11 @@ router.get('/:id/avatars/:avatarId', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		console.log('avatar show route hit');
+
 		res.render('game', { character: foundObj,accountId: userId });
-		// res.send('Got show profile');
 	});
 });
-/* 
+
 // GET ---->   /index/:id/edit    <---- User Edit Form
 router.get('/:id/avatars/:avatarId/edit', (req, res) => {
 	const userId = req.params.id;
@@ -210,43 +196,56 @@ router.get('/:id/avatars/:avatarId/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		console.log('avatar edit page', foundObj);
-		res.render('index', { avatar: foundObj });
+		// console.log('avatar edit page', foundObj);
+		res.render('avatar-edit', { avatar: foundObj });
 		// res.send('Get edit Form');
 	});
 });
-// POST/PUT ---->   /:id    <---- User Edit/Update
-router.put('/:id/avatars/:id', (req, res) => {
+// POST/PUT ---->   /avatars/:avatarId    <---- User Edit/Update
+router.put('/:id/avatars/:avatarId', (req, res) => {
+	// console.log(req.body);
 	const userId = req.params.id;
-	const dataObj = {
-		name: req.body.name,
-		password: req.body.password,
+	const avatarId = req.params.avatarId;
+	const rb = req.body;
+	console.log(rb);
+	const updateObj = {
+		name: rb.name,
+		info: rb.info,
+		stats: {
+			health: rb.health,
+			mana: rb.mana,
+			attack: rb.attack,
+			defence: rb.defence,
+			spclAttack: rb.spclAttack,
+			spclDefence: rb.spclDefence,
+		},
 	};
-	db.User.findByIdAndUpdate(
-		userId,
-		dataObj,
+	db.Avatar.findByIdAndUpdate(
+		avatarId,
+		updateObj,
 		{ new: true },
-		(err, updatedObj) => {
+		(err, updatedAvatar) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);
+				res.send(err);
 			}
-			res.redirect(`/${updatedObj._id}`);
+			res.redirect(`/index/${userId}/avatars/${avatarId}`);
 		}
 	);
 });
 
-router.delete('/:id/avatars/:id', (req, res) => {
+router.delete('/:id/avatars/:avatarId', (req, res) => {
 	const userId = req.params.id;
-	db.User.findByIdAndDelete(userId, (err, deletedObj) => {
+	const avatarId = req.params.avatarId;
+	db.Avatar.findByIdAndDelete(avatarId, (err, deletedObj) => {
 		if (err) {
 			console.log('Error:');
 			console.log(err);
 		}
-
-		res.redirect('/');
+		res.redirect(`/index/${userId}`);
 	});
-}); */
+});
 
 
 module.exports = router;

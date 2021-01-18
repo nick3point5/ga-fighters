@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <script defer src="/js/bootstrap.bundle.js"></script>
+    <script defer src="/js/dom_manipulation.js"></script>
+
+    <title>New Character</title>
+</head>
+<body>
+    <main>
+        <form action="/index/<%= avatar.user %>/avatars/<%= avatar._id %>?_method=PUT" method="post" class="form">
+            <label for="">Character Name</label>
+            <input type="text" name="name" value="<%= avatar.name %> ">
+            <label for="">Image Url</label>
+            <input type="text" name="img" value="<%= avatar.img %> ">
+            <label for="">Bio</label>
+            <input type="text" name="info" value="<%= avatar.info %> ">
+            <h2 id="skillpoints">Skill Points: ###</h2>
+
+            <%- include('partials/avatar-stat.ejs') %>
+
+
+
+
+            <button type="submit"> Level Up </button>
+        </form>
+    </main>
+
+</body>
+</html>
+
+<% console.log(avatar) %> 

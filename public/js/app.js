@@ -4,12 +4,13 @@ class interObj {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.xmin = 0;
-        this.xmax = playwin.width - width;
-        this.ymin = 0;
-        this.ymax = playwin.height - height;
+        this.xMin = 0;
+        this.xMax = playwin.width - width;
+        this.yMin = 0;
+        this.yMax = playwin.height - height;
         this.rotation = 0;
-        this.speed = 0;
+        this.xSpd = 0;
+        this.ySpd = 0;
         this.direction = 1
         this.move = {
             up: false,
@@ -31,17 +32,17 @@ class interObj {
         return false
     };
     moveFunction() {
-        if (this.move.up && this.y - this.speed >= this.ymin) {
-            this.y -= this.speed;
+        if (this.move.up && this.y - this.ySpd >= this.yMin) {
+            this.y -= this.ySpd;
         }
-        if (this.move.dn && this.y + this.speed <= this.ymax) {
-            this.y += this.speed;
+        if (this.move.dn && this.y + this.ySpd <= this.yMax) {
+            this.y += this.ySpd;
         }
-        if (this.move.lf && this.x - this.speed >= this.xmin) {
-            this.x -= this.speed;
+        if (this.move.lf && this.x - this.xSpd >= this.xMin) {
+            this.x -= this.xSpd;
         }
-        if (this.move.ri && this.x + this.speed <= this.xmax) {
-            this.x += this.speed;
+        if (this.move.ri && this.x + this.xSpd <= this.xMax) {
+            this.x += this.xSpd;
         }
         this.position()
     }
@@ -65,55 +66,18 @@ class interObj {
         }
     }
     stop() {
-        this.speed = 0
+        this.ySpd = 0
+        this.xSpd = 0
         this.move.up = false
         this.move.ri = false
         this.move.dn = false
         this.move.lf = false
     }
 }
-
-class fireballClass extends interObj {
-    constructor(x, y, element, direction) {
-        super(x, y, 20, 20, element)
-        this.speed = 3;
-        if(this.direction>0){
-            this.move.ri = true
-        }else{
-            this.move.lf = true
-        }
-    }
-    launch(target){ 
-        this.position()
-        this.element.classList.remove('hidden')
-        const launch = setInterval(()=>{
-
-        this.moveFunction()
-        if(this.collision(target)){
-                if(this.spAtk > target.spDef){
-                    target.hp -= this.spAtk*3 - target.spDef
-                } else {
-                    target.hp -= 10
-                }
-            this.element.remove()
-            clearInterval(launch);
-        }
-        if (this.x - this.speed <= this.xmin) {
-            this.element.remove()
-            clearInterval(launch);
-        }
-        if (this.x + this.speed >= this.xmax) {
-            this.element.remove()
-            clearInterval(launch);
-        }
-
-    },1000/playwin.framerate)
-    }
-}
-
 class fighter extends interObj {
     constructor(x, y, element, name, HitBox) {
         super(x, y,100, 150, element)
+        this.name = name
         this.hp=100
         this.mp=100
         this.atk=5
@@ -122,6 +86,7 @@ class fighter extends interObj {
         this.spDef=5
         this.control = true
         this.HitBox = HitBox
+        this.airborne = true
     }
     attack(target){
         
@@ -131,8 +96,27 @@ class fighter extends interObj {
             } else {
                 target.hp -= 2
             }
+            this.hitstun(5,20,target)
         }
     }
+    hitstun(stunFrames,knockback,target){
+        const Ospd = target.xSpd
+        target.xSpd = knockback*this.direction
+        target.move.ri = false
+        const stun = setInterval(()=>{
+            if (target.move.ri) {
+                target.move.ri = false
+                target.control = true
+                target.xSpd = Ospd
+                clearInterval(stun)
+            }
+
+        },1000/playwin.framerate*stunFrames)
+        target.move.ri = true
+        target.control = false
+    }
+
+
     fireball(target){
 
         if (this.mp >= 10) {
@@ -144,7 +128,7 @@ class fighter extends interObj {
             
             playwin.element.appendChild(fire)
             const fireball = new fireballClass(
-                this.x+this.width,this.y+80,fire,this.direction
+                this.x+this.width,this.y+80,fire,this.direction,this
             )
                 
             fireball.launch(target)
@@ -153,46 +137,65 @@ class fighter extends interObj {
                 
 
     }
-
-
-
-}
-
-
-
-
-
-class attackClass extends interObj{
-    constructor(x, y, width, height, element) {
-        super(x, y, width, height, element)
+    jump(){
+        this.ySpd = 20
+        this.airborne = true
     }
-    moveFunction() {
-        if(this.user.direction>0){
-
-            this.x = this.user.x+this.user.width
-            this.y = this.user.y
-        }else{
-            this.x = this.user.x-this.width
-            this.y = this.user.y
+    gravity() {
+        if(this.airborne && this.y - this.ySpd >= this.yMax){
+            this.airborne=false
+            this.ySpd = 0
+        }
+        if(this.airborne){
+            
+            this.ySpd -= playwin.gravAcc
+            this.move.up = true
+        }else {
         }
     }
-}
-class playerClass extends fighter {
-    constructor(x, y, element, name, HitBox) {
-        super(x, y, element, name, HitBox)
-        this.speed = 5;
+    update(){
+        this.gravity()
+        this.facing()
+        this.moveFunction()
+
+    }
+    facing(){
+        if(this.x < this.opponent.x){
+            this.direction = 1
+        }else {
+            this.direction = -1
+        }
     }
 
 
+}
+class playerClass extends fighter {
+    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef) {
+        super(x, y, element, name, HitBox)
+        this.hp=hp
+        this.mp=mp
+        this.atk=atk
+        this.def=def
+        this.spAtk=spAtk
+        this.spDef=spDef
+        this.xSpd = 5;
+
+    }
 
 
 }
 class enemyClass extends fighter {
     constructor(x, y, element, name) {
         super(x, y, element)
-        this.speed = 5;
+        this.xSpd  = 5;
     }
-
+    facing(){
+        if(this.x < this.opponent.x){
+            this.direction = -1
+        }else {
+            this.direction = 1
+        }
+    }
 
 
 
@@ -272,11 +275,11 @@ class petClass extends interObj {
 
     stateHappy() {
         this.speed = 5
-        if (this.x >= this.xmax - 4) {
+        if (this.x >= this.xMax - 4) {
             this.move.ri = false;
             this.move.lf = true;
         }
-        if (this.x <= this.xmin + 4) {
+        if (this.x <= this.xMin + 4) {
             this.move.ri = true;
             this.move.lf = false;
         }
@@ -298,11 +301,11 @@ class petClass extends interObj {
 
     stateSleepy() {
         this.speed = 1
-        if (this.x >= this.xmax) {
+        if (this.x >= this.xMax) {
             this.move.ri = false;
             this.move.lf = true;
         }
-        if (this.x <= this.xmin) {
+        if (this.x <= this.xMin) {
             this.move.ri = true;
             this.move.lf = false;
         }
@@ -312,11 +315,11 @@ class petClass extends interObj {
 
     stateBored() {
         this.speed = 3
-        if (this.x >= this.xmax - 4) {
+        if (this.x >= this.xMax - 4) {
             this.move.ri = false;
             this.move.lf = true;
         }
-        if (this.x <= this.xmin + 4) {
+        if (this.x <= this.xMin + 4) {
             this.move.ri = true;
             this.move.lf = false;
         }
@@ -394,7 +397,7 @@ class petClass extends interObj {
             if (this.spriteFrame === 5) {
                 $('#food').addClass('hidden')
                 food.x = -food.width
-                food.y = food.ymax + food.height
+                food.y = food.yMax + food.height
                 food.position()
             }
 
@@ -447,21 +450,77 @@ class petClass extends interObj {
 
     }
 }
+class fireballClass extends interObj {
+    constructor(x, y, element, direction,user) {
+        super(x, y, 20, 20, element)
+        this.xSpd = 3;
+        this.user = user
+        if(this.direction>0){
+            this.move.ri = true
+        }else{
+            this.move.lf = true
+        }
+    }
+    launch(target){ 
+        this.position()
+        this.element.classList.remove('hidden')
+        const launch = setInterval(()=>{
 
+        this.moveFunction()
+        if(this.collision(target)){
+                if(this.spAtk > target.spDef){
+                    target.hp -= this.spAtk*3 - target.spDef + 10
+                } else {
+                    target.hp -= 10
+                }
+            this.element.remove()
+            this.user.hitstun(5,5,target)
+            clearInterval(launch);
+        }
+        if (this.x - this.xSpd <= this.xMin) {
+            this.element.remove()
+            clearInterval(launch);
+        }
+        if (this.x + this.xSpd >= this.xMax) {
+            this.element.remove()
+            clearInterval(launch);
+        }
+
+    },1000/playwin.framerate)
+    }
+}
+class attackClass extends interObj{
+    constructor(x, y, width, height, element) {
+        super(x, y, width, height, element)
+    }
+    moveFunction() {
+        if(this.user.direction>0){
+
+            this.x = this.user.x+this.user.width
+            this.y = this.user.y
+        }else{
+            this.x = this.user.x-this.width
+            this.y = this.user.y
+        }
+    }
+}
 
 //ANCHOR update each frame
 function update() {
     if (!playwin.pause) {
         uiUpdate();
-        movement()
+        movement();
+        playerCharacter.update();
+        enemyCharacter.update();
+        if(playerCharacter.hp<=0 || enemyCharacter.hp <=0 || playwin.timer <= 0){
+            playwin.gameOver = true
+        }
         playwin.frame++
     }
 }
 
 function movement() {
-    playerCharacter.moveFunction()
     playerAttack.moveFunction()
-    enemyCharacter.moveFunction()
 }
 
 function uiUpdate() {
@@ -482,9 +541,6 @@ function timerUi() {
         timerEle.textContent = Math.ceil(playwin.timer)        
     }
 }
-
-
-
 //ANCHOR function utility
 
 function getRand(max, min) {
@@ -512,6 +568,14 @@ function gameOver() {
     // $("#music")[0].pause();
     // $("#music")[0].currentTime = 0;
     playwin.pause = true
+    if (enemyCharacter.hp > playerCharacter.hp) {
+        document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
+    } else if (enemyCharacter.hp < playerCharacter.hp) {
+        document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
+    } else{
+        document.getElementById('notification-message').innerHTML=`Tie`
+    }
+    document.getElementById('notification-area').classList.remove('hidden')
 
 }
 
@@ -568,7 +632,9 @@ function getKey(event) {
 function controller(inp){
     if(playerCharacter.control){
         if(inp === 'ArrowUp'){
-            playerCharacter.move.up = true
+            if (!playerCharacter.airborne) {
+                playerCharacter.jump()
+            }
         }
         if(inp === 'ArrowDown'){
             playerCharacter.move.dn = true
@@ -592,7 +658,7 @@ function controller(inp){
 
 function releaseKey(inp) {
     if(inp.key === 'ArrowUp'){
-        playerCharacter.move.up = false
+        // playerCharacter.move.up = false
     }
     if(inp.key === 'ArrowDown'){
         playerCharacter.move.dn = false
@@ -606,9 +672,14 @@ function releaseKey(inp) {
     // console.log(inp)
 }
 //ANCHOR global var and obj
+enemyHpBar = document.getElementById('enemy-hp')
+playerHpBar = document.getElementById('player-hp')
+enemyMpBar = document.getElementById('enemy-mp')
+playerMpBar = document.getElementById('player-mp')
+timerEle = document.getElementById('timer')
 
 playwin = {
-    height: 450,
+    height: 400,
     width: 800,
     element: document.getElementById('play-window'),
     mute: false,
@@ -616,31 +687,38 @@ playwin = {
     frame: 0,
     framerate: 30,
     timer: 99,
-    gameOver: false
+    gameOver: false,
+    gravAcc: 1
 };
+playerEle = document.getElementById('player')
+
 let playerAttack = new attackClass(
     100,0,50,50,document.getElementById('player-attack')
 )
 
 let playerCharacter = new playerClass(
-    0,0,document.getElementById('player'),'guy',playerAttack
+    0,0,playerEle,
+    playerEle.getAttribute('name'),
+    playerAttack, 
+    +playerEle.getAttribute('hp'), 
+    +playerEle.getAttribute('mp'), 
+    +playerEle.getAttribute('atk'), 
+    +playerEle.getAttribute('def'), 
+    +playerEle.getAttribute('spatk'), 
+    +playerEle.getAttribute('spdef'), 
+)
+
+let enemyCharacter = new enemyClass(
+    400,0,document.getElementById('enemy'),'sdf',null, 100, 100, 10, 5, 5, 5
 )
 
 playerAttack.user = playerCharacter
-
-let enemyCharacter = new enemyClass(
-    400,300,document.getElementById('enemy'),'sdf',null
-)
-
-
-enemyHpBar = document.getElementById('enemy-hp')
-playerHpBar = document.getElementById('player-hp')
-enemyMpBar = document.getElementById('enemy-mp')
-playerMpBar = document.getElementById('player-mp')
-timerEle = document.getElementById('timer')
-
+playerCharacter.opponent = enemyCharacter
+enemyCharacter.opponent = playerCharacter
 
 
 game()
 assignEvents()
 mute()
+
+console.log(playerCharacter.hp)
