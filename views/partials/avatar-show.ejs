@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
     
     <button type="submit">
@@ -6,8 +7,28 @@
             <div>
                 <h1 class="character-name"><%= user.avatars[i].name %></h1>
                 <p class="character-text"><%= user.avatars[i].info %> </p>
-            </div>
-        </div>
-    </button>
+=======
+<section class="character-buttons">
+    <form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>  " method="get">
         
+        <button type="submit">
+            <div class="character">
+                <img src="<%= character[i].img %>" alt="" class="character-image">
+                <div>
+                    <h1 class="character-name"><%= character[i].name %></h1>
+                    <p class="character-text"><%= character[i].info %> </p>
+                </div>
+>>>>>>> 7b1422b45dcb686c1a682f16847c53945f570020
+            </div>
+        </button>
+        
+<<<<<<< HEAD
 </form>
+=======
+    </form>
+
+    <form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>?_method=DELETE" method="post">
+        <button type="submit">Delete</button>
+    </form>
+</section>
+>>>>>>> 7b1422b45dcb686c1a682f16847c53945f570020
