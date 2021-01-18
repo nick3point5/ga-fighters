@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatars Index</title>
+</head>
+<body>
+    <header>
+        <h1>Avatar</h1>
+    </header>
+    <a href="/index/<%= userAcc  %>/avatars">Back</a>
+    <main>
+        <div>
+            <img href="<%= avatar.url %>" />
+            <h3> Name: <%= avatar.name %> </h3>
+            <h3> Bio: <%= avatar.info %> </h3>
+            <h3> HP: <%= avatar.stats.health %> </h3>
+            <h3> Mp: <%= avatar.stats.mana %> </h3>
+            <h3> Att: <%= avatar.stats.attack %> </h3>
+            <h3> Def: <%= avatar.stats.defence %> </h3>
+            <h3> SpclAtt: <%= avatar.stats.spclAttack %> </h3>
+            <h3> SpclDef: <%= avatar.stats.spclDefence %> </h3>
+        </div>
+    </main>
+
+    <a href="/index/<%= userAcc %>/avatars/<%= avatar._id %>/edit">Edit</a>
+    <form action="/index/<%= userAcc  %>/avatars/<%= avatar._id %>?_method=DELETE" method="post">
+        <button type="submit">Delete</button>
+    </form>
+</body>
+</html>

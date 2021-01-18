@@ -160,7 +160,7 @@ router.put('/:account', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			return res.render('avatar-index', { user: foundUser });
+			return res.render('show', { user: foundUser });
 		});
 	});
 	
@@ -205,7 +205,7 @@ router.put('/:account', (req, res) => {
 				console.log('Fuck bro');
 				res.send(err);
 			}
-			db.User.findByIdAndUpdate(foundUser._id,{avatars: newAvatar._id},{new:true},(err, updatedUser)=>{
+			db.User.findByIdAndUpdate(foundUser._id,{$push:{avatars: newAvatar._id}},{new:true},(err, updatedUser)=>{
 				console.log(newAvatar,updatedUser);
 				
 				res.redirect(`/index/${updatedUser.account}/avatars`);
@@ -227,7 +227,7 @@ router.get('/:account/avatars/:avatarId', (req, res) => {
 			res.send(err);
 		}
 		console.log('avatar show route hit');
-		return res.render('avatarShow', { avatar: foundObj });
+		return res.render('avatar-Show', { avatar: foundObj, userAcc: userAcc });
 	});
 });
 
@@ -241,7 +241,7 @@ router.get('/:account/avatars/:avatarId/edit', (req, res) => {
 			res.send(err);
 		}
 		console.log('avatar edit page', foundObj);
-		res.render('avatarEdit', { avatar: foundObj });
+		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, userAcc: userAcc});
 	});
 });
 
@@ -268,7 +268,7 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			if(foundUser.password === password){
+			// if(foundUser.password === password){
 				db.Avatar.findByIdAndUpdate(
 			avatarId,
 			updateObj,
@@ -283,9 +283,9 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 				return res.redirect(`/index/${userAcc}/avatars/${avatarId}`);
 			}
 			);
-			}else{
-				return res.redirect(`/index/${userAcc}/avatars/${avatarId}/edit`)
-			}
+			// }else{
+			// 	return res.redirect(`/index/${userAcc}/avatars/${avatarId}/edit`)
+			// }
 			
 		})
 		
@@ -294,15 +294,18 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 	router.delete('/:account/avatars/:avatarId', (req, res) => {
 		const userAcc = req.params.account
 		const avatarId = req.params.avatarId
-		db.Avatar.findByIdAndDelete(avatarId,(err,deletedAvatar)=>{
+		db.Avatar.findByIdAndDelete(avatarId,(err, deletedAvatar)=>{
 			if (err) {
 				res.send(err);
 			}
-			
-			return res.redirect(`/index/${userAcc}/avatars`)
+			db.User.findByIdAndUpdate(deletedAvatar.user, { $pull:{ avatars: deletedAvatar._id}},{new:true},(err, updatedUser)=>{
+
+				return res.redirect(`/index/${userAcc}/avatars`);
+			})
 	})
 	
 });
+
 
 	//============================================================================================================================
 	

@@ -21,8 +21,8 @@ app.get('/', (req, res) => {
 }); 
 
 // ALL SEPRATE ROUTES
-app.use('/index', indexRoute); // login page and link to Sign-Up
 app.use('/index', express.static(__dirname + '/public'));
+app.use('/index', indexRoute); // login page and link to Sign-Up
 app.listen(PORT, () => {
 	console.log('Server is running on port: ' + PORT);
 });
