@@ -151,9 +151,9 @@ router.put('/:account', (req, res) => {
 	// GET   --->   /avatars index page <-----  Gets
 	router.get('/:account/avatars', (req, res) => {
 
-		const account = req.params.account;
+		const accountId = req.params.account;
 
-		db.User.findOne({account: account})
+		db.User.findOne({ account : accountId})
 		.populate('avatars')
 		.exec((err, foundUser) => {
 			console.log(foundUser)
@@ -186,7 +186,7 @@ router.put('/:account', (req, res) => {
 			db.Avatar.create(
 		{
 			name: rb.name,
-			url: rb.img,
+			img: rb.img,
 			info: rb.info,
 			stats: {
 				health: rb.health,
@@ -241,14 +241,26 @@ router.get('/:account/avatars/:avatarId/edit', (req, res) => {
 			res.send(err);
 		}
 		console.log('avatar edit page', foundObj);
-		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, userAcc: userAcc});
+		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: userAcc});
+	});
+});
+// Avatar GET game  ---------------------------------------------------------------
+
+router.get('/:account/avatars/:avatarId/game', (req, res) => {
+	const userAcc = req.params.account;
+	const avatarId = req.params.avatarId;
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		if (err) {
+			res.send(err);
+		}
+		console.log('game page', foundObj);
+		return res.render('game', { avatar: foundObj , avatarId : avatarId, accountId: userAcc});
 	});
 });
 
 // Avatar POST update  ---------------------------------------------------------------
 router.put('/:account/avatars/:avatarId', (req, res) => {
 	console.log(req.body);
-	const password = req.body.password;
 	const userAcc = req.params.account;
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
@@ -263,12 +275,12 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 			spclAttack: rb.spclAttack,
 			spclDefence: rb.spclDefence,
 		},
+		img: rb.img,
 	};
-		db.User.findOne({account:userAcc},(err, foundUser)=>{
+		db.User.findOne({account : userAcc},(err, foundUser)=>{
 			if (err) {
 				res.send(err);
 			}
-			// if(foundUser.password === password){
 				db.Avatar.findByIdAndUpdate(
 			avatarId,
 			updateObj,
@@ -280,12 +292,9 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 					res.send(err);
 				}
 				console.log('updated avatar: ', updatedAvatar);
-				return res.redirect(`/index/${userAcc}/avatars/${avatarId}`);
+				return res.redirect(`/index/${userAcc}/avatars`);
 			}
 			);
-			// }else{
-			// 	return res.redirect(`/index/${userAcc}/avatars/${avatarId}/edit`)
-			// }
 			
 		})
 		
@@ -294,15 +303,21 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 	router.delete('/:account/avatars/:avatarId', (req, res) => {
 		const userAcc = req.params.account
 		const avatarId = req.params.avatarId
-		db.Avatar.findByIdAndDelete(avatarId,(err, deletedAvatar)=>{
+		db.User.findOne({account: userAcc},(err, foundUser)=>{
 			if (err) {
 				res.send(err);
 			}
-			db.User.findByIdAndUpdate(deletedAvatar.user, { $pull:{ avatars: deletedAvatar._id}},{new:true},(err, updatedUser)=>{
+				db.Avatar.findByIdAndDelete(avatarId,(err, deletedAvatar)=>{
+				if (err) {
+					res.send(err);
+				}
+				db.User.findByIdAndUpdate(foundUser._id, { $pull:{ avatars: deletedAvatar._id}},{new:true},(err, updatedUser)=>{
 
-				return res.redirect(`/index/${userAcc}/avatars`);
-			})
+					return res.render('show',{user: foundUser});
+				})
 	})
+		})
+	
 	
 });
 

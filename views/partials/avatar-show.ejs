@@ -11,7 +11,7 @@
         
     </form>
 
-    <form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>?_method=DELETE" method="post">
+    <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>?_method=DELETE" method="post">
         <button type="submit">Delete</button>
     </form>
 </section>

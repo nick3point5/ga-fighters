@@ -10,9 +10,10 @@
         <h1>Avatar</h1>
     </header>
     <a href="/index/<%= userAcc  %>/avatars">Back</a>
+    <a href="/index/<%= userAcc %>/avatars/<%= avatar._id %>/game">Play</a>
     <main>
         <div>
-            <img href="<%= avatar.url %>" />
+            <img src="<%= avatar.img %>" alt="Hero" />
             <h3> Name: <%= avatar.name %> </h3>
             <h3> Bio: <%= avatar.info %> </h3>
             <h3> HP: <%= avatar.stats.health %> </h3>

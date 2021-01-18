@@ -18,13 +18,13 @@
         <div class="bar-container player-bar-container">
 
             <meter class="hp" id="player-hp"
-                min="0" max="<%= character.stats.health %>"
-                low="<%= character.stats.health*0.2 %>" high="<%= character.stats.health*0.5 %>" optimum="<%= character.stats.health*0.8 %>"
-                value="<%= character.stats.health %>">
+                min="0" max="<%= avatar.stats.health %>"
+                low="<%= avatar.stats.health*0.2 %>" high="<%= avatar.stats.health*0.5 %>" optimum="<%= avatar.stats.health*0.8 %>"
+                value="<%= avatar.stats.health %>">
             </meter>
             <meter class="mp" id="player-mp"
-                min="0" max="<%= character.stats.mana %>"
-                value="<%= character.stats.mana %>">
+                min="0" max="<%= avatar.stats.mana %>"
+                value="<%= avatar.stats.mana %>">
             </meter>
         </div>
 
@@ -45,7 +45,7 @@
 
         </div>
         <div class="name-tag">
-            <h4><%= character.name %></h4>
+            <h4><%= avatar.name %></h4>
             <h4>Evil Man</h4>
         </div>
         <div id="play-window">
@@ -56,7 +56,7 @@
             <p id='notification-message'>notification</p>
         </div>
     </main>
-    <a href="/index/<%= accountId %>/avatars/<%= character._id %>/edit">Level Up</a>
+    <a href="/index/<%= accountId %>/avatars/<%= avatar._id %>/edit">Level Up</a>
 </body>
 </html>
 

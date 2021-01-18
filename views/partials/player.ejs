@@ -1,10 +1,10 @@
 <% statStr=['health','mana','attack','defence','spclAttack','spclDefence'] %> 
 <% statAttr=['hp','mp','atk','def','spAtk','spDef'] %> 
-<div class="fighter" id="player" style="background-image: url('<%= character.img %>');" 
+<div class="fighter" id="player" style="background-image: url('<%= avatar.img %>');" 
         <% for(i=0;i<statStr.length;i++){ %>   
-            <%= statAttr[i] %> = "<%= character.stats[statStr[i]] %>" 
+            <%= statAttr[i] %>="<%= avatar.stats[statStr[i]] %>" 
         <% } %> 
-        name= "<%= character.name %>" 
+        name="<%= avatar.name %>" 
     >
     <div class="player-attack hitbox" id = "player-attack"></div>
 </div>
