@@ -16,12 +16,12 @@
             <a href="/index" class="btn btn-primary">Logout</a>
         </nav>
     </header>
-   
+
     <h3 class="text-center"><%= user.name  %>'s Profile. </h3>
     
     <main class="character-container d-flex  justify-content-center flex-wrap">
 
-       <%   if (user.avatars.length < 1){ %>
+        <%   if (user.avatars.length < 1){ %>
             <h4>No Avatars Available.</h4>
         <%   }else { %>
         <% for(i = 0; i < user.avatars.length ; i++){ %> 
