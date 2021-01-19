@@ -243,7 +243,7 @@ class enemyClass extends fighter {
         this.currentState = 'idle'
     }
     Ai() {
-
+        this.behavior()
         if (this.control) {
             
             
@@ -268,15 +268,13 @@ class enemyClass extends fighter {
         }
 
     }
-    AiStart(){
-        const stateChange = setInterval(()=>{
-            const behavior = getRand(5,0)
-            this.currentState = this.conditions[behavior]
+    behavior(){
+        if(!(playwin.frame%30)){
+            const thought = getRand(5,0)
+            this.currentState = this.conditions[thought]
             console.log(this.currentState);
-            if (playwin.gameOver) {
-                clearInterval(stateChange)
-            }
-        },1000)
+        }
+
     }
     stateAttack(){
         this.attack(this.opponent)
@@ -331,27 +329,29 @@ class fireballClass extends interObj {
         this.position()
         this.element.classList.remove('hidden')
         const launch = setInterval(()=>{
+            if(!playwin.pause){
 
-        this.moveFunction()
-        if(this.collision(target)){
-                if(this.spAtk > target.spDef){
-                    target.hp -= this.spAtk*3 - target.spDef + 10
-                } else {
-                    target.hp -= 10
+                this.moveFunction()
+                if(this.collision(target)){
+                    if(this.spAtk > target.spDef){
+                        target.hp -= this.spAtk*3 - target.spDef + 10
+                    } else {
+                        target.hp -= 10
+                    }
+                    this.element.remove()
+                    this.user.hitstun(5,5,target)
+                    clearInterval(launch);
                 }
-            this.element.remove()
-            this.user.hitstun(5,5,target)
-            clearInterval(launch);
-        }
-        if (this.x - this.xSpd <= this.xMin) {
-            this.element.remove()
-            clearInterval(launch);
-        }
-        if (this.x + this.xSpd >= this.xMax) {
-            this.element.remove()
-            clearInterval(launch);
-        }
-
+                if (this.x - this.xSpd <= this.xMin) {
+                    this.element.remove()
+                    clearInterval(launch);
+                }
+                if (this.x + this.xSpd >= this.xMax) {
+                    this.element.remove()
+                    clearInterval(launch);
+                }
+            }
+                
     },1000/playwin.framerate)
     }
 }
@@ -378,6 +378,11 @@ function update() {
         movement();
         playerCharacter.update();
         enemyCharacter.update();
+        if(playwin.frame === playwin.framerate){
+            playwin.frame = 0
+        }
+
+
         if(playerCharacter.hp<=0 || enemyCharacter.hp <=0 || playwin.timer <= 0){
             playwin.gameOver = true
         }
@@ -462,12 +467,11 @@ function Init() {
     playwin.gameOver = false
     playwin.pause = false
     playwin.timer = 99
-    enemyCharacter.AiStart()
     document.getElementById('notification-area').classList.add('hidden')
 }
 
 function pause() {
-    if (pet.alive) {
+    if (!playwin.gameOver) {
         playwin.pause = !playwin.pause
         if (playwin.pause) {
             // $("#music")[0].pause()
@@ -475,9 +479,10 @@ function pause() {
             // $("#music")[0].play()
         }
         if (playwin.pause) {
-            // $('img.icon.pause').attr('src','assets/icons/play_arrow-24px.svg')
+            document.getElementById('notification-message').innerHTML=`Paused`
+            document.getElementById('notification-area').classList.remove('hidden')
         } else {
-            // $('img.icon.pause').attr('src','assets/icons/pause-24px.svg')
+            document.getElementById('notification-area').classList.add('hidden')
         }
     }
 }
@@ -558,6 +563,10 @@ function controller(inp){
             }
         
         }
+    }
+
+    if(inp === 'p'){
+        pause()
     }
     
     // console.log(inp)
