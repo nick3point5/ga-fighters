@@ -9,8 +9,12 @@
     <script defer src="/js/app.js"></script>
     <title>Game</title>
 </head>
-<body>
-    <a href="/index/<%= accountId %>">&lt</a>
+<body class="body">
+    <header class="header text-center">
+        <h1 class="display-3"> Game</h1>
+        <a href="/index/<%= accountId %>/avatars/<%= avatar._id %>/edit" class="btn btn-outline-primary">Level Up</a>
+        <a href="/index/<%= accountId %>/" class="btn btn-outline-success">Back</a>
+    </header>
     <main class="game-window">
         <div class="info-display">
 
@@ -55,6 +59,6 @@
             <p id='notification-message'>notification</p>
         </div>
     </main>
-    <a href="/index/<%= accountId %>/avatars/<%= avatar._id %>/edit">Level Up</a>
+    
 </body>
 </html>

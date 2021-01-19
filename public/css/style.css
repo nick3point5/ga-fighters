@@ -109,10 +109,15 @@ h4{
     background-color: gray;
     height: 100%;
     width: 100%;
-    position: relative;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-content: center;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+
 }
 
 .stat-container{
@@ -221,6 +226,6 @@ p{
     flex-direction: column;
 }
 
-.display-1{
+.display-1, .display-2, .display-3{
     margin: 0 1em 0 0 ;
 }

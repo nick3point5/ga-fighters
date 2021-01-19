@@ -648,7 +648,9 @@ let enemyAttack = new attackClass(
 )
 
 let playerCharacter = new playerClass(
-    playerInit.x,playerInit.y,playerEle,
+    playerInit.x,
+    playerInit.y,
+    playerEle,
     playerEle.getAttribute('name'),
     playerAttack, 
     +playerEle.getAttribute('hp'), 
@@ -660,7 +662,17 @@ let playerCharacter = new playerClass(
 )
 
 let enemyCharacter = new enemyClass(
-    enemyInit.x,enemyInit.y,document.getElementById('enemy'),'Evil Man',enemyAttack, 100, 100, 10, 5, 5, 5
+    enemyInit.x,
+    enemyInit.y,
+    document.getElementById('enemy'),
+    'Evil Man',
+    enemyAttack,
+    100, 
+    100, 
+    10, 
+    5, 
+    5, 
+    5
 )
 
 playerAttack.user = playerCharacter
