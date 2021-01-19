@@ -8,17 +8,31 @@
     <script defer src="/js/bootstrap.bundle.js"></script>
     <title>Sign Up</title>
 </head>
-<body>
-    <main>
-        <form action="/index" method="post" class="form">
-            <label for="">Username</label>
-            <input type="text" name="name">
-            <label for="">Password</label>
-            <input type="password" name="password">
-            <label for="">Confirmation</label>
-            <input type="password" name="confirm">
-            <button type="submit">Sign up</button>
+<body class="body">
+    <!-- HEADER START -->
+    <%- include('partials/mini-header.ejs')  %> 
+    <!-- HEADER END -->
+    <h3 class="text-center">Create an Account</h3>
+    <!-- MAIN START -->
+    <a href="/index" class="link">Back to Login</a>
+    <main class="d-flex  justify-content-center">
+        <form action="/index" method="post" class="text-center p-5">
+            <h3 class="text-center">Sign-up Form</h3>
+            <div class="form-group">
+                <label for="">Username</label>
+                <input type="text" name="name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Password</label>
+                <input type="password" name="password" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Confirmation</label>
+                <input type="password" name="confirm" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Sign-up</button>
         </form>
     </main>
+    <!-- MAIN END -->
 </body>
 </html>

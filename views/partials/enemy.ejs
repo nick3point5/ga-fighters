@@ -1,0 +1,10 @@
+<% statStr=['health','mana','attack','defence','spclAttack','spclDefence'] %> 
+<% statAttr=['hp','mp','atk','def','spAtk','spDef'] %> 
+<div class="fighter" id="enemy" style="background-image: url('<%#= character.img %>https://wwwimage-secure.cbsstatic.com/thumbnails/photos/w400-q80/cast/d5a1e69601c14faa_evil_cast_michaelemerson_800x1000.jpg');" 
+        <% for(i=0;i<statStr.length;i++){ %>   
+            <%= statAttr[i] %> = "<%= avatar.stats[statStr[i]] %>" 
+        <% } %> 
+        name="<%#= character.name %>Evil Man" 
+    >
+    <div class="attack hitbox" id = "enemy-attack"></div>
+</div>

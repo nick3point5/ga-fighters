@@ -10,21 +10,25 @@
     <!-- <script data-main="../js/app.js" src="../js/require.js"></script> -->
     <title>Game</title>
 </head>
-<body>
-    <a href="/index/<%= accountId %> ">&lt</a>
+<body class="body">
+<!-- HEADER START -->
+    <%- include('partials/header.ejs')  %> 
+<!-- HEADER END -->
+    <a href="/index/<%= accountId %>/avatars/<%= avatar._id %>/edit" class="btn btn-outline-primary">Level Up</a>
+<!-- MAIN START -->
     <main class="game-window">
         <div class="info-display">
 
         <div class="bar-container player-bar-container">
 
             <meter class="hp" id="player-hp"
-                min="0" max="<%= character.stats.health %>"
-                low="<%= character.stats.health*0.2 %>" high="<%= character.stats.health*0.5 %>" optimum="<%= character.stats.health*0.8 %>"
-                value="<%= character.stats.health %>">
+                min="0" max="<%= avatar.stats.health %>"
+                low="<%= avatar.stats.health*0.2 %>" high="<%= avatar.stats.health*0.5 %>" optimum="<%= avatar.stats.health*0.8 %>"
+                value="<%= avatar.stats.health %>">
             </meter>
             <meter class="mp" id="player-mp"
-                min="0" max="<%= character.stats.mana %>"
-                value="<%= character.stats.mana %>">
+                min="0" max="<%= avatar.stats.mana %>"
+                value="<%= avatar.stats.mana %>">
             </meter>
         </div>
 
@@ -45,19 +49,22 @@
 
         </div>
         <div class="name-tag">
-            <h4><%= character.name %></h4>
+            <h4><%= avatar.name %></h4>
             <h4>Evil Man</h4>
         </div>
         <div id="play-window">
                 <%- include('partials/player.ejs') %> 
-            <div class="fighter" id="enemy"></div>
+                <%- include('partials/enemy.ejs') %> 
         </div>
         <div class="notification hidden" id="notification-area">
-            <p id='notification-message'>notification</p>
+            <p id="notification-message">notification</p>
+        </div>
+        <div class="pause hidden" id="pause-area">
+            <p id="pause-message">notification</p>
+            <label>Controls:<button id="control-toggle">Arrows</button></label>
+            
         </div>
     </main>
-    <a href="/index/<%= accountId %>/avatars/<%= character._id %>/edit">Level Up</a>
+    
 </body>
-</html>
 
-<%# console.log(character.stats.mp) %> 

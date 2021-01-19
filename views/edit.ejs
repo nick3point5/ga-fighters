@@ -8,21 +8,42 @@
     <script defer src="/js/bootstrap.bundle.js"></script>
     <title>Settings</title>
 </head>
-<body>
-    <main>
-        <form action="/index/<%= user._id  %>/?_method=PUT" method="post" class="form">
-            <label for="">Username</label>
-            <input type="text" name="name" value=<%= user.name  %>>
-            <label for="">Password</label>
-            <input type="password" name="password">
-            <label for="">Confirmation</label>
-            <input type="password" name="confirm">
-            <button type="submit">Update</button>
+<body class="body">
+<!-- HEADER START -->
+    <header class="header text-center">
+        <h1 class="display-3"><%= user.name %>'s Profile Info </h1>
+        <div class="d-flex flex-row justify-content-between">
+            <a href="/index/<%= user.account %>/" class="btn btn-outline-primary">Back</a>
+            <a href="/index" class="btn btn-outline-primary">Logout</a>
+        </div>
+    </header>
+<!-- HEADER END -->
+    <h3 class="text-center">Edit Account Info</h3> 
+    <form action="/index/<%= user.account  %>?_method=DELETE" method="post">
+    <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </form>
+<!-- MAIN START -->
+    <main class="d-flex  justify-content-center">
+        <form action="/index/<%= user.account  %>/?_method=PUT" method="post" class="form p-5">
+        <div class="form-group">
+            <label for="newName">Username</label>
+            <input id="newName" type="text" name="newName" value=<%= user.name  %> class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="currPassword">Currnet Password</label>
+                <input id="currPassword" type="password" name="currPassword" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <input id="newPassword" type="password" name="newPassword" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="confirm">Confirmation</label>
+                <input id="confirm" type="password" name="confirm" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-outline-primary">Update</button>
         </form>
-        <form action="/index/<%= user._id  %>?_method=DELETE" method="post">
-            <button type="submit">Delete</button>
-        </form>
-
     </main>
+<!-- MAIN END -->
 </body>
 </html>

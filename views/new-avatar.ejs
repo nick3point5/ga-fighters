@@ -3,74 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="../css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
     <script defer src="/js/dom_manipulation.js"></script>
 
-    <title>New Character</title>
+    <title>New Avatar</title>
 </head>
-<body>
-    <main>
-        <form action="/index/<%= accountId %>/avatars" method="post" class="form">
-            <label for="">Character Name</label>
-            <input type="text" name="name">
-            <label for="">Image Url</label>
-            <input type="text" name="img">
-            <label for="">Bio</label>
-            <input type="text" name="info">
-            <h2 id="skillpoints">Skill Points: ###</h2>
-
-            <div class="stat-container">
-                <label for="" class="stat-label">HP</label>
-                <div class="stat-control">
-                    <div class="btn" id="health-down-stat-btn">&lt;</div>
-                    <input type="number" name="health" id="health" class="stat-input"value=5></input>
-                    <div class="btn" id="health-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">MP</label>
-                <div class="stat-control">
-                    <div class="btn" id="mana-down-stat-btn">&lt;</div>
-                    <input type="number" name="mana" id="mana" class="stat-input"value=5></input>
-                    <div class="btn" id="mana-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">Atk</label>
-                <div class="stat-control">
-                    <div class="btn" id="attack-down-stat-btn">&lt;</div>
-                    <input type="number" name="attack" id="attack" class="stat-input"value=5></input>
-                    <div class="btn" id="attack-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">Def</label>
-                <div class="stat-control">
-                    <div class="btn" id="defence-down-stat-btn">&lt;</div>
-                    <input type="number" name="defence" id="defence" class="stat-input"value=5></input>
-                    <div class="btn" id="defence-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">SpAtk</label>
-                <div class="stat-control">
-                    <div class="btn" id="spclAttack-down-stat-btn">&lt;</div>
-                    <input type="number" name="spclAttack" id="spclAttack" class="stat-input" value=5></input>
-                    <div class="btn" id="spclAttack-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <div class="stat-container">
-                <label for="" class="stat-label">SpDef</label>
-                <div class="stat-control">
-                    <div class="btn" id="spclDefence-down-stat-btn">&lt;</div>
-                    <input type="number" name="spclDefence" id="spclDefence" class="stat-input" value=5></input>
-                    <div class="btn" id="spclDefence-up-stat-btn">&gt;</div>
-                </div>
-            </div>
-            <button type="submit"> Create </button>
-        </form>
-    </main>
+<body class="body">
+<!-- HEADER START -->
+    <%- include('partials/header.ejs')  %> 
+<!-- HEADER END --> 
+    <h3 class="text-center">Create a new Avatar.</h3>
+<!-- MAIN START -->
+    <%- include('partials/new-form.ejs')  %> 
+<!-- MAIN END -->
 </body>
 </html>
