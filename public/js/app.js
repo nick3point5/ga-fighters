@@ -479,10 +479,10 @@ function pause() {
             // $("#music")[0].play()
         }
         if (playwin.pause) {
-            document.getElementById('notification-message').innerHTML=`Paused`
-            document.getElementById('notification-area').classList.remove('hidden')
+            document.getElementById('pause-message').innerHTML=`Paused`
+            document.getElementById('pause-area').classList.remove('hidden')
         } else {
-            document.getElementById('notification-area').classList.add('hidden')
+            document.getElementById('pause-area').classList.add('hidden')
         }
     }
 }
@@ -497,6 +497,16 @@ function mute() {
     }
 }
 
+function controlToggle() {
+    if (playwin.controlMode === 'arrow') {
+        playwin.controlMode = 'wasd'
+        document.getElementById('control-toggle').innerText = 'wasd'
+    } else {
+        playwin.controlMode = 'arrow'
+        document.getElementById('control-toggle').innerText = 'Arrows'
+    }
+}
+
 function assignEvents() {
     // $('#pauseBtn').on("click", pause)
     // $('#muteBtn').on("click", mute)
@@ -507,6 +517,7 @@ function assignEvents() {
     // })
 
     document.getElementById('notification-area').addEventListener('click',game)
+    document.getElementById('control-toggle').addEventListener('click',controlToggle)
     window.addEventListener("keydown", getKey);
     window.addEventListener("keyup", releaseKey);
 

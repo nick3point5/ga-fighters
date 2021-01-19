@@ -31,7 +31,7 @@
     padding: 3em;
     background-color: rgba(250, 235, 215, 0.159);
 }
-.notification{
+.notification, .pause{
     background-color: rgba(255,255,255,0.5);
     align-self: center;
     height: 300px;
@@ -49,7 +49,7 @@
     border-radius: 30px;
 }
 
-#notification-message{
+#notification-message, #pause-message{
     font-size: 40px;
     color: black;
 }
