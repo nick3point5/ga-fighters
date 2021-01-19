@@ -47,7 +47,7 @@ class interObj {
         this.position()
     }
     position() {
-        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
+        this.element.style.transform = `translate(${this.x-this.width*(this.direction<0)}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
     }
     trackdown(target) {
         if (this.x < target.x) {
@@ -106,16 +106,33 @@ class fighter extends interObj {
         this.airborne = true
         this.cooldown = false
     }
+
+    collision(hurtbox) {
+        if (
+            this.x + this.width > hurtbox.x &&
+            this.x < hurtbox.x + hurtbox.width &&
+            this.y + this.height > hurtbox.y &&
+            this.y < hurtbox.y + hurtbox.width
+        ) {
+            return true
+        }
+        return false
+    };
+
     attack(target){
-        this.moveLag(5)
-        if (this.HitBox.collision(target)) {
+        this.moveLag(10)
+        this.attackAnimation()
+        setTimeout(()=>{
+            if (this.HitBox.collision(target)) {
             if(this.atk > target.def){
                 target.hp -= this.atk - target.def
             } else {
                 target.hp -= 2
             }
             this.hitstun(5,20,target)
-        }
+        }    
+        },1000/playwin.framerate*5)
+
     }
     hitstun(frames,knockback,target){
         target.xSpd = knockback*this.direction
@@ -193,6 +210,7 @@ class fighter extends interObj {
             this.ySpd -= playwin.gravAcc
             this.move.up = true
         }else {
+            this.y = this.yMax - 10
         }
     }
     update(){
@@ -208,7 +226,23 @@ class fighter extends interObj {
             this.direction = -1
         }
     }
+    attackAnimation(){
+        let i=0
+        const st = setInterval(()=>{
+            if(!playwin.pause){
+                this.rotation += 10*this.direction
+                i++
+                if (i >= 3 && i < 6) {
+                    this.rotation -= 20*this.direction
+                }else if(i>=6){
+                    this.rotation = 0
+                    clearInterval(st)
+                }
+            }
 
+
+        },1000/playwin.framerate)
+    }
 
 }
 class playerClass extends fighter {
@@ -272,7 +306,7 @@ class enemyClass extends fighter {
         if(!(playwin.frame%30)){
             const thought = getRand(5,0)
             this.currentState = this.conditions[thought]
-            console.log(this.currentState);
+            // console.log(this.currentState);
         }
 
     }
@@ -292,7 +326,7 @@ class enemyClass extends fighter {
         this.jump()
     }
     stateIdle(){
-        console.log('idle');
+
     }
     trackdown(target) {
         if (this.x < target.x) {
@@ -468,6 +502,11 @@ function Init() {
     playwin.pause = false
     playwin.timer = 99
     document.getElementById('notification-area').classList.add('hidden')
+
+    document.querySelectorAll('.fire').forEach(fire=>{
+        fire.remove()
+    })
+
 }
 
 function pause() {
