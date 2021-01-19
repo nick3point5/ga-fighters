@@ -6,13 +6,13 @@
     <!-- STYLES -->
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
-    <!-- ACRIPTS -->
+    <!-- SCRIPTS -->
     <script defer src="/js/bootstrap.bundle.js"></script>
     <title>Profile</title>
 </head>
 <body class="body">
 <!-- HEADER START -->
-    <header class="header text-center">
+    <header class="header text-center d-flex flex-column">
         <h1 class="display-1">Welcome, <%= user.name %> </h1>
         <div class="d-flex flex-row justify-content-between">
             <a href="/index/<%= user.account %>/edit" class="btn btn-primary">Settings</a>
