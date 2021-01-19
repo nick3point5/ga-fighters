@@ -225,7 +225,25 @@ router.get('/:account/avatars/:avatarId/edit', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: userAcc});
+		let lvl = 1
+		if (foundObj.exp>=100){
+			lvl = Math.floor(Math.log(9*(foundObj.exp)/100)/Math.log(3))
+		}
+		let spent = (
+			foundObj.stats.health/20+
+			foundObj.stats.mana/20+
+			foundObj.stats.attack+
+			foundObj.stats.defence+
+			foundObj.stats.spclAttack+
+			foundObj.stats.spclDefence
+		)
+
+
+		const skillpts = 20 * lvl + 30 - spent
+
+		
+
+		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: userAcc, skillpts: skillpts});
 	});
 });
 // Avatar GET game  ---------------------------------------------------------------
