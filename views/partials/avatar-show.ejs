@@ -1,0 +1,19 @@
+<section class="character-buttons">
+    <form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>  " method="get">
+        
+        <button type="submit">
+            <div class="character">
+                <img src="<%= character[i].img %>" alt="" class="character-image">
+                <div>
+                    <h1 class="character-name"><%= character[i].name %></h1>
+                    <p class="character-text"><%= character[i].info %> </p>
+                </div>
+            </div>
+        </button>
+        
+    </form>
+
+    <form action="/index/<%= user._id %>/avatars/<%= character[i]._id %>?_method=DELETE" method="post">
+        <button type="submit">Delete</button>
+    </form>
+</section>
