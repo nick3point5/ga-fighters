@@ -7,7 +7,6 @@ span {
     position: relative;
     outline: 1px solid #00f;
 }
-
 span:after {
     content: "";
     width: 100%;
@@ -17,6 +16,9 @@ span:after {
     position: absolute;
     outline: 1px solid red;
     width: 100%;
+}
+.img-card{
+    margin: 0 auto;
 }
 .body{
     width: 80%;
@@ -104,6 +106,7 @@ span:after {
     color: black;
 }
 .name-tag{
+    background-color: #482d5be3;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -120,7 +123,6 @@ h4{
     width: 100px;
     box-shadow: 1px 1px 2px white, 0 0 25px white, 1px 1px 5px white;
     border: 2px black solid;
-
 }
 
 #player{
@@ -153,7 +155,7 @@ h4{
 
 .game-window{
     background-color: gray;
-    background-image: url(https://i.imgur.com/szTQ7dL.gif);
+    background-image: url(https://i.imgur.com/davQLBo.gif);
     background-position: bottom;
     background-size: cover;
     height: 100%;
@@ -205,6 +207,7 @@ p{
 }
 
 .info-display{
+    background-color: #342142e7;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
