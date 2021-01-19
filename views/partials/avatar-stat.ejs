@@ -6,7 +6,9 @@
     <label for="<%= statStr[i] %>" class="stat-label"><%= statAttr[i] %></label>
     <div class="stat-control form-group">
         <div class="btn btn-outline-danger" id="<%= statStr[i] %>-down-stat-btn">&lt;</div>
-        <input type="number" name="<%= statStr[i] %>" id="<%= statStr[i] %>" class="stat-input form-control"value="<%= avatar.stats[statStr[i]] %>" ></input>
+        <span>
+            <input type="number" name="<%= statStr[i] %>" id="<%= statStr[i] %>" class="stat-input form-control"value="<%= avatar.stats[statStr[i]] %>" ></input>
+        </span>
         <div class="btn btn-outline-danger" id="<%= statStr[i] %>-up-stat-btn">&gt;</div>
     </div>
 </div>
