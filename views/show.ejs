@@ -10,13 +10,15 @@
 </head>
 <body class="body">
     <header class="header text-center">
-         <h1 class="display-1">Welcome, <%= user.name %> </h1>
-    <a href="/index/<%= user.account %>/edit" class="btn btn-primary">settings</a>
-    <a href="/index" class="btn btn-primary">Logout</a>
+        <h1 class="display-1">Welcome, <%= user.name %> </h1>
+        <nav class="account-controls">
+            <a href="/index/<%= user.account %>/edit" class="btn btn-primary">Settings</a>
+            <a href="/index" class="btn btn-primary">Logout</a>
+        </nav>
     </header>
    
     <h3 class="text-center"><%= user.name  %>'s Profile. </h3>
-    <a href="/index/<%= user.account %>/new" class="btn btn-danger">New Character</a>
+    
     <main class="character-container d-flex  justify-content-center flex-wrap">
 
        <%   if (user.avatars.length < 1){ %>
@@ -27,7 +29,7 @@
         <% } %>  
         <% } %> 
     </main>
-
+    <a href="/index/<%= user.account %>/new" class="btn btn-success">New Character</a>
 
 </body>
 </html>

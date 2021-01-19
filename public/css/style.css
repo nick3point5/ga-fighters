@@ -100,10 +100,6 @@ h4{
     background-color: red;
 }
 
-/* #enemy{
-
-    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Villainc.svg/1200px-Villainc.svg.png");
-} */
 
 .hidden{
     display: none;
@@ -140,7 +136,6 @@ p{
 }
 
 .character{
-    /* width: 200px; */
     display: flex;
     flex-direction: column;
 }
@@ -209,4 +204,23 @@ p{
 .character-image{
     height: 150px;
     width: 100px;
+}
+
+.character-name{
+    z-index: 3;
+}
+
+.header{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+}
+.account-controls{
+    display: flex;
+    flex-direction: column;
+}
+
+.display-1{
+    margin: 0 1em 0 0 ;
 }

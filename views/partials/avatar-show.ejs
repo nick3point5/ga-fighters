@@ -2,9 +2,9 @@
     <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
         <button type="submit" class="btn btn-success">
             <div class="character card">
-                <img src="<%= user.avatars[i].img %>" alt="avatar-img" style="width: 10em;" class="character-image card-img-top">
+                <img src="<%= user.avatars[i].img %>" alt="avatar-img" class="character-image card-img-top">
                 <div class="car-body">
-                    <h1 class="character-name card-title"><%= user.avatars[i].name %></h1>
+                    <p class="character-name card-title"><%= user.avatars[i].name %></p>
                     <p class="character-text card-text"><%= user.avatars[i].info %> </p>
                 </div> 
             </div>
@@ -14,4 +14,4 @@
         <button type="submit" class="btn btn-danger">Delete</button>
     </form>
 </section>
-
+<%# console.log(user.avatars[i].name) %> 
