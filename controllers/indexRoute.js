@@ -15,7 +15,7 @@ router.get('/new', (req, res) => {
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
-	// console.log('In POST create User route.');
+	console.log('In POST create User route.');
 	if (req.body.password === req.body.confirm) {
 		db.User.create(
 			{
@@ -37,7 +37,7 @@ router.post('/', (req, res) => {
 
 // POST ---->   /index/:id  <-- redirects to  <---- User Login
 router.post('/login', (req, res) => {
-	// console.log(req.body);
+	console.log(req.body);
 
 	db.User.findOne({ name: req.body.name }, (err, foundObj) => {
 		console.log(foundObj);
@@ -63,11 +63,11 @@ router.get('/:account', (req, res) => {
 	db.User.findById(req.params.account)
 	.populate('avatars')
 	.exec((err, foundObj) => {
-		// console.log(foundObj);
+		console.log(foundObj);
 		if (err) {
 			res.send(err);
 		}
-		// console.log('Profile route hit');
+		console.log('Profile route hit');
 		
 		res.render('show', { user: foundObj });
 		// res.send('Got show profile');
@@ -157,7 +157,7 @@ router.put('/:account', (req, res) => {
 		db.User.findOne({ account : accountId})
 		.populate('avatars')
 		.exec((err, foundUser) => {
-			// console.log(foundUser)
+			console.log(foundUser)
 			if (err) {
 				res.send(err);
 			}

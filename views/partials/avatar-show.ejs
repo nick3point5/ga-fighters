@@ -1,14 +1,3 @@
-<form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
-    
-    <button type="submit">
-        <div class="character">
-            <img src="<%= user.avatars[i].url %>" alt="" class="character-image">
-            <div>
-                <h1 class="character-name"><%= user.avatars[i].name %></h1>
-                <p class="character-text"><%= user.avatars[i].info %> </p>
-            </div>
-        </button>
-        
 <section>
     <form action="/index/<%= user.account %>/avatars/<%= user.avatars[i]._id %>  " method="get">
         <button type="submit" class="btn btn-success">
