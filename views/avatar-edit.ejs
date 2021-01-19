@@ -7,17 +7,22 @@
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
     <script defer src="/js/dom_manipulation.js"></script>
-
-    <title>New Character</title>
+    <title>Edit Avatar</title>
 </head>
 <body class="body">
+<!-- HEADER START -->
     <header class="header">
-        <h1 class="display-1 text-center">Avatar</h1>
-        <a href="/index/<%= accountId %>/avatars/<%= avatar._id  %> " class="btn btn-outline-success">Back</a>
+        <h1 class="display-1 text-center">Avatar Info</h1>
+        <div class="d-flex flex-row justify-content-between">
+            <a href="/index/<%= accountId %>/avatars/<%= avatar._id  %> " class="btn btn-outline-primary">Back</a>
+            <a href="/index" class="btn btn-outline-primary">Logout</a>
+        </div>
     </header>
-    <h3 class="text-center">Edit Your Hero</h3>
-    <main class="main d-flex  justify-content-center">
-        <form action="/index/<%= accountId %>/avatars/<%= avatarId %>?_method=PUT" method="post" class="form p-5">
+<!-- HEADER END -->
+<h3 class="text-center">Edit Your Avatar</h3>
+<!-- MAIN START -->
+<main class="main d-flex  justify-content-center">
+        <form action="/index/<%= accountId %>/avatars/<%= avatarId %>?_method=PUT" method="post" class="p-5 text-center">
             <div class="form-group">
                 <label for="name">Character Name</label>
                 <input id="name" type="text" name="name" class="form-control" value="<%= avatar.name %> ">
@@ -31,17 +36,12 @@
                 <input id="bio" type="text" name="info" class="form-control" value="<%= avatar.info %> ">
             </div>
             <h2 id="skillpoints">Skill Points: ###</h2>
-
+<!-- PARTIAL EJS -->
             <%- include('partials/avatar-stat.ejs') %>
-
-
-
-
+<!-- PARTIAL EJS -->
             <button type="submit" class="btn btn-outline-primary"> Level Up </button>
         </form>
     </main>
-
+<!-- MAIN END -->
 </body>
 </html>
-
-<% console.log(avatar) %> 

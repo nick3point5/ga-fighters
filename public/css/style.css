@@ -36,17 +36,15 @@
     -ms-border-radius: 1em;
     -o-border-radius: 1em;
 }
-.main{
+.main, .main-show{
     color: black;
-    padding: 3em;
-    background-color: rgba(250, 235, 215, 0.159);
+    padding: 1em;
+    border: black solid 2px;
+    background-color: rgba(250, 235, 215, 0.358);
 }
-.main-show{
-    background-color: rgb(237, 237, 237);
-    background-image: url(https://image.freepik.com/free-vector/stylish-blue-technology-circuit-diagram-lines-background_1017-28406.jpg);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+.card-stats{
+    background-color: #adb1b5bb;
+    border: black solid 2px;
 }
 .notification{
     background-color: rgba(255,255,255,0.5);
