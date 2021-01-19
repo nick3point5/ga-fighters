@@ -4,7 +4,7 @@
     margin: 2em auto;
     font-size: 25px;
     background-color: #345472;
-    background-image: url(https://image.freepik.com/free-vector/blue-abstract-futuristic-background_23-2148705451.jpg);
+    background-image: url('https://free4kwallpapers.com/uploads/originals/2020/05/11/gradient-wallpaper.jpg');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -15,34 +15,17 @@
 .header{
     font-size: 1.2em;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    background-color: rgba(8, 11, 80, 0.063);
-    background-image: url(https://image.freepik.com/free-vector/abstract-digital-low-angle-view-skyscrapers-polygons-lines-particles-connected-dots-isolated-business-buildings-white-background-3d-technology-concept-success-business-polygon_201274-14.jpg);
-    background-position: inherit;
-    background-size: cover;
-    color: rgba(14, 41, 100, 0.913);
-
-}
-.form {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    color: aliceblue;
-    margin: 3em auto;
-    border: black solid 2px;
-    background-color: rgba(252, 252, 252, 0.159);
-    border-radius: 1em;
-    -webkit-border-radius: 1em;
-    -moz-border-radius: 1em;
-    -ms-border-radius: 1em;
-    -o-border-radius: 1em;
+    background-image: url('');
+    color: rgba(201, 203, 206, 0.961);
 }
 .main, .main-show{
     color: black;
     padding: 1em;
     border: black solid 2px;
-    background-color: rgba(250, 235, 215, 0.358);
+    background-color: rgba(235, 229, 221, 0.426);
 }
 .card-stats{
+    color: black;
     background-color: #adb1b5bb;
     border: black solid 2px;
 }
@@ -68,10 +51,6 @@
     font-size: 40px;
     color: black;
 }
-
-
-
-
 .name-tag{
     display: flex;
     flex-direction: row;
