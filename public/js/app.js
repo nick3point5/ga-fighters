@@ -179,7 +179,7 @@ class fighter extends interObj {
             
             const  fire = document.createElement('div')
             fire.classList.add("fire")
-            fire.classList.add("hitbox")
+            // fire.classList.add("hitbox")
             fire.classList.add("hidden")
             
             playwin.element.appendChild(fire)
@@ -350,10 +350,11 @@ class enemyClass extends fighter {
 }
 class fireballClass extends interObj {
     constructor(x, y, element, direction,user) {
-        super(x, y, 20, 20, element)
+        super(x, y, 40, 20, element)
+        this.direction = direction
         this.xSpd = 3;
         this.user = user
-        if(direction>0){
+        if(this.direction>0){
             this.move.ri = true
         }else{
             this.move.lf = true
