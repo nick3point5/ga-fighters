@@ -440,9 +440,9 @@ function gameOver() {
     // $("#music")[0].pause();
     // $("#music")[0].currentTime = 0;
     playwin.pause = true
-    if (enemyCharacter.hp > playerCharacter.hp) {
+    if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) > playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
         document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
-    } else if (enemyCharacter.hp < playerCharacter.hp) {
+    } else if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) < playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
         document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
     } else{
         document.getElementById('notification-message').innerHTML=`Tie`
