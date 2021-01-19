@@ -47,7 +47,7 @@ class interObj {
         this.position()
     }
     position() {
-        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
+        this.element.style.transform = `translate(${this.x-this.width*(this.direction<0)}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
     }
     trackdown(target) {
         if (this.x < target.x) {
@@ -106,16 +106,33 @@ class fighter extends interObj {
         this.airborne = true
         this.cooldown = false
     }
+
+    collision(hurtbox) {
+        if (
+            this.x + this.width > hurtbox.x &&
+            this.x < hurtbox.x + hurtbox.width &&
+            this.y + this.height > hurtbox.y &&
+            this.y < hurtbox.y + hurtbox.width
+        ) {
+            return true
+        }
+        return false
+    };
+
     attack(target){
-        this.moveLag(5)
-        if (this.HitBox.collision(target)) {
+        this.moveLag(10)
+        this.attackAnimation()
+        setTimeout(()=>{
+            if (this.HitBox.collision(target)) {
             if(this.atk > target.def){
                 target.hp -= this.atk - target.def
             } else {
                 target.hp -= 2
             }
             this.hitstun(5,20,target)
-        }
+        }    
+        },1000/playwin.framerate*5)
+
     }
     hitstun(frames,knockback,target){
         target.xSpd = knockback*this.direction
@@ -162,7 +179,7 @@ class fighter extends interObj {
             
             const  fire = document.createElement('div')
             fire.classList.add("fire")
-            fire.classList.add("hitbox")
+            // fire.classList.add("hitbox")
             fire.classList.add("hidden")
             
             playwin.element.appendChild(fire)
@@ -193,6 +210,7 @@ class fighter extends interObj {
             this.ySpd -= playwin.gravAcc
             this.move.up = true
         }else {
+            this.y = this.yMax - 10
         }
     }
     update(){
@@ -208,7 +226,23 @@ class fighter extends interObj {
             this.direction = -1
         }
     }
+    attackAnimation(){
+        let i=0
+        const st = setInterval(()=>{
+            if(!playwin.pause){
+                this.rotation += 10*this.direction
+                i++
+                if (i >= 3 && i < 6) {
+                    this.rotation -= 20*this.direction
+                }else if(i>=6){
+                    this.rotation = 0
+                    clearInterval(st)
+                }
+            }
 
+
+        },1000/playwin.framerate)
+    }
 
 }
 class playerClass extends fighter {
@@ -272,7 +306,7 @@ class enemyClass extends fighter {
         if(!(playwin.frame%30)){
             const thought = getRand(5,0)
             this.currentState = this.conditions[thought]
-            console.log(this.currentState);
+            // console.log(this.currentState);
         }
 
     }
@@ -292,7 +326,7 @@ class enemyClass extends fighter {
         this.jump()
     }
     stateIdle(){
-        console.log('idle');
+
     }
     trackdown(target) {
         if (this.x < target.x) {
@@ -316,10 +350,11 @@ class enemyClass extends fighter {
 }
 class fireballClass extends interObj {
     constructor(x, y, element, direction,user) {
-        super(x, y, 20, 20, element)
+        super(x, y, 40, 20, element)
+        this.direction = direction
         this.xSpd = 3;
         this.user = user
-        if(direction>0){
+        if(this.direction>0){
             this.move.ri = true
         }else{
             this.move.lf = true
@@ -440,9 +475,9 @@ function gameOver() {
     // $("#music")[0].pause();
     // $("#music")[0].currentTime = 0;
     playwin.pause = true
-    if (enemyCharacter.hp > playerCharacter.hp) {
+    if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) > playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
         document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
-    } else if (enemyCharacter.hp < playerCharacter.hp) {
+    } else if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) < playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
         document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
     } else{
         document.getElementById('notification-message').innerHTML=`Tie`
@@ -468,6 +503,11 @@ function Init() {
     playwin.pause = false
     playwin.timer = 99
     document.getElementById('notification-area').classList.add('hidden')
+
+    document.querySelectorAll('.fire').forEach(fire=>{
+        fire.remove()
+    })
+
 }
 
 function pause() {
@@ -479,10 +519,10 @@ function pause() {
             // $("#music")[0].play()
         }
         if (playwin.pause) {
-            document.getElementById('notification-message').innerHTML=`Paused`
-            document.getElementById('notification-area').classList.remove('hidden')
+            document.getElementById('pause-message').innerHTML=`Paused`
+            document.getElementById('pause-area').classList.remove('hidden')
         } else {
-            document.getElementById('notification-area').classList.add('hidden')
+            document.getElementById('pause-area').classList.add('hidden')
         }
     }
 }
@@ -497,6 +537,16 @@ function mute() {
     }
 }
 
+function controlToggle() {
+    if (playwin.controlMode === 'arrow') {
+        playwin.controlMode = 'wasd'
+        document.getElementById('control-toggle').innerText = 'wasd'
+    } else {
+        playwin.controlMode = 'arrow'
+        document.getElementById('control-toggle').innerText = 'Arrows'
+    }
+}
+
 function assignEvents() {
     // $('#pauseBtn').on("click", pause)
     // $('#muteBtn').on("click", mute)
@@ -507,6 +557,7 @@ function assignEvents() {
     // })
 
     document.getElementById('notification-area').addEventListener('click',game)
+    document.getElementById('control-toggle').addEventListener('click',controlToggle)
     window.addEventListener("keydown", getKey);
     window.addEventListener("keyup", releaseKey);
 
@@ -648,7 +699,9 @@ let enemyAttack = new attackClass(
 )
 
 let playerCharacter = new playerClass(
-    playerInit.x,playerInit.y,playerEle,
+    playerInit.x,
+    playerInit.y,
+    playerEle,
     playerEle.getAttribute('name'),
     playerAttack, 
     +playerEle.getAttribute('hp'), 
@@ -660,7 +713,17 @@ let playerCharacter = new playerClass(
 )
 
 let enemyCharacter = new enemyClass(
-    enemyInit.x,enemyInit.y,document.getElementById('enemy'),'Evil Man',enemyAttack, 100, 100, 10, 5, 5, 5
+    enemyInit.x,
+    enemyInit.y,
+    document.getElementById('enemy'),
+    'Evil Man',
+    enemyAttack,
+    100, 
+    100, 
+    10, 
+    5, 
+    5, 
+    5
 )
 
 playerAttack.user = playerCharacter

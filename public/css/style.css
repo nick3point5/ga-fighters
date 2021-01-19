@@ -83,7 +83,7 @@ span:after {
     font-weight: 300;
     font-size: 1.3em;
 }
-.notification{
+.notification, .pause{
     background-color: rgba(255,255,255,0.5);
     align-self: center;
     height: 300px;
@@ -101,7 +101,7 @@ span:after {
     border-radius: 30px;
 }
 
-#notification-message{
+#notification-message, #pause-message{
     font-size: 40px;
     color: black;
 }
@@ -123,10 +123,12 @@ h4{
     width: 100px;
     box-shadow: 1px 1px 2px white, 0 0 25px white, 1px 1px 5px white;
     border: 2px black solid;
+    transform-origin: 100px 150px;
+    transform: translate(100px,100px) rotateZ(45deg);
+
 }
 
 #player{
-    transform: translate(100px,100px) rotateZ(45deg);
     z-index: 3;
 
 }
@@ -141,7 +143,9 @@ h4{
 .fire {
     position: absolute;
     height: 20px;
-    width: 20px;
+    width: 40px;
+    background-image: url('../assets/fireball.gif');
+    background-size: cover;
 }
 
 .hitbox {
@@ -165,6 +169,11 @@ h4{
     display: flex;
     flex-direction: column;
     align-content: center;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+
 }
 
 .stat-container{
@@ -204,6 +213,8 @@ p{
     height: 500px;
     width: 800px;
     border: 2px solid black;
+    position: relative;
+    display: flex;
 }
 
 .info-display{
@@ -268,6 +279,6 @@ p{
     flex-direction: column;
 }
 
-.display-1{
+.display-1, .display-2, .display-3{
     margin: 0 1em 0 0 ;
 }
