@@ -1,6 +1,12 @@
 .body{
-    font-size: 25px;
+    width: 80%;
+    height: 90vh;
+    margin: 2em auto;
+    font-size: 15px;
     background-color: #345472;
+    background-image: url('https://free4kwallpapers.com/uploads/originals/2020/05/11/gradient-wallpaper.jpg');
+    background-position: center;
+    background-size: cover;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: rgb(255, 255, 255);
     font-weight: 700;
@@ -8,28 +14,33 @@
 .header{
     font-size: 1.2em;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    background-color: rgba(53, 43, 19, 0.522);
-    color: rgb(191, 180, 180);
-
+    background-image: url('');
+    color: rgb(255, 255, 255);
 }
-.form {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    color: aliceblue;
-    margin: 3em auto;
+.main, .main-show{
+    color: rgb(255, 255, 255);
+    padding: 1em;
     border: black solid 2px;
-    background-color: rgba(252, 252, 252, 0.159);
-    border-radius: 1em;
-    -webkit-border-radius: 1em;
-    -moz-border-radius: 1em;
-    -ms-border-radius: 1em;
-    -o-border-radius: 1em;
+    background-color: rgba(48, 44, 39, 0.721);
 }
-.main{
-    color: black;
-    padding: 3em;
-    background-color: rgba(250, 235, 215, 0.159);
+.main-game{
+    color: rgb(255, 255, 255);
+    padding: 5% 17% 5% 17%;
+    border: black solid 2px;
+    background-color: rgba(48, 44, 39, 0.721);
+}
+.card-stats{
+    color: rgb(0, 0, 0);
+    background-color: #c7c7c7bb;
+    border: black solid 2px;
+}
+.card {
+    background-color: rgba(240, 248, 255, 0.372);
+}
+.link {
+    color: antiquewhite;
+    font-weight: 300;
+    font-size: 1.3em;
 }
 .notification, .pause{
     background-color: rgba(255,255,255,0.5);
@@ -53,10 +64,6 @@
     font-size: 40px;
     color: black;
 }
-
-
-
-
 .name-tag{
     display: flex;
     flex-direction: row;
@@ -215,12 +222,6 @@ p{
     z-index: 3;
 }
 
-.header{
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-between;
-    align-items: center;
-}
 .account-controls{
     display: flex;
     flex-direction: column;
