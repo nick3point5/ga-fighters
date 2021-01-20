@@ -176,7 +176,7 @@ class fighter extends interObj {
 
     fireball(target){
         this.moveLag(30)
-        if (this.mp >= 10) {
+        if (this.mp >= this.spAtk || this.mp > 0) {
             
             const  fire = document.createElement('div')
             fire.classList.add("fire")
@@ -190,7 +190,7 @@ class fighter extends interObj {
             )
                 
             fireball.launch(target)
-            this.mp -= 10
+            this.mp -= this.spAtk
         }
                 
 
