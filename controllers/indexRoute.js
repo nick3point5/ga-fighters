@@ -312,7 +312,7 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 					console.log(err);
 					res.send(err);
 				}
-				return res.redirect(`/index/${userAcc}`);
+				return res.redirect(`/index/${userAcc}/avatars/${avatarId}`);
 			}
 			);
 			

@@ -274,30 +274,32 @@ class enemyClass extends fighter {
         this.spDef=spDef
         this.xSpd  = 5;
         this.control = true
-        this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
+        this.states = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
         this.currentState = 'idle'
+        this.personality=[1,1,1,1,1,1]
+
     }
     Ai() {
         this.behavior()
         if (this.control) {
             
             
-            if (this.currentState === this.conditions[0]) {
+            if (this.currentState === this.states[0]) {
                 this.stateAttack()
             }
-            if (this.currentState === this.conditions[1]) {
+            if (this.currentState === this.states[1]) {
                 this.stateFireball()
             }
-            if (this.currentState === this.conditions[2]) {
+            if (this.currentState === this.states[2]) {
                 this.stateApproach()
             }
-            if (this.currentState === this.conditions[3]) {
+            if (this.currentState === this.states[3]) {
                 this.stateBackoff()
             }
-            if (this.currentState === this.conditions[4]) {
+            if (this.currentState === this.states[4]) {
                 this.stateJump()
             }
-            if (this.currentState === this.conditions[5]) {
+            if (this.currentState === this.states[5]) {
                 this.stateIdle()
             }
         }
@@ -305,12 +307,40 @@ class enemyClass extends fighter {
     }
     behavior(){
         if(!(playwin.frame%30)){
-            const thought = getRand(5,0)
-            this.currentState = this.conditions[thought]
-            // console.log(this.currentState);
+            const thought = weight(this.personality,this.states)
+            this.currentState = thought
+        }
+
+        function weight(choice,states){
+            const total = choice.reduce((a,b)=>a+b)
+            let n =0 
+            let upper=[]
+            let lower=[]  
+            let feeling=Math.random()
+            for (let i = 0; i < choice.length; i++) {
+                lower.push(n)
+                n += (choice[i]/total)
+                upper.push(n)
+            }
+            choice.forEach(trait=>{
+                (trait/total)
+            })
+            const bounds={
+                upper:upper,
+                lower:lower   
+            }
+            
+            for (let i = 0; i < choice.length; i++) {
+                if (bounds.lower[i]<= feeling && feeling<bounds.upper[i]) {
+                    return states[i]
+                }
+            }
+    
         }
 
     }
+
+
     stateAttack(){
         this.attack(this.opponent)
     }
@@ -384,6 +414,9 @@ class fireballClass extends interObj {
                 }
                 if (this.x + this.xSpd >= this.xMax) {
                     this.element.remove()
+                    clearInterval(launch);
+                }
+                if (playwin.gameOver) {
                     clearInterval(launch);
                 }
             }
