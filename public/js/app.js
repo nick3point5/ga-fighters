@@ -105,6 +105,7 @@ class fighter extends interObj {
         this.HitBox = HitBox
         this.airborne = true
         this.cooldown = false
+        this.exp = 100
     }
 
     collision(hurtbox) {
@@ -681,6 +682,7 @@ playwin = {
     controlMode: 'arrow'
 };
 playerEle = document.getElementById('player')
+enemyEle = document.getElementById('enemy')
 
 playerInit= {
     x:0,
@@ -716,14 +718,14 @@ let enemyCharacter = new enemyClass(
     enemyInit.x,
     enemyInit.y,
     document.getElementById('enemy'),
-    'Evil Man',
-    enemyAttack,
-    100, 
-    100, 
-    10, 
-    5, 
-    5, 
-    5
+    enemyEle.getAttribute('name'),
+    enemyAttack, 
+    +enemyEle.getAttribute('hp'), 
+    +enemyEle.getAttribute('mp'), 
+    +enemyEle.getAttribute('atk'), 
+    +enemyEle.getAttribute('def'), 
+    +enemyEle.getAttribute('spatk'), 
+    +enemyEle.getAttribute('spdef'), 
 )
 
 playerAttack.user = playerCharacter

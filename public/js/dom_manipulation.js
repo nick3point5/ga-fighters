@@ -10,19 +10,12 @@ for (let i = 0; i < statStr.length; i++) {
 
 
 skillpts = (
-    20+
-    +stat[0].value/20+
-    +stat[1].value/20+
-    +stat[2].value+
-    +stat[3].value+
-    +stat[4].value+
-    +stat[5].value+
-    -30
+    +document.getElementById('skillpoints').textContent
 )
 
 
 
-document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
+document.getElementById('skillpoints').textContent = skillpts
 
 
 for (let i = 0, eleUp = null; i < 2; i++) {
@@ -31,7 +24,7 @@ for (let i = 0, eleUp = null; i < 2; i++) {
         if (skillpts>0) {
             stat[i].value = +stat[i].value + 20
             skillpts -= 1
-            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').textContent = skillpts
         }
     })
 
@@ -40,7 +33,7 @@ for (let i = 0, eleUp = null; i < 2; i++) {
         if (+stat[i].value>0 && +stat[i].value>20) {
             stat[i].value = +stat[i].value - 20
             skillpts += 1
-            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').textContent = skillpts
         }
     })
     
@@ -54,7 +47,7 @@ for (let i = 2, eleUp = null; i < statStr.length; i++) {
         if (skillpts>0) {
             stat[i].value = +stat[i].value + 1
             skillpts -= 1
-            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').textContent = skillpts
         }
     })
 
@@ -63,7 +56,7 @@ for (let i = 2, eleUp = null; i < statStr.length; i++) {
         if (+stat[i].value>0 && +stat[i].value>1) {
             stat[i].value = +stat[i].value - 1
             skillpts += 1
-            document.getElementById('skillpoints').textContent = 'Skill Points: ' + skillpts
+            document.getElementById('skillpoints').textContent = skillpts
         }
     })
     

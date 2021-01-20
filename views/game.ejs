@@ -11,11 +11,11 @@
         <title>Game</title>
     </head>
     <body class="body">
-    <!-- HEADER START -->
+<!-- HEADER START -->
         <%- include('partials/header.ejs')  %> 
-    <!-- HEADER END -->
+<!-- HEADER END -->
         <a href="/index/<%= accountId %>/avatars/<%= avatar._id %>/edit" class="btn btn-outline-primary">Level Up</a>
-    <!-- MAIN START -->
+<!-- MAIN START -->
         <main class="main-game">
             <div class="game-window">
                 <div class="info-display">
@@ -30,11 +30,40 @@
                         value="<%= avatar.stats.mana %>">
                         </meter>
                     </div>
+
+                    <h3 id="timer">12</h3>
+
+                    <div class="bar-container enemy-bar-container">
+
+                        <meter class="hp" id="enemy-hp"
+                            min="0" max="100"
+                            low="33" high="66" optimum="80"
+                            value="50">
+                        </meter>
+                        <meter class="mp" id="enemy-mp"
+                            min="0" max="100"
+                            value="50">
+                        </meter>
+                    </div>
+                </div>
+                <div class="name-tag">
+                    <h4><%= avatar.name %></h4>
+                    <h4><%= opponent.name %></h4>
+                </div>
+                <div id="play-window">
+                        <%- include('partials/player.ejs') %> 
+                        <%- include('partials/enemy.ejs') %> 
+                </div>
+                <div class="notification hidden" id="notification-area">
+                    <p id="notification-message">notification</p>
+                </div>
+                <div class="pause hidden" id="pause-area">
+                    <p id="pause-message">notification</p>
+                    <label>Controls:<button id="control-toggle">Arrows</button></label>
             
                     <h3 id="timer">12</h3>
 
                     <div class="bar-container enemy-bar-container">
-                        
                         <meter class="hp" id="enemy-hp"
                         min="0" max="100"
                             low="33" high="66" optimum="80"
