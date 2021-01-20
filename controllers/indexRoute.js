@@ -214,8 +214,8 @@ router.get('/:account/avatars/:avatarId', (req, res) => {
 			res.send(err);
 		}
 		let lvl = 1
-		if (foundObj.exp>=100){
-			lvl = Math.floor(Math.log(9*(foundObj.exp)/100)/Math.log(3))
+		if (foundObj.stats.exp>=100){
+			lvl = Math.floor(Math.log(9*(foundObj.stats.exp)/100)/Math.log(3))
 		}
 
 		let expRem = (3**(lvl-1))*100 - foundObj.stats.exp 
@@ -234,8 +234,8 @@ router.get('/:account/avatars/:avatarId/edit', (req, res) => {
 			res.send(err);
 		}
 		let lvl = 1
-		if (foundObj.exp>=100){
-			lvl = Math.floor(Math.log(9*(foundObj.exp)/100)/Math.log(3))
+		if (foundObj.stats.exp>=100){
+			lvl = Math.floor(Math.log(9*(foundObj.stats.exp)/100)/Math.log(3))
 		}
 		let spent = (
 			foundObj.stats.health/20+
@@ -281,24 +281,29 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 	const userAcc = req.params.account;
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
-	const updateObj = {
-		name: rb.name,
-		info: rb.info,
-		stats: {
-			health: rb.health,
-			mana: rb.mana,
-			attack: rb.attack,
-			defence: rb.defence,
-			spclAttack: rb.spclAttack,
-			spclDefence: rb.spclDefence,
-		},
-		img: rb.img,
-	};
-		db.User.findOne({account : userAcc},(err, foundUser)=>{
+		db.Avatar.findById(avatarId,(err, foundAvatar)=>{
 			if (err) {
 				res.send(err);
 			}
-				db.Avatar.findByIdAndUpdate(
+
+			const updateObj = {
+				name: rb.name,
+				info: rb.info,
+				stats: {
+					health: rb.health,
+					mana: rb.mana,
+					attack: rb.attack,
+					defence: rb.defence,
+					spclAttack: rb.spclAttack,
+					spclDefence: rb.spclDefence,
+					exp: foundAvatar.stats.exp
+				},
+				user: foundAvatar.user, 
+				img: rb.img,
+			};
+
+
+			db.Avatar.findByIdAndUpdate(
 			avatarId,
 			updateObj,
 			{ new: true },
@@ -308,7 +313,7 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 					console.log(err);
 					res.send(err);
 				}
-				return res.redirect(`/index/${userAcc}/avatars`);
+				return res.redirect(`/index/${userAcc}`);
 			}
 			);
 			
@@ -329,13 +334,54 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 				}
 				db.User.findByIdAndUpdate(foundUser._id, { $pull:{ avatars: deletedAvatar._id}},{new:true},(err, updatedUser)=>{
 
-					res.redirect(`/index/${userAcc}/avatars/${avatarId}`);
+					res.redirect(`/index/${userAcc}`);
 				})
 	})
 		})
 	
 	
 });
+
+router.put('/:account/avatars/:avatarId/level', (req, res) => {
+	const userAcc = req.params.account;
+	const avatarId = req.params.avatarId;
+	const rb = req.body;
+
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		
+		const obj = {
+			name: foundObj.name,
+			info: foundObj.info,
+			stats: {
+				health: foundObj.stats.health,
+				mana: foundObj.stats.mana,
+				attack: foundObj.stats.attack,
+				defence: foundObj.stats.defence,
+				spclAttack: foundObj.stats.spclAttack,
+				spclDefence: foundObj.stats.spclDefence,
+				exp: +req.body.exp,
+			},
+			img: foundObj.img,
+			user: foundObj.user
+		}
+
+		db.Avatar.findByIdAndUpdate(
+				avatarId,
+				obj,
+				{ new: true },
+				(err, updatedAvatar) => {
+					if (err) {
+						console.log('Error:');
+						console.log(err);
+						res.send(err);
+					}
+					return res.redirect(`/index/${userAcc}/avatars/${avatarId}/edit`);
+				}
+				);
+				
+		});
+	});
+
 
 function getRand(max, min) {
     let num = Math.random() * (max + 1 - min) + min - 1;

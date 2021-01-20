@@ -370,7 +370,7 @@ class fireballClass extends interObj {
                 this.moveFunction()
                 if(this.collision(target)){
                     if(this.spAtk > target.spDef){
-                        target.hp -= this.spAtk*3 - target.spDef + 10
+                        target.hp -= this.user.spAtk*3 - target.spDef + 10
                     } else {
                         target.hp -= 10
                     }
@@ -480,6 +480,10 @@ function gameOver() {
         document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
     } else if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) < playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
         document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
+        const exp = +playerCharacter.element.getAttribute('exp') + +enemyCharacter.element.getAttribute('exp')
+        document.getElementById('exp').value = exp
+        document.getElementById('level-display').value = Math.floor(Math.log(9*(exp)/100)/Math.log(3))
+
     } else{
         document.getElementById('notification-message').innerHTML=`Tie`
     }
@@ -504,7 +508,7 @@ function Init() {
     playwin.pause = false
     playwin.timer = 99
     document.getElementById('notification-area').classList.add('hidden')
-
+    // document.getElementById('level-display').value = Math.floor(Math.log(9*(+playerCharacter.element.getAttribute('exp'))/100)/Math.log(3))
     document.querySelectorAll('.fire').forEach(fire=>{
         fire.remove()
     })
@@ -740,4 +744,5 @@ game()
 assignEvents()
 mute()
 
-console.log(playerCharacter.hp)
+// let xhr = new XMLHttpRequest
+// xhr.open('GET',

@@ -14,7 +14,12 @@
 <!-- HEADER START -->
     <%- include('partials/header.ejs')  %> 
 <!-- HEADER END -->
-    <a href="/index/<%= accountId %>/avatars/<%= avatar._id %>/edit" class="btn btn-outline-primary">Level Up</a>
+    <form action="/index/<%= accountId %>/avatars/<%= avatar._id %>/level?_method=PUT" method="post">
+        <label>Lvl</label>
+        <input type="number" id="level-display" name = "lvl">
+        <input type="number" class="hidden" id="exp" name="exp" value="<%= avatar.stats.exp %> ">
+        <button type="submit" class="btn btn-outline-primary">Level Up</button>
+    </form>
 <!-- MAIN START -->
     <main class="game-window">
         <div class="info-display">
