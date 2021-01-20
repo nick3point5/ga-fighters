@@ -251,11 +251,20 @@ router.get('/:account/avatars/:avatarId/edit', (req, res) => {
 router.get('/:account/avatars/:avatarId/game', (req, res) => {
 	const userAcc = req.params.account;
 	const avatarId = req.params.avatarId;
-	db.Avatar.findById(avatarId, (err, foundObj) => {
+	db.Avatar.findById(avatarId, (err, player) => {
 		if (err) {
 			res.send(err);
 		}
-		return res.render('game', { avatar: foundObj , avatarId : avatarId, accountId: userAcc});
+		db.Avatar.find({user: {$nin:player.user}}, (err, opponents) => {
+			if (err) {
+				res.send(err);
+			}
+			const pick = getRand(opponents.length-1,0)
+			const opponent = (opponents[pick])
+			
+			return res.render('game', { avatar: player , avatarId : avatarId, accountId: userAcc, opponent:opponent});
+		})
+
 	});
 });
 
@@ -320,6 +329,11 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 	
 });
 
+function getRand(max, min) {
+    let num = Math.random() * (max + 1 - min) + min - 1;
+    num = Math.ceil(num);
+    return num;
+}
 
 	//============================================================================================================================
 	
