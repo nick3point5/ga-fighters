@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
         <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
         <link href="/css/style.css" rel="stylesheet" type="text/css">
         <script defer src="/js/bootstrap.bundle.js"></script>
@@ -30,11 +32,8 @@
                         value="<%= avatar.stats.mana %>">
                         </meter>
                     </div>
-
                     <h3 id="timer">12</h3>
-
                     <div class="bar-container enemy-bar-container">
-
                         <meter class="hp" id="enemy-hp"
                             min="0" max="100"
                             low="33" high="66" optimum="80"
@@ -53,35 +52,6 @@
                 <div id="play-window">
                         <%- include('partials/player.ejs') %> 
                         <%- include('partials/enemy.ejs') %> 
-                </div>
-                <div class="notification hidden" id="notification-area">
-                    <p id="notification-message">notification</p>
-                </div>
-                <div class="pause hidden" id="pause-area">
-                    <p id="pause-message">notification</p>
-                    <label>Controls:<button id="control-toggle">Arrows</button></label>
-            
-                    <h3 id="timer">12</h3>
-
-                    <div class="bar-container enemy-bar-container">
-                        <meter class="hp" id="enemy-hp"
-                        min="0" max="100"
-                            low="33" high="66" optimum="80"
-                            value="50">
-                        </meter>
-                        <meter class="mp" id="enemy-mp"
-                            min="0" max="100"
-                            value="50">
-                        </meter>
-                    </div>
-                </div>
-                <div class="name-tag">
-                    <h4><%= avatar.name %></h4>
-                    <h4>Evil Man</h4>
-                </div>
-                <div id="play-window">
-                    <%- include('partials/player.ejs') %> 
-                    <%- include('partials/enemy.ejs') %> 
                 </div>
                 <div class="notification hidden" id="notification-area">
                     <p id="notification-message">notification</p>
