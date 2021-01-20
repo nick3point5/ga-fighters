@@ -286,3 +286,11 @@ p{
 .display-1, .display-2, .display-3{
     margin: 0 1em 0 0 ;
 }
+
+#level-display{
+    width: 100px
+}
+
+input{
+    text-align: center;
+}

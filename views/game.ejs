@@ -17,11 +17,21 @@
         <%- include('partials/header.ejs')  %> 
 <!-- HEADER END -->
     <form action="/index/<%= accountId %>/avatars/<%= avatar._id %>/level?_method=PUT" method="post">
-        <label>Lvl</label>
-        <input type="number" id="level-display" name = "lvl">
-        <input type="number" class="hidden" id="exp" name="exp" value="<%= avatar.stats.exp %> ">
+        <div class="input-container">
+            <div class="stat-container">
+                <label>Lvl</label>
+                <div class="stat-control form-group">
+                    <div class="input-container">
+                        <div class="input"></div>
+                        <input type="number" id="level-display" name = "lvl">
+                        <input type="number" class="hidden" id="exp" name="exp" value="<%= avatar.stats.exp %> ">
+                    </div>
+                </div>
+            </div>
+        </div>
         <button type="submit" class="btn btn-outline-primary">Level Up</button>
     </form>
+    
 <!-- MAIN START -->
     <main class="main-game">
         <div class="game-window">
