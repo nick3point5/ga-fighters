@@ -192,7 +192,6 @@ class fighter extends interObj {
             fireball.launch(target)
             this.mp -= this.spAtk
         }
-                
 
     }
     jump(){
@@ -581,9 +580,13 @@ function controlToggle() {
     if (playwin.controlMode === 'arrow') {
         playwin.controlMode = 'wasd'
         document.getElementById('control-toggle').innerText = 'wasd'
+        document.querySelector('.move-info').innerText ='A D'
+        document.querySelector('.jump-info').innerText ='W'
     } else {
         playwin.controlMode = 'arrow'
         document.getElementById('control-toggle').innerText = 'Arrows'
+        document.querySelector('.move-info').innerText ='⬅➡'
+        document.querySelector('.jump-info').innerText ='⬆'
     }
 }
 

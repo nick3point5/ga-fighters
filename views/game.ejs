@@ -34,11 +34,44 @@
     
 <!-- MAIN START -->
     <main class="main-game">
+        <div class="intructions">
+            <section class="info-header">
+                <h2>Controls</h2>
+            </section>
+            <section class="info-section">
+                <p class="game-info">MOVE:</p>
+                <p class="game-info move-info">⬅➡</p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">JUMP:</p>
+                <p class="game-info jump-info">⬆</p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">ATTACK:</p>
+                <p class="game-info">SPACE</p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">FIREBALL:</p>
+                <p class="game-info">Z</p>
+            </section>
+            <section class="info-section">
+                <p></p>
+            </section>
+            <section class="info-header">
+                <h2>Win</h2>
+            </section>
+            <section class="info-section">
+                <p class="game-info">
+                    The game end when one player reach zero HP or timeout.
+                    <br><br>
+                    Who ever has the highest proportional HP wins.
+                </p>
+            </section>
+        </div>
         <div class="game-window">
             <div class="info-display">
 
             <div class="bar-container player-bar-container">
-
                 <meter class="hp" id="player-hp"
                     min="0" max="<%= avatar.stats.health %>"
                     low="<%= avatar.stats.health*0.2 %>" high="<%= avatar.stats.health*0.5 %>" optimum="<%= avatar.stats.health*0.8 %>"
@@ -82,6 +115,11 @@
                 <label>Controls:<button id="control-toggle">Arrows</button></label>
                 
             </div>
+        </div>
+        <div class="intructions">
+            <section class="info-section">
+                
+            </section>
         </div>
     </main>
     
