@@ -31,6 +31,8 @@
             <h3 class=""> Def: <%= avatar.stats.defence %> </h3>
             <h3 class=""> SpclAtt: <%= avatar.stats.spclAttack %> </h3>
             <h3 class=""> SpclDef: <%= avatar.stats.spclDefence %> </h3>
+            <h3 class=""> Level: <%= levelInfo.lvl %> </h3>
+            <h3 class=""> Next level: <%= levelInfo.expRem %>xp </h3>
         </div>
         <form action="/index/<%= userAcc  %>/avatars/<%= avatar._id %>?_method=DELETE" method="post" class="form-group">
             <a href="/index/<%= userAcc %>/avatars/<%= avatar._id %>/game" class="btn btn-outline-primary">Play</a>

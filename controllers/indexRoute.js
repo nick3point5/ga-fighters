@@ -185,6 +185,7 @@ router.put('/:account', (req, res) => {
 				spclAttack: rb.spclAttack,
 				spclDefence: rb.spclDefence,
 			},
+			exp: 50,
 			user: foundUser._id,
 		},
 		(err, newAvatar) => {
@@ -212,7 +213,14 @@ router.get('/:account/avatars/:avatarId', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		return res.render('avatar-Show', { avatar: foundObj, userAcc: userAcc });
+		let lvl = 1
+		if (foundObj.exp>=100){
+			lvl = Math.floor(Math.log(9*(foundObj.exp)/100)/Math.log(3))
+		}
+
+		let expRem = (3**(lvl-1))*100 - foundObj.stats.exp 
+		console.log(foundObj.stats.exp)
+		return res.render('avatar-Show', { avatar: foundObj, userAcc: userAcc, levelInfo:{lvl:lvl, expRem:expRem}});
 	});
 });
 
@@ -243,7 +251,7 @@ router.get('/:account/avatars/:avatarId/edit', (req, res) => {
 
 		
 
-		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: userAcc, skillpts: skillpts});
+		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: userAcc, skillpts: skillpts, lvl:lvl});
 	});
 });
 // Avatar GET game  ---------------------------------------------------------------
