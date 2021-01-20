@@ -219,7 +219,6 @@ router.get('/:account/avatars/:avatarId', (req, res) => {
 		}
 
 		let expRem = (3**(lvl-1))*100 - foundObj.stats.exp 
-		console.log(foundObj.stats.exp)
 		return res.render('avatar-Show', { avatar: foundObj, userAcc: userAcc, levelInfo:{lvl:lvl, expRem:expRem}});
 	});
 });

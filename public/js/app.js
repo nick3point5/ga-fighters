@@ -369,7 +369,7 @@ class fireballClass extends interObj {
 
                 this.moveFunction()
                 if(this.collision(target)){
-                    if(this.spAtk > target.spDef){
+                    if(this.user.spAtk > target.spDef){
                         target.hp -= this.user.spAtk*3 - target.spDef + 10
                     } else {
                         target.hp -= 10
