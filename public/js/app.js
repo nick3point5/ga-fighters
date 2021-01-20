@@ -479,9 +479,10 @@ function gameOver() {
     if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) > playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
         document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
     } else if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) < playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
-        document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
+        document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins <br> ${+enemyCharacter.element.getAttribute('exp')}xp gained`
         const exp = +playerCharacter.element.getAttribute('exp') + +enemyCharacter.element.getAttribute('exp')
         document.getElementById('exp').value = exp
+        playerCharacter.element.setAttribute('exp',exp)
         document.getElementById('level-display').value = Math.floor(Math.log(9*(exp)/100)/Math.log(3))
 
     } else{
@@ -508,7 +509,8 @@ function Init() {
     playwin.pause = false
     playwin.timer = 99
     document.getElementById('notification-area').classList.add('hidden')
-    // document.getElementById('level-display').value = Math.floor(Math.log(9*(+playerCharacter.element.getAttribute('exp'))/100)/Math.log(3))
+    document.getElementById('exp').value = playerCharacter.element.getAttribute('exp') 
+    document.getElementById('level-display').value = Math.floor(Math.log(9*(+playerCharacter.element.getAttribute('exp'))/100)/Math.log(3))
     document.querySelectorAll('.fire').forEach(fire=>{
         fire.remove()
     })
