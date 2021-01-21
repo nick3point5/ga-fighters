@@ -410,7 +410,7 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 						console.log(err);
 						res.send(err);
 					}
-					return res.redirect(`/index/account/avatars/${avatarId}/edit`);
+					return res.redirect(`/index/account/avatars/${avatarId}/game`);
 				}
 		);
 				
@@ -418,17 +418,17 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 });
 
 
-router.get('/reset', (req,res) => {
-	db.Avatar.updateMany(
-		{},
-		{personality: '1,1,1,1,1,1'},
-		(err,obj)=>{
-		if(err){
-			console.log(err);
-		}
-		res.redirect('/index')	
-	})
-})
+// router.get('/reset', (req,res) => {
+// 	db.Avatar.updateMany(
+// 		{},
+// 		{personality: '1,1,1,1,1,1'},
+// 		(err,obj)=>{
+// 		if(err){
+// 			console.log(err);
+// 		}
+// 		res.redirect('/index')	
+// 	})
+// })
 
 function getRand(max, min) {
     let num = Math.random() * (max + 1 - min) + min - 1;
