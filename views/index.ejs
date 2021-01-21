@@ -8,12 +8,14 @@
     <link href="./css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="./css/style.css" rel="stylesheet" type="text/css">
     <script defer src="./js/bootstrap.bundle.js"></script>
+    <script defer src="/js/dom_manipulation.js"></script>
     <title>Login</title>
 </head>
-<body class="body ">
+<body class="body" onload=err()>
     <div class="content">
 <!-- HEADER START -->
     <%- include('partials/mini-header.ejs')  %> 
+    <h1 id="error-message" class="alert alert-danger hidden" role="alert"></h1>
 <!-- HEADER END -->
     <h3 class="text-center">Login to your Account</h3>
 <!-- MAIN START -->

@@ -145,12 +145,12 @@ router.put('/account', (req, res) => {
 						})
 					})
 				} else {
-					return res.render('edit', { user: req.session.currentUser });
+					return res.redirect('/index/account/edit?_message="Current password incorrect. Try again."')
 				}
 			})
 		})
 	} else {
-		return res.render('edit', { user: req.session.currentUser });
+		return res.redirect('/index/account/edit?_message="Passwords dont match. Try again."')
 	}
 });
 

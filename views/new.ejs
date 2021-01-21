@@ -8,13 +8,15 @@
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
+    <script defer src="/js/dom_manipulation.js"></script>
     <title>Sign Up</title>
 </head>
-<body class="body">
+<body class="body" onload=err()>
     <div class="content">
     <!-- HEADER START -->
     <%- include('partials/mini-header.ejs')  %> 
     <!-- HEADER END -->
+    <h1 id="error-message" class="alert alert-danger hidden" role="alert"></h1>
     <h3 class="text-center">Create an Account</h3>
     <!-- MAIN START -->
     <main class="main-show">

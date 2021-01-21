@@ -638,7 +638,7 @@ function getKey(event) {
 }
 
 function controller(inp){
-    if(playerCharacter.control){
+    if(playerCharacter.control && !playwin.pause){
     if(playwin.controlMode === 'arrow'){
         if(inp === 'ArrowUp'){
             if (!playerCharacter.airborne) {
@@ -721,7 +721,7 @@ function controller(inp){
 
 
 function releaseKey(inp) {
-    if(playerCharacter.control){
+    if(playerCharacter.control && !playwin.pause){
         if(playwin.controlMode === 'arrow'){
             if(inp.key === 'ArrowUp'){
                 // playerCharacter.move.up = false
