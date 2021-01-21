@@ -16,6 +16,13 @@ router.get('/', (req, res) => {
 router.get('/new', (req, res) => {
 	res.render('new');
 });
+// GET  ---->  /index/logout  <------------   Ends session
+router.get('/logout', (req, res) => {
+	req.session.destroy((err) => {
+		if (err) return res.send(err);
+		res.redirect('/');
+	})
+});
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
@@ -97,6 +104,9 @@ router.get('/account', (req, res) => {
 
 // GET ---->   /index/account/edit    <---- User Edit Form
 router.get('/account/edit', (req, res) => {
+	if (!req.session.currentUser) {
+		return res.redirect('/index');
+	}
 	db.User.findById(req.session.currentUser._id, (err, foundObj) => {
 		if (err) return res.send(err);
 			
@@ -167,12 +177,18 @@ router.put('/account', (req, res) => {
 	// Avatar GET index ---------------------------------------------------------------
 	// GET   --->   /avatars index page <-----  Gets
 	router.get('/account/avatars', (req, res) => {
+		if (!req.session.currentUser) {
+			return res.redirect('/index');
+		}
 		return res.redirect('/index/account');
 	});
 	
 	// Avatar GET new ---------------------------------------------------------------
 
 	router.get('/account/new', (req, res) => {
+		if (!req.session.currentUser) {
+			return res.redirect('/index');
+		}
 		return res.render('new-avatar.ejs', { accountId: req.session.currentUser._id });
 		
 	});
@@ -218,6 +234,9 @@ router.put('/account', (req, res) => {
 // Avatar GET show ---------------------------------------------------------------
 
 router.get('/account/avatars/:avatarId', (req, res) => {
+	if (!req.session.currentUser) {
+		return res.redirect('/index');
+	}
 	const avatarId = req.params.avatarId;
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) return res.send(err);
@@ -226,14 +245,17 @@ router.get('/account/avatars/:avatarId', (req, res) => {
 			lvl = Math.floor(Math.log(9*(foundObj.stats.exp)/100)/Math.log(3))
 		}
 
-		const expRem = (3**(lvl-1))*100 - foundObj.stats.exp 
-		return res.render('avatar-Show', { avatar: foundObj, levelInfo:{lvl:lvl, expRem:expRem}});
+		let expRem = (3**(lvl-1))*100 - foundObj.stats.exp 
+		return res.render('avatar-Show', { avatar: foundObj, account: req.session.currentUser.account, levelInfo:{lvl:lvl, expRem:expRem}});
 	});
 });
 
 // Avatar GET edit  ---------------------------------------------------------------
 
 router.get('/account/avatars/:avatarId/edit', (req, res) => {
+	if (!req.session.currentUser) {
+		return res.redirect('/index');
+	}
 	const avatarId = req.params.avatarId;
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) {
@@ -255,12 +277,15 @@ router.get('/account/avatars/:avatarId/edit', (req, res) => {
 
 		
 
-		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: req.session.currentUser._id, skillpts: skillpts, lvl:lvl});
+		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: req.session.currentUser.account, skillpts: skillpts, lvl:lvl});
 	});
 });
 // Avatar GET game  ---------------------------------------------------------------
 
 router.get('/account/avatars/:avatarId/game', (req, res) => {
+	if (!req.session.currentUser) {
+		return res.redirect('/index');
+	}
 	const avatarId = req.params.avatarId;
 	db.Avatar.findById(avatarId, (err, player) => {
 		if (err) {
@@ -273,7 +298,7 @@ router.get('/account/avatars/:avatarId/game', (req, res) => {
 			const pick = getRand(opponents.length-1,0)
 			const opponent = (opponents[pick])
 			
-			return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser._id, opponent:opponent});
+			return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser, opponent:opponent});
 		})
 	});
 });
