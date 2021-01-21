@@ -11,7 +11,6 @@ function Stats() {
     }
     
     
-    
     skillpts = (
         +document.getElementById('skillpoints').textContent
         )
@@ -98,8 +97,8 @@ const maps = [
     '/assets/arenas/holy-temple.gif',
     '/assets/arenas/leaf-village.gif',
     '/assets/arenas/market.gif',
-    '/assets/arenas/medow.gif',
-    '/assets/arenas/monestary.gif',
+    '/assets/arenas/meadow.gif',
+    '/assets/arenas/monastery.gif',
     '/assets/arenas/old-school.gif',
     '/assets/arenas/peaceful.gif',
     '/assets/arenas/peru.gif',
