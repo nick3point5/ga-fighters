@@ -18,13 +18,13 @@
     <header class="header text-center d-flex flex-column">
         <h1 class="display-1">Welcome, <%= user.name %> </h1>
         <div class="d-flex flex-row justify-content-between">
-            <a href="/index/<%= user.account %>/edit" class="btn btn-primary">Settings</a>
+            <a href="/index/account/edit" class="btn btn-primary">Settings</a>
             <a href="/index" class="btn btn-primary">Logout</a>
         </div>
     </header>
 <!-- HEADER END -->
     <h3 class="text-center">The best experience awaits! </h3>
-    <a href="/index/<%= user.account %>/new" class="btn btn-outline-info">New Character</a>
+    <a href="/index/account/new" class="btn btn-outline-info">New Character</a>
 <!-- MAIN START -->
     <main class="main-show character-container d-flex  justify-content-center flex-wrap">
         <%   if (user.avatars.length < 1){ %>

@@ -16,7 +16,7 @@
     <header class="header text-center">
         <h1 class="display-3"><%= user.name %>'s Profile Info </h1>
         <div class="d-flex flex-row justify-content-between">
-            <a href="/index/<%= user.account %>/" class="btn btn-outline-primary">Back</a>
+            <a href="/index/account/" class="btn btn-outline-primary">Back</a>
             <a href="/index" class="btn btn-outline-primary">Logout</a>
         </div>
     </header>
@@ -27,7 +27,7 @@
     </form>
 <!-- MAIN START -->
     <main class="d-flex  justify-content-center">
-        <form action="/index/<%= user.account  %>/?_method=PUT" method="post" class="form p-5">
+        <form action="/index/account/?_method=PUT" method="post" class="form p-5">
         <div class="form-group">
             <label for="newName">Username</label>
             <input id="newName" type="text" name="newName" value=<%= user.name  %> class="form-control">

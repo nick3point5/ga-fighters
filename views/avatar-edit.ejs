@@ -17,7 +17,7 @@
     <header class="header">
         <h1 class="display-1 text-center">Avatar Info</h1>
         <div class="d-flex flex-row justify-content-between">
-            <a href="/index/<%= accountId %>/avatars/<%= avatar._id  %> " class="btn btn-outline-primary">Back</a>
+            <a href="/index/account/avatars/<%= avatar._id  %> " class="btn btn-outline-primary">Back</a>
             <a href="/index" class="btn btn-outline-primary">Logout</a>
         </div>
     </header>
@@ -25,7 +25,7 @@
 <h3 class="text-center">Edit Your Avatar</h3>
 <!-- MAIN START -->
 <main class="main d-flex  justify-content-center">
-        <form action="/index/<%= accountId %>/avatars/<%= avatarId %>?_method=PUT" method="POST" class="p-5 text-center">
+        <form action="/index/account/avatars/<%= avatarId %>?_method=PUT" method="POST" class="p-5 text-center">
             <div class="form-group">
                 <label for="name">Character Name</label>
                 <input id="name" type="text" name="name" class="form-control" value="<%= avatar.name %> ">
