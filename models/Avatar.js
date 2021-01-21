@@ -26,6 +26,10 @@ const avatarSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'User',
 		},
+
+		personality:
+		[{type: Number, 
+		default: [1,1,1,1,1,1]}],
 	},
 
 	{ timestamps: true }

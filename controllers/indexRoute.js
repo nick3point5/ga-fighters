@@ -295,10 +295,21 @@ router.get('/account/avatars/:avatarId/game', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			const pick = getRand(opponents.length-1,0)
-			const opponent = (opponents[pick])
-			
-			return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser, opponent:opponent});
+
+			if(opponents.length<1){
+				db.Avatar.find({user: {$nin:player.user}},(err, opponents) => {
+					const pick = getRand(opponents.length-1,0)
+					const opponent = (opponents[pick])
+					
+					return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser, opponent:opponent});
+				})
+			}else{
+				const pick = getRand(opponents.length-1,0)
+				const opponent = (opponents[pick])
+				
+				return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser, opponent:opponent});
+				
+			}
 		})
 	});
 });
@@ -403,6 +414,19 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 				
 	});
 });
+
+
+router.get('/reset', (req,res) => {
+	db.Avatar.updateMany(
+		{},
+		{personality: [1,1,1,1,1,1]},
+		(err,obj)=>{
+		if(err){
+			console.log(err);
+		}
+		res.redirect('/index')	
+	})
+})
 
 function getRand(max, min) {
     let num = Math.random() * (max + 1 - min) + min - 1;
