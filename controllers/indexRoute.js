@@ -1,23 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 require('body-parser');
 const router = express.Router();
 const db = require('../config/database');
-var accountId;
 
-// JWT FUNCTION
-function authenticateToken (req, res, next) {
-	const authHeader = req.headers['authorization']
-	const token = authHeader && authHeader.split(' ')[1]
-	if(token == null) return res.sendStatus(401);
-	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
-		if (err) return res.sendStatus(403)
-		req.user = user
-	})
-	next();
-};
 // User route ---------------------------------------------------------------
 // GET   --->   /index <-----  Gets -> Login form and sign-up page link
 router.get('/', (req, res) => {
@@ -30,67 +19,89 @@ router.get('/new', (req, res) => {
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
-	if (req.body.password === req.body.confirm) {
-		db.User.create(
-			{
-				name: req.body.name,
-				password: req.body.password,
-				account: mongoose.Types.ObjectId(),
-			},
-			(err, newUser) => {
-				if (err) {
-					console.log('Fuck bro');
-				}
-				res.redirect('/index');
-			}
-		);
-	} else {
-		res.redirect('/new');
+	console.log(req.body)
+	const username = {
+		name : req.body.name,
+		password: req.body.password,
 	}
+	db.User.findOne(username,(err,foundUser)=>{
+		if(err) return res.send(err);
+
+		console.log(foundUser)
+
+		if(!foundUser){
+			if (req.body.password === req.body.confirm) {
+				bcrypt.genSalt(15,(err, salt)=>{
+					if(err) return res.send(err);
+					bcrypt.hash(req.body.password, salt, (err, hashedObj)=>{
+						const newUser = {
+							name: req.body.name,
+							password: hashedObj,
+							account: mongoose.Types.ObjectId(),
+						}
+						db.User.create(newUser,(err)=>{
+							if(err) return res.send(err);
+
+							res.redirect('/index');
+						})
+					})
+				})
+		
+			} else {
+				res.redirect('/index/new?_message="Passwords dont match. Try again."');
+			}
+		} else {
+			res.redirect('/index/new?_message="Username Already Taken. Try again"');
+		}
+	})
 });
 
-// POST ---->   /index/:id  <-- redirects to  <---- User Login
+// POST ---->   /index/login  <-- redirects to  <---- User Login
 router.post('/login',(req, res) => {
 	const user = {name: req.body.name}
 	db.User.findOne(user, (err, foundObj) => {
 		if (err) {
 			return res.send(err);
 		}
-		if (foundObj === null) {
-			console.log('User not found');
-			res.redirect('/');
-		} else if (foundObj.password !== req.body.password) {
-			console.log('Incorrect password.');
-			res.redirect('/');
-		} else {
-			accountId = foundObj.account;
-			// const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-			// res.json( { accessToken : accessToken } );
-			console.log('user logged in.... Yeppy!!');
-			res.redirect(`/index/account`);
-		}
+		if (!foundObj) {
+			return res.redirect('/index?_message="User info not found."');
+		} 
+
+		bcrypt.compare(req.body.password, foundObj.password, (err, result)=>{
+			if (err) return res.send(err);
+
+			if(result) {
+				req.session.currentUser = foundObj;
+				res.redirect(`/index/account`);
+			} else {
+				res.redirect('/index?_message="User info not found."');
+			} 
+		}) 
+		
 	});
 });
 
-// GET/Show  ---->   /index/:id    <---- Show User Profile
+// GET/Show  ---->   /index/account    <---- Show User Profile
 router.get('/account', (req, res) => {
-	db.User.findOne({ account: accountId })
+
+	if (!req.session.currentUser) {
+		return res.redirect('/index/login');
+	}
+
+	db.User.findById(req.session.currentUser._id)
 	.populate('avatars')
 	.exec((err, foundObj) => {
-		if (err) {
-			res.send(err);
-		}
+		if (err)  return res.send(err);
 		
 		res.render('show', { user: foundObj });
 	});
 });
 
-// GET ---->   /index/:id/edit    <---- User Edit Form
+// GET ---->   /index/account/edit    <---- User Edit Form
 router.get('/account/edit', (req, res) => {
-	db.User.findOne({ account: accountId }, (err, foundObj) => {
-		if (err) {
-			res.send(err);
-		}
+	db.User.findById(req.session.currentUser._id, (err, foundObj) => {
+		if (err) return res.send(err);
+			
 		res.render('edit', { user: foundObj });
 	});
 });
@@ -101,55 +112,55 @@ router.put('/account', (req, res) => {
 		currPassword: req.body.currPassword,
 		newPassword: req.body.newPassword,
 		confirm: req.body.confirm,
-		// updated info var
-		name: req.body.newName,
-		password: req.body.newPassword,
 	};
 	
-	db.User.findOne({ account: accountId }, (err, foundUser) => {
-		if (err) {
-			console.log('Error:');
-			console.log(err);
-		}
-		if (foundUser.password === dataObj.currPassword) {
-			if (dataObj.newPassword === dataObj.confirm) {
-				db.User.findByIdAndUpdate(
-					foundUser._id,
-					{ name: dataObj.name, password: dataObj.password },
-					{ new: true },
-					(err, updatedObj) => {
-						if (err) {
-							console.log('Error:');
-							console.log(err);
-						}
-						res.redirect(`/index/account`);
-					}
-					);
+	if (dataObj.newPassword === dataObj.confirm) {
+		db.User.findById(req.session.currentUser._id, (err, foundUser) => {
+			if (err) return res.send(err);
+
+			bcrypt.compare(dataObj.currPassword, foundUser.password, (err, result)=>{
+				if(result){
+					bcrypt.genSalt(15, (err,salt)=>{
+						if (err) return res.send(err);
+						
+						bcrypt.hash(dataObj.newPassword, salt, (err, hashedPassword)=>{
+
+							db.User.findByIdAndUpdate(
+							req.session.currentUser._id,
+							{ name: dataObj.newName, password: hashedPassword },
+							{ new: true },
+							(err, updatedObj) => {
+								if (err) return res.send(err);
+								res.redirect(`/index/account`);
+							}
+							);
+						})
+					})
 				} else {
-					console.log('edit user failed new passwords dont match confirmation');
-					return res.render('edit', { user: foundUser });
+					return res.render('edit', { user: req.session.currentUser });
 				}
-			} else {
-				console.log('edit user failed passwords incorrect');
-				return res.render('edit', { user: foundUser });
-			}
-			
-		});
-	});
+			})
+		})
+	} else {
+		return res.render('edit', { user: req.session.currentUser });
+	}
+});
 
 	
 	
 	router.delete('/account', (req, res) => {
-		db.User.findOne({ account: accountId }, (err, foundObj) => {
+		db.User.findById(req.session.currentUser._id, (err, foundObj) => {
 			if (err) {
 				console.log('Error:');
 				console.log(err);
 			}
 			db.User.findByIdAndDelete(foundObj._id, (err, deletedObj) => {
-				if (err) {
-					return res.send(err);
-				}
-				res.redirect('/');
+				if (err) return res.send(err);
+				db.Avatar.deleteMany({user: req.session.currentUser._id},(err, deletedArr)=>{
+					if (err) return res.send(err);
+
+					res.redirect('/');
+				})
 			});
 		});
 	});
@@ -158,60 +169,52 @@ router.put('/account', (req, res) => {
 	// Avatar GET index ---------------------------------------------------------------
 	// GET   --->   /avatars index page <-----  Gets
 	router.get('/account/avatars', (req, res) => {
-		db.User.findOne({ account : accountId})
-		.populate('avatars')
-		.exec((err, foundUser) => {
-			if (err) {
-				res.send(err);
-			}
-			return res.render('show', { user: foundUser });
-		});
+		return res.redirect('/index/account');
 	});
 	
 	// Avatar GET new ---------------------------------------------------------------
 
 	router.get('/account/new', (req, res) => {
-		return res.render('new-avatar.ejs', { accountId: accountId });
+		return res.render('new-avatar.ejs', { accountId: req.session.currentUser._id });
 		
 	});
 	
 	// Avatar POST new ---------------------------------------------------------------
 	// POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
-	router.post('/:account/avatars', (req, res) => {
+	router.post('/account/avatars', (req, res) => {
 		const rb = req.body;
 		
-		db.User.findOne({account: accountId},(err,foundUser)=>{
-			if (err) {
-				res.send(err);
-			}
+		db.User.findById(req.session.currentUser._id,(err,foundUser)=>{
+			if (err) return res.send(err);
+				
 			db.Avatar.create(
-		{
-			name: rb.name,
-			img: rb.img,
-			info: rb.info,
-			stats: {
-				health: rb.health,
-				mana: rb.mana,
-				attack: rb.attack,
-				defence: rb.defence,
-				spclAttack: rb.spclAttack,
-				spclDefence: rb.spclDefence,
+			{
+				name: rb.name,
+				img: rb.img,
+				info: rb.info,
+				stats: {
+					health: rb.health,
+					mana: rb.mana,
+					attack: rb.attack,
+					defence: rb.defence,
+					spclAttack: rb.spclAttack,
+					spclDefence: rb.spclDefence,
+				},
+				user: foundUser._id,
 			},
-			user: foundUser._id,
-		},
-		(err, newAvatar) => {
-			if (err) {
-				res.send(err);
+			(err, newAvatar) => {
+				if (err) {
+					res.send(err);
+				}
+				db.User.findByIdAndUpdate(foundUser._id,
+					{ $push: { avatars: newAvatar._id } },
+					{new:true},
+					(err, updatedUser) => {				
+					res.redirect(`/index/account/`);
+				})
 			}
-			db.User.findByIdAndUpdate(foundUser._id,
-				{ $push: { avatars: newAvatar._id } },
-				{new:true},
-				(err, updatedUser) => {				
-				res.redirect(`/index/account/avatars`);
-			})
-		}
-	);
-})
+		);
+	})
 
 });
 // Avatar GET show ---------------------------------------------------------------
@@ -267,12 +270,11 @@ router.get('/account/avatars/:avatarId/game', (req, res) => {
 			
 			return res.render('game', { avatar: player , avatarId : avatarId, accountId: accountId, opponent:opponent});
 		})
-
 	});
 });
 
 // Avatar POST update  ---------------------------------------------------------------
-router.put('/:account/avatars/:avatarId', (req, res) => {
+router.put('/account/avatars/:avatarId', (req, res) => {
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
 	const updateObj = {
@@ -310,22 +312,18 @@ router.put('/:account/avatars/:avatarId', (req, res) => {
 	
 	router.delete('/account/avatars/:avatarId', (req, res) => {
 		const avatarId = req.params.avatarId
-		db.User.findOne({account: userAcc},(err, foundUser)=>{
-			if (err) {
-				res.send(err);
-			}
-				db.Avatar.findByIdAndDelete(avatarId,(err, deletedAvatar)=>{
-				if (err) {
-					res.send(err);
-				}
-				db.User.findByIdAndUpdate(foundUser._id, { $pull:{ avatars: deletedAvatar._id}},{new:true},(err, updatedUser)=>{
+		db.User.findById(req.session.currentUser._id,(err, foundUser)=>{
+			if (err) return res.send(err);
+				
+			db.Avatar.findByIdAndDelete(avatarId,(err, deletedAvatar)=>{
+				if (err) return res.send(err);
+					
+				db.User.findByIdAndUpdate(req.session.currentUser._id, { $pull:{ avatars: deletedAvatar._id}},{new:true},(err, updatedUser)=>{
 
-					res.redirect(`/index/account/avatars/${avatarId}`);
+					res.redirect(`/index/account`);
 				})
-	})
+			})
 		})
-	
-	
 });
 
 function getRand(max, min) {
