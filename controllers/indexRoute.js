@@ -262,7 +262,7 @@ router.get('/:account/avatars/:avatarId/game', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		db.Avatar.find({user: {$nin:player.user}}, (err, opponents) => {
+		db.Avatar.find({$and: [{user: {$nin:player.user}},{"stats.exp": { $gte: player.stats.exp/3 }},{"stats.exp": { $lte: player.stats.exp*3 }}]}, (err, opponents) => {
 			if (err) {
 				res.send(err);
 			}
