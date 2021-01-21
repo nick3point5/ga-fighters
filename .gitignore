@@ -1,6 +1,3 @@
 node_modules
-<<<<<<< HEAD
 planning
-=======
-planning
->>>>>>> bd61bd42b5260a594ee78d594d24c7f7366cd214
+.env

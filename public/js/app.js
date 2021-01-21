@@ -11,7 +11,7 @@ class interObj {
         this.rotation = 0;
         this.xSpd = 0;
         this.ySpd = 0;
-        this.direction = 1
+        this.direction = 1;
         this.move = {
             up: false,
             ri: false,
@@ -27,10 +27,10 @@ class interObj {
             this.y + this.height > hurtbox.y &&
             this.y < hurtbox.y + hurtbox.width
         ) {
-            return true
+            return true;
         }
-        return false
-    };
+        return false;
+    }
     moveFunction() {
         if (this.move.up && this.y - this.ySpd >= this.yMin) {
             this.y -= this.ySpd;
@@ -44,10 +44,11 @@ class interObj {
         if (this.move.ri && this.x + this.xSpd <= this.xMax) {
             this.x += this.xSpd;
         }
-        this.position()
+        this.position();
     }
     position() {
-        this.element.style.transform = `translate(${this.x}px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`
+        this.element.style.transform = `translate(${this.x - this.width * (this.direction < 0)
+            }px,${this.y}px) rotateZ(${this.rotation}deg) scaleX(${this.direction})`;
     }
     trackdown(target) {
         if (this.x < target.x) {
@@ -65,442 +66,401 @@ class interObj {
             this.move.dn = true;
         }
     }
+    runFrom(target) {
+        if (this.x > target.x) {
+            this.move.ri = true;
+            this.move.lf = false;
+        } else {
+            this.move.ri = false;
+            this.move.lf = true;
+        }
+        if (this.y < target.y) {
+            this.move.up = true;
+            this.move.dn = false;
+        } else {
+            this.move.up = false;
+            this.move.dn = true;
+        }
+    }
     stop() {
-        this.ySpd = 0
-        this.xSpd = 0
-        this.move.up = false
-        this.move.ri = false
-        this.move.dn = false
-        this.move.lf = false
+        this.ySpd = 0;
+        this.xSpd = 0;
+        this.move.up = false;
+        this.move.ri = false;
+        this.move.dn = false;
+        this.move.lf = false;
     }
 }
 class fighter extends interObj {
     constructor(x, y, element, name, HitBox) {
-        super(x, y,100, 150, element)
-        this.name = name
-        this.hp=100
-        this.mp=100
-        this.atk=5
-        this.def=5
-        this.spAtk=5
-        this.spDef=5
-        this.control = true
-        this.HitBox = HitBox
-        this.airborne = true
+        super(x, y, 100, 150, element);
+        this.name = name;
+        this.hp = 100;
+        this.mp = 100;
+        this.atk = 5;
+        this.def = 5;
+        this.spAtk = 5;
+        this.spDef = 5;
+        this.Ospd = 5;
+        this.control = true;
+        this.HitBox = HitBox;
+        this.airborne = true;
+        this.cooldown = false;
+        this.exp = 100;
     }
-    attack(target){
-        
-        if (this.HitBox.collision(target)) {
-            if(this.atk > target.def){
-                target.hp -= this.atk - target.def
-            } else {
-                target.hp -= 2
-            }
-            this.hitstun(5,20,target)
+
+    collision(hurtbox) {
+        if (
+            this.x + this.width > hurtbox.x &&
+            this.x < hurtbox.x + hurtbox.width &&
+            this.y + this.height > hurtbox.y &&
+            this.y < hurtbox.y + hurtbox.width
+        ) {
+            return true;
         }
+        return false;
     }
-    hitstun(stunFrames,knockback,target){
-        const Ospd = target.xSpd
-        target.xSpd = knockback*this.direction
-        target.move.ri = false
-        const stun = setInterval(()=>{
-            if (target.move.ri) {
-                target.move.ri = false
-                target.control = true
-                target.xSpd = Ospd
-                clearInterval(stun)
+
+    attack(target) {
+        this.moveLag(10);
+        this.attackAnimation();
+        setTimeout(() => {
+            if (this.HitBox.collision(target)) {
+                if (this.atk > target.def) {
+                    target.hp -= this.atk - target.def;
+                } else {
+                    target.hp -= 2;
+                }
+                this.hitstun(5, 20, target);
             }
+        }, (1000 / playwin.framerate) * 5);
+    }
+    hitstun(frames, knockback, target) {
+        target.xSpd = knockback * this.direction;
+        let knockbackDirection = null;
+        if (this.direction > 0) {
+            knockbackDirection = target.move.ri;
+        } else {
+            knockbackDirection = target.move.lf;
+        }
 
-        },1000/playwin.framerate*stunFrames)
-        target.move.ri = true
-        target.control = false
+        knockbackDirection = false;
+        const stun = setInterval(() => {
+            if (knockbackDirection) {
+                knockbackDirection = false;
+                target.control = true;
+                target.xSpd = target.Ospd;
+                clearInterval(stun);
+            }
+        }, (1000 / playwin.framerate) * frames);
+        knockbackDirection = true;
+        target.control = false;
     }
 
+    moveLag(frames) {
+        this.stop();
+        const cooldown = setInterval(() => {
+            if (this.cooldown) {
+                this.cooldown = false;
+                this.control = true;
+                this.xSpd = this.Ospd;
+                clearInterval(cooldown);
+            }
+        }, (1000 / playwin.framerate) * frames);
+        this.cooldown = true;
+        this.control = false;
+    }
 
-    fireball(target){
+    fireball(target) {
+        this.moveLag(30);
+        if (this.mp >= this.spAtk || this.mp > 0) {
+            const fire = document.createElement("div");
+            fire.classList.add("fire");
+            fire.classList.add("hidden");
 
-        if (this.mp >= 10) {
-            
-            const  fire = document.createElement('div')
-            fire.classList.add("fire")
-            fire.classList.add("hitbox")
-            fire.classList.add("hidden")
-            
-            playwin.element.appendChild(fire)
+            playwin.element.appendChild(fire);
+
             const fireball = new fireballClass(
-                this.x+this.width,this.y+80,fire,this.direction,this
-            )
-                
-            fireball.launch(target)
-            this.mp -= 10
-        }
-                
+                this.x + this.width * (this.direction > 0) * this.direction,
+                this.y + 80,
+                fire,
+                this.direction,
+                this
+            );
 
+            fireball.launch(target);
+            this.mp -= this.spAtk;
+        }
     }
-    jump(){
-        this.ySpd = 20
-        this.airborne = true
+    jump() {
+        if (!this.airborne) {
+            this.ySpd = 20;
+            this.airborne = true;
+        }
     }
     gravity() {
-        if(this.airborne && this.y - this.ySpd >= this.yMax){
-            this.airborne=false
-            this.ySpd = 0
+        if (this.airborne && this.y - this.ySpd >= this.yMax) {
+            this.airborne = false;
+            this.ySpd = 0;
         }
-        if(this.airborne){
-            
-            this.ySpd -= playwin.gravAcc
-            this.move.up = true
-        }else {
-        }
-    }
-    update(){
-        this.gravity()
-        this.facing()
-        this.moveFunction()
-
-    }
-    facing(){
-        if(this.x < this.opponent.x){
-            this.direction = 1
-        }else {
-            this.direction = -1
+        if (this.airborne) {
+            this.ySpd -= playwin.gravAcc;
+            this.move.up = true;
+        } else {
+            this.y = this.yMax - 10;
         }
     }
-
-
+    update() {
+        this.gravity();
+        this.facing();
+        this.moveFunction();
+        this.Ai();
+    }
+    facing() {
+        if (this.x < this.opponent.x) {
+            this.direction = 1;
+        } else {
+            this.direction = -1;
+        }
+    }
+    attackAnimation() {
+        let i = 0;
+        const st = setInterval(() => {
+            if (!playwin.pause) {
+                this.rotation += 10 * this.direction;
+                i++;
+                if (i >= 3 && i < 6) {
+                    this.rotation -= 20 * this.direction;
+                } else if (i >= 6) {
+                    this.rotation = 0;
+                    clearInterval(st);
+                }
+            }
+        }, 1000 / playwin.framerate);
+    }
 }
 class playerClass extends fighter {
-    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef) {
-        super(x, y, element, name, HitBox)
-        this.hp=hp
-        this.mp=mp
-        this.atk=atk
-        this.def=def
-        this.spAtk=spAtk
-        this.spDef=spDef
+    constructor(
+        x,
+        y,
+        element,
+        name,
+        HitBox,
+        hp,
+        mp,
+        atk,
+        def,
+        spAtk,
+        spDef,
+        personality
+    ) {
+        super(x, y, element, name, HitBox);
+        this.hp = hp;
+        this.mp = mp;
+        this.atk = atk;
+        this.def = def;
+        this.spAtk = spAtk;
+        this.spDef = spDef;
         this.xSpd = 5;
-
+        this.personality = personality;
+        this.states = ["attack", "fireball", "approach", "backoff", "jump", "idle"];
+        this.currentState = "idle";
     }
-
-
+    Ai() { }
+    recorder() {
+        for (let i = 0; i < this.states.length; i++) {
+            if (this.currentState === this.states[i]) {
+                this.personality[i] += 1;
+            }
+        }
+    }
 }
 class enemyClass extends fighter {
-    constructor(x, y, element, name) {
-        super(x, y, element)
-        this.xSpd  = 5;
+    constructor(
+        x,
+        y,
+        element,
+        name,
+        HitBox,
+        hp,
+        mp,
+        atk,
+        def,
+        spAtk,
+        spDef,
+        personality
+    ) {
+        super(x, y, element, name, HitBox);
+        this.hp = hp;
+        this.mp = mp;
+        this.atk = atk;
+        this.def = def;
+        this.spAtk = spAtk;
+        this.spDef = spDef;
+        this.xSpd = 5;
+        this.control = true;
+        this.states = ["attack", "fireball", "approach", "backoff", "jump", "idle"];
+        this.currentState = "idle";
+        this.personality = personality;
     }
-    facing(){
-        if(this.x < this.opponent.x){
-            this.direction = -1
-        }else {
-            this.direction = 1
-        }
-    }
-
-
-
-}
-class petClass extends interObj {
-    constructor(x, y, width, height, element, name) {
-        super(x, y, width, height, element);
-        this.name = name
-        this.speed = 5;
-        this.growth = 1;
-        this.conditions = ['happy', 'hungry', 'sleepy', 'bored', 'sleeping', 'eating', 'singing']
-        this.currentState = 'happy'
-        this.spriteFrame = 0
-        this.spriteFrameRate = 1
-        this.spriteAnimationLength = {
-            walking: 9,
-            sleeping: 4,
-            eating: 12,
-            singing: 30,
-        }
-        this.spriteFrameMax = 9
-
-        this.move = {
-            up: false,
-            ri: true,
-            dn: false,
-            lf: false,
-        };
-
-        this.alive = false;
-    }
-    spriteFile() {
-        let imgURL = ['assets/sprites/walking/', 'assets/sprites/sleeping/', 'assets/sprites/eating/', 'assets/sprites/sing/']
-        if (this.currentState === pet.conditions[4]) {
-            return `${imgURL[1]}${this.spriteFrame}.png`
-        } else if (this.currentState === pet.conditions[5]) {
-            return `${imgURL[2]}${this.spriteFrame}.png`
-        } else if (this.currentState === pet.conditions[6] && pet.collision(stage)) {
-            return `${imgURL[3]}${this.spriteFrame}.png`
-        } else {
-            return `${imgURL[0]}${this.spriteFrame}.png`
+    Ai() {
+        this.behavior();
+        if (this.control) {
+            if (this.currentState === this.states[0]) {
+                this.stateAttack();
+            }
+            if (this.currentState === this.states[1]) {
+                this.stateFireball();
+            }
+            if (this.currentState === this.states[2]) {
+                this.stateApproach();
+            }
+            if (this.currentState === this.states[3]) {
+                this.stateBackoff();
+            }
+            if (this.currentState === this.states[4]) {
+                this.stateJump();
+            }
+            if (this.currentState === this.states[5]) {
+                this.stateIdle();
+            }
         }
     }
-    drawSprite() {
-        if (this.spriteFrame > this.spriteFrameMax) {
-            this.spriteFrame = 0
-        }
-        this.element.setAttribute('src', this.spriteFile())
-
-        this.spriteFrame++
-    }
-
-    petAi() {
-        if (this.currentState === this.conditions[0]) {
-            this.stateHappy()
-        }
-        if (this.currentState === this.conditions[1]) {
-            this.stateHungry()
-        }
-        if (this.currentState === this.conditions[2]) {
-            this.stateSleepy()
-        }
-        if (this.currentState === this.conditions[3]) {
-            this.stateBored()
-        }
-        if (this.currentState === this.conditions[4]) {
-            this.stateSleeping()
-        }
-        if (this.currentState === this.conditions[5]) {
-            this.stateEating()
-        }
-        if (this.currentState === this.conditions[6]) {
-            this.stateSinging()
+    behavior() {
+        if (!(playwin.frame % 30)) {
+            const thought = weight(this.personality, this.states);
+            this.currentState = thought;
         }
 
-    }
+        function weight(choice, states) {
+            const total = choice.reduce((a, b) => a + b);
+            let n = 0;
+            let upper = [];
+            let lower = [];
+            let feeling = Math.random();
+            for (let i = 0; i < choice.length; i++) {
+                lower.push(n);
+                n += choice[i] / total;
+                upper.push(n);
+            }
+            choice.forEach((trait) => {
+                trait / total;
+            });
+            const bounds = {
+                upper: upper,
+                lower: lower,
+            };
 
-    stateHappy() {
-        this.speed = 5
-        if (this.x >= this.xMax - 4) {
-            this.move.ri = false;
-            this.move.lf = true;
-        }
-        if (this.x <= this.xMin + 4) {
-            this.move.ri = true;
-            this.move.lf = false;
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 2
-    }
-
-    stateHungry() {
-        this.speed = 10
-        this.trackdown(food)
-        if (this.collision(food)) {
-            this.spriteFrame = 0
-            this.stateEating()
-            this.currentState = this.conditions[5]
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 1
-    }
-
-    stateSleepy() {
-        this.speed = 1
-        if (this.x >= this.xMax) {
-            this.move.ri = false;
-            this.move.lf = true;
-        }
-        if (this.x <= this.xMin) {
-            this.move.ri = true;
-            this.move.lf = false;
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 3
-    }
-
-    stateBored() {
-        this.speed = 3
-        if (this.x >= this.xMax - 4) {
-            this.move.ri = false;
-            this.move.lf = true;
-        }
-        if (this.x <= this.xMin + 4) {
-            this.move.ri = true;
-            this.move.lf = false;
-        }
-        this.spriteFrameMax = this.spriteAnimationLength.walking
-        this.spriteFrameRate = 2
-    }
-
-    stateSleeping() {
-        this.stop()
-        this.spriteFrameMax = this.spriteAnimationLength.sleeping
-        this.spriteFrameRate = 3
-    }
-
-    stateEating() {
-        this.stop()
-        this.spriteFrameMax = this.spriteAnimationLength.eating
-        this.spriteFrameRate = 1
-    }
-
-    stateSinging() {
-        this.speed = 10
-        this.spriteFrameRate = 1
-        if (!this.collision(stage)) {
-            this.trackdown(stage)
-        } else {
-            this.stop()
-            this.spriteFrameMax = this.spriteAnimationLength.singing
-            this.spriteFrameRate = 2
-        }
-
-    }
-
-    petUpdate() {
-        this.belly -= this.appetite;
-        this.energy -= this.stamina;
-        this.fun -= this.attention;
-        this.age += 1 / playwin.framerate;
-        this.name = document.getElementById('name').value
-        this.aging()
-        if (this.belly <= 0 || this.energy <= 0 || this.fun <= 0) {
-            this.alive = false;
-        }
-        this.conditionCheck()
-        if (!(playwin.frame % this.spriteFrameRate)) {
-            this.drawSprite()
-        }
-        this.moveFunction();
-        this.petAi();
-    }
-
-    conditionCheck() {
-        if (this.currentState === this.conditions[4]) {
-            if (this.energy < 10) {
-                this.belly += this.appetite;
-                this.energy += 0.2 + this.stamina;
-                this.fun += this.attention;
-                if (this.energy > 10) {
-                    this.energy = 10
-                    this.move.ri = true
-                    this.currentState = ''
-                    this.conditionCheck()
+            for (let i = 0; i < choice.length; i++) {
+                if (bounds.lower[i] <= feeling && feeling < bounds.upper[i]) {
+                    return states[i];
                 }
-                return
             }
         }
-
-
-        if (this.currentState === this.conditions[5]) {
-            if (this.spriteFrame < 5) {
-                food.trackdown(pet)
-                food.moveFunction()
-                food.element.style.transform = `scale(1)`
-            }
-
-            if (this.spriteFrame === 5) {
-                $('#food').addClass('hidden')
-                food.x = -food.width
-                food.y = food.yMax + food.height
-                food.position()
-            }
-
-
-            if (this.spriteFrame === this.spriteAnimationLength.eating) {
-                this.move.ri = true
-                this.currentState = ''
-                this.belly = 10
-                this.spriteFrame = 0
-                this.conditionCheck()
-            } else {
-                this.belly += this.appetite;
-                this.energy += this.stamina;
-                this.fun += this.attention;
-
-                return
-            }
+    }
+    setPersonality(personality) {
+        if (personality === "lazy") {
+            this.personality = [10, 10, 30, 30, 10, 100];
+        } else if (personality === "cowardly") {
+            this.personality = [20, 20, 50, 1, 50, 20];
+        } else if (personality === "angry") {
+            this.personality = [100, 1, 100, 1, 30, 1];
+        } else if (personality === "zoner") {
+            this.personality = [1, 100, 1, 100, 1, 10];
+        } else if (personality === "crazy") {
+            this.personality = [1, 1, 1, 1, 1, 1];
         }
+    }
 
-        if (this.currentState === this.conditions[6]) {
-            if (this.spriteFrame === this.spriteAnimationLength.singing) {
-                this.move.ri = true
-                this.currentState = ''
-                this.fun = 10
-                this.spriteFrame = 0
-                this.conditionCheck()
-            } else {
-                this.belly += this.appetite;
-                this.energy += this.stamina;
-                this.fun += this.attention;
-
-                return
-            }
+    stateAttack() {
+        this.attack(this.opponent);
+    }
+    stateFireball() {
+        this.fireball(this.opponent);
+    }
+    stateApproach() {
+        this.trackdown(this.opponent);
+    }
+    stateBackoff() {
+        this.runFrom(this.opponent);
+    }
+    stateJump() {
+        this.jump();
+    }
+    stateIdle() { }
+    trackdown(target) {
+        if (this.x < target.x) {
+            this.move.ri = true;
+            this.move.lf = false;
+        } else {
+            this.move.ri = false;
+            this.move.lf = true;
         }
-
-
-
-        if (this.belly >= 5 && this.energy >= 5 && this.fun >= 5) {
-            this.currentState = this.conditions[0]
-        } else
-            if (this.belly < 5 && this.belly <= this.energy && this.belly <= this.fun) {
-                this.currentState = this.conditions[1]
-            } else
-                if (this.energy < 5 && this.energy <= this.fun && this.energy <= this.belly) {
-                    this.currentState = this.conditions[2]
-                } else
-                    if (this.fun < 5 && this.fun <= this.energy && this.fun <= this.belly) {
-                        this.currentState = this.conditions[3]
-                    }
-
+    }
+    runFrom(target) {
+        if (this.x > target.x) {
+            this.move.ri = true;
+            this.move.lf = false;
+        } else {
+            this.move.ri = false;
+            this.move.lf = true;
+        }
     }
 }
 class fireballClass extends interObj {
-    constructor(x, y, element, direction,user) {
-        super(x, y, 20, 20, element)
+    constructor(x, y, element, direction, user) {
+        super(x, y, 40, 20, element);
+        this.direction = direction;
         this.xSpd = 3;
-        this.user = user
-        if(this.direction>0){
-            this.move.ri = true
-        }else{
-            this.move.lf = true
+        this.user = user;
+        if (this.direction > 0) {
+            this.move.ri = true;
+        } else {
+            this.move.lf = true;
         }
     }
-    launch(target){ 
-        this.position()
-        this.element.classList.remove('hidden')
-        const launch = setInterval(()=>{
-
-        this.moveFunction()
-        if(this.collision(target)){
-                if(this.spAtk > target.spDef){
-                    target.hp -= this.spAtk*3 - target.spDef + 10
-                } else {
-                    target.hp -= 10
+    launch(target) {
+        this.position();
+        this.element.classList.remove("hidden");
+        const launch = setInterval(() => {
+            if (!playwin.pause) {
+                this.moveFunction();
+                if (this.collision(target)) {
+                    if (this.user.spAtk > target.spDef) {
+                        target.hp -= this.user.spAtk * 3 - target.spDef + 10;
+                    } else {
+                        target.hp -= 10;
+                    }
+                    this.element.remove();
+                    this.user.hitstun(5, 5, target);
+                    clearInterval(launch);
                 }
-            this.element.remove()
-            this.user.hitstun(5,5,target)
-            clearInterval(launch);
-        }
-        if (this.x - this.xSpd <= this.xMin) {
-            this.element.remove()
-            clearInterval(launch);
-        }
-        if (this.x + this.xSpd >= this.xMax) {
-            this.element.remove()
-            clearInterval(launch);
-        }
-
-    },1000/playwin.framerate)
+                if (this.x - this.xSpd <= this.xMin) {
+                    this.element.remove();
+                    clearInterval(launch);
+                }
+                if (this.x + this.xSpd >= this.xMax) {
+                    this.element.remove();
+                    clearInterval(launch);
+                }
+                if (playwin.gameOver) {
+                    clearInterval(launch);
+                }
+            }
+        }, 1000 / playwin.framerate);
     }
 }
-class attackClass extends interObj{
+class attackClass extends interObj {
     constructor(x, y, width, height, element) {
-        super(x, y, width, height, element)
+        super(x, y, width, height, element);
     }
     moveFunction() {
-        if(this.user.direction>0){
-
-            this.x = this.user.x+this.user.width
-            this.y = this.user.y
-        }else{
-            this.x = this.user.x-this.width
-            this.y = this.user.y
+        if (this.user.direction > 0) {
+            this.x = this.user.x + this.user.width;
+            this.y = this.user.y;
+        } else {
+            this.x = this.user.x - this.width;
+            this.y = this.user.y;
         }
     }
 }
@@ -511,34 +471,44 @@ function update() {
         uiUpdate();
         movement();
         playerCharacter.update();
+        playerCharacter.recorder();
         enemyCharacter.update();
-        if(playerCharacter.hp<=0 || enemyCharacter.hp <=0 || playwin.timer <= 0){
-            playwin.gameOver = true
+        if (playwin.frame === playwin.framerate) {
+            playwin.frame = 0;
         }
-        playwin.frame++
+
+        if (
+            playerCharacter.hp <= 0 ||
+            enemyCharacter.hp <= 0 ||
+            playwin.timer <= 0
+        ) {
+            playwin.gameOver = true;
+        }
+        playwin.frame++;
     }
 }
 
 function movement() {
-    playerAttack.moveFunction()
+    playerAttack.moveFunction();
+    enemyAttack.moveFunction();
 }
 
 function uiUpdate() {
-    gaugeUi()
-    timerUi()
+    gaugeUi();
+    timerUi();
 }
 
 function gaugeUi() {
-    enemyHpBar.value = enemyCharacter.hp
-    playerHpBar.value = playerCharacter.hp
-    enemyMpBar.value = enemyCharacter.mp
-    playerMpBar.value = playerCharacter.mp
+    enemyHpBar.value = enemyCharacter.hp;
+    playerHpBar.value = playerCharacter.hp;
+    enemyMpBar.value = enemyCharacter.mp;
+    playerMpBar.value = playerCharacter.mp;
 }
 
 function timerUi() {
-    if (playwin.timer>0) {
-        playwin.timer -= 1/playwin.framerate
-        timerEle.textContent = Math.ceil(playwin.timer)        
+    if (playwin.timer > 0) {
+        playwin.timer -= 1 / playwin.framerate;
+        timerEle.textContent = Math.ceil(playwin.timer);
     }
 }
 //ANCHOR function utility
@@ -561,164 +531,311 @@ function game() {
             gameOver();
         }
     }, 1000 / playwin.framerate);
-
 }
 
 function gameOver() {
-    // $("#music")[0].pause();
-    // $("#music")[0].currentTime = 0;
-    playwin.pause = true
-    if (enemyCharacter.hp > playerCharacter.hp) {
-        document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
-    } else if (enemyCharacter.hp < playerCharacter.hp) {
-        document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
-    } else{
-        document.getElementById('notification-message').innerHTML=`Tie`
+    playwin.pause = true;
+    if (
+        enemyCharacter.hp / +enemyHpBar.getAttribute("max") >
+        playerCharacter.hp / +playerHpBar.getAttribute("max")
+    ) {
+        document.getElementById(
+            "notification-message"
+        ).innerHTML = `${enemyCharacter.name} Wins`;
+    } else if (
+        enemyCharacter.hp / +enemyHpBar.getAttribute("max") <
+        playerCharacter.hp / +playerHpBar.getAttribute("max")
+    ) {
+        document.getElementById("notification-message").innerHTML = `${playerCharacter.name
+            } Wins <br> ${+enemyCharacter.element.getAttribute("exp")}xp gained`;
+        const exp =
+            +playerCharacter.element.getAttribute("exp") +
+            +enemyCharacter.element.getAttribute("exp");
+        document.getElementById("exp").value = exp;
+        playerCharacter.element.setAttribute("exp", exp);
+        document.getElementById("level-display").value = Math.floor(
+            Math.log((9 * exp) / 100) / Math.log(3)
+        );
+        document.getElementById(
+            "personality"
+        ).value = playerCharacter.personality.toString();
+    } else {
+        document.getElementById("notification-message").innerHTML = `Tie`;
     }
-    document.getElementById('notification-area').classList.remove('hidden')
-
+    document.getElementById("notification-area").classList.remove("hidden");
 }
 
 function Init() {
-
-    // $("#music")[0].play();
-
-
-    playwin.pause = false
+    playerCharacter.hp = +playerHpBar.getAttribute("max");
+    enemyCharacter.hp = +enemyHpBar.getAttribute("max");
+    playerCharacter.mp = +playerMpBar.getAttribute("max");
+    enemyCharacter.mp = +enemyMpBar.getAttribute("max");
+    playerCharacter.x = playerInit.x;
+    playerCharacter.y = playerInit.y;
+    enemyCharacter.x = enemyInit.x;
+    enemyCharacter.y = enemyInit.y;
+    playerCharacter.airborne = true;
+    enemyCharacter.airborne = true;
+    playwin.gameOver = false;
+    playwin.pause = false;
+    playwin.timer = 99;
+    document.getElementById("notification-area").classList.add("hidden");
+    document.getElementById("exp").value = playerCharacter.element.getAttribute(
+        "exp"
+    );
+    document.getElementById("level-display").value = Math.floor(
+        Math.log((9 * +playerCharacter.element.getAttribute("exp")) / 100) /
+        Math.log(3)
+    );
+    document.querySelectorAll(".fire").forEach((fire) => {
+        fire.remove();
+    });
 }
 
 function pause() {
-    if (pet.alive) {
-        playwin.pause = !playwin.pause
+    if (!playwin.gameOver) {
+        playwin.pause = !playwin.pause;
         if (playwin.pause) {
-            // $("#music")[0].pause()
-        } else {
-            // $("#music")[0].play()
         }
         if (playwin.pause) {
-            // $('img.icon.pause').attr('src','assets/icons/play_arrow-24px.svg')
+            document.getElementById("pause-message").innerHTML = `Paused`;
+            document.getElementById("pause-area").classList.remove("hidden");
         } else {
-            // $('img.icon.pause').attr('src','assets/icons/pause-24px.svg')
+            document.getElementById("pause-area").classList.add("hidden");
         }
     }
 }
 
-function mute() {
-    playwin.mute = !playwin.mute
-    // $('audio')[0].muted = playwin.mute
-    if (playwin.mute) {
-        //   $('img.icon.mute').attr('src','assets/icons/volume_off-24px.svg')
+function controlToggle() {
+    if (playwin.controlMode === "arrow") {
+        playwin.controlMode = "wasd";
+        document.getElementById("control-toggle").innerText = "wasd";
+        document.querySelector(".move-info").innerText = "A D";
+        document.querySelector(".jump-info").innerText = "W";
+        document.querySelector(".fire-info").innerText = "Z";
     } else {
-        //   $('img.icon.mute').attr('src','assets/icons/volume_up-24px.svg')
+        playwin.controlMode = "arrow";
+        document.getElementById("control-toggle").innerText = "Arrows";
+        document.querySelector(".move-info").innerText = "⬅➡";
+        document.querySelector(".jump-info").innerText = "⬆";
+        document.querySelector(".fire-info").innerText = "L Shift";
     }
 }
 
 function assignEvents() {
-    // $('#pauseBtn').on("click", pause)
-    // $('#muteBtn').on("click", mute)
-    // $('.notification').on('click', function () {
-    //     if (!pet.alive) {
-    //         game()
-    //     }
-    // })
+    document
+        .getElementById("control-toggle")
+        .addEventListener("click", controlToggle);
     window.addEventListener("keydown", getKey);
     window.addEventListener("keyup", releaseKey);
 }
 
 function getKey(event) {
-    controller(event.key)   
+    controller(event.key);
 }
 
-function controller(inp){
-    if(playerCharacter.control){
-        if(inp === 'ArrowUp'){
-            if (!playerCharacter.airborne) {
-                playerCharacter.jump()
+function controller(inp) {
+    if (playerCharacter.control && !playwin.pause) {
+        if (playwin.controlMode === "arrow") {
+            if (inp === "ArrowUp") {
+                if (!playerCharacter.airborne) {
+                    playerCharacter.jump();
+                }
+                playerCharacter.currentState = "jump";
+            }
+            if (inp === "ArrowDown") {
+                playerCharacter.move.dn = true;
+            }
+            if (inp === "ArrowLeft") {
+                playerCharacter.move.lf = true;
+                if (playerCharacter.x < enemyCharacter.x) {
+                    playerCharacter.currentState = "backoff";
+                } else {
+                    playerCharacter.currentState = "approach";
+                }
+            }
+            if (inp === "ArrowRight") {
+                playerCharacter.move.ri = true;
+                if (playerCharacter.x > enemyCharacter.x) {
+                    playerCharacter.currentState = "backoff";
+                } else {
+                    playerCharacter.currentState = "approach";
+                }
+            }
+            if (inp === " ") {
+                playerCharacter.attack(enemyCharacter);
+                playerCharacter.currentState = "attack";
+            }
+            if (inp === "z") {
+                playerCharacter.fireball(enemyCharacter);
+                playerCharacter.currentState = "fireball";
+            }
+        } else if (playwin.controlMode === "wasd") {
+            if (inp === "w") {
+                if (!playerCharacter.airborne) {
+                    playerCharacter.jump();
+                }
+                playerCharacter.currentState = "jump";
+            }
+            if (inp === "s") {
+                playerCharacter.move.dn = true;
+            }
+            if (inp === "a") {
+                playerCharacter.move.lf = true;
+                if (playerCharacter.x < enemyCharacter.x) {
+                    playerCharacter.currentState = "backoff";
+                } else {
+                    playerCharacter.currentState = "approach";
+                }
+            }
+            if (inp === "d") {
+                playerCharacter.move.ri = true;
+                if (playerCharacter.x > enemyCharacter.x) {
+                    playerCharacter.currentState = "backoff";
+                } else {
+                    playerCharacter.currentState = "approach";
+                }
+            }
+            if (inp === " ") {
+                playerCharacter.attack(enemyCharacter);
+                playerCharacter.currentState = "attack";
+            }
+            if (inp === "Shift") {
+                playerCharacter.fireball(enemyCharacter);
+                playerCharacter.currentState = "fireball";
             }
         }
-        if(inp === 'ArrowDown'){
-            playerCharacter.move.dn = true
-        }
-        if(inp === 'ArrowLeft'){
-            playerCharacter.move.lf = true
-        }
-        if(inp === 'ArrowRight'){
-            playerCharacter.move.ri = true
-        }
-        if(inp === ' '){
-            playerCharacter.attack(enemyCharacter)
-        }
-        if(inp === 'z'){
-            playerCharacter.fireball(enemyCharacter)
-        }
     }
-    // console.log(inp)
-    // console.log(playerCharacter.move);
+
+    if (inp === "p") {
+        pause();
+    }
 }
 
 function releaseKey(inp) {
-    if(inp.key === 'ArrowUp'){
-        // playerCharacter.move.up = false
+    if (playerCharacter.control && !playwin.pause) {
+        if (playwin.controlMode === "arrow") {
+            if (inp.key === "ArrowUp") {
+
+                playerCharacter.currentState = "idle";
+            }
+            if (inp.key === "ArrowDown") {
+                playerCharacter.move.dn = false;
+                playerCharacter.currentState = "idle";
+            }
+            if (inp.key === "ArrowLeft") {
+                playerCharacter.move.lf = false;
+                playerCharacter.currentState = "idle";
+            }
+            if (inp.key === "ArrowRight") {
+                playerCharacter.move.ri = false;
+                playerCharacter.currentState = "idle";
+            }
+        } else if (playwin.controlMode === "wasd") {
+            if (inp.key === "w") {
+            }
+            if (inp.key === "s") {
+                playerCharacter.move.dn = false;
+                playerCharacter.currentState = "idle";
+            }
+            if (inp.key === "a") {
+                playerCharacter.move.lf = false;
+                playerCharacter.currentState = "idle";
+            }
+            if (inp.key === "d") {
+                playerCharacter.move.ri = false;
+                playerCharacter.currentState = "idle";
+            }
+        }
     }
-    if(inp.key === 'ArrowDown'){
-        playerCharacter.move.dn = false
-    }
-    if(inp.key === 'ArrowLeft'){
-        playerCharacter.move.lf = false
-    }
-    if(inp.key === 'ArrowRight'){
-        playerCharacter.move.ri = false
-    }
-    // console.log(inp)
 }
+
 //ANCHOR global var and obj
-enemyHpBar = document.getElementById('enemy-hp')
-playerHpBar = document.getElementById('player-hp')
-enemyMpBar = document.getElementById('enemy-mp')
-playerMpBar = document.getElementById('player-mp')
-timerEle = document.getElementById('timer')
+enemyHpBar = document.getElementById("enemy-hp");
+playerHpBar = document.getElementById("player-hp");
+enemyMpBar = document.getElementById("enemy-mp");
+playerMpBar = document.getElementById("player-mp");
+timerEle = document.getElementById("timer");
 
 playwin = {
     height: 400,
     width: 800,
-    element: document.getElementById('play-window'),
-    mute: false,
+    element: document.getElementById("play-window"),
     pause: true,
     frame: 0,
     framerate: 30,
     timer: 99,
     gameOver: false,
-    gravAcc: 1
+    gravAcc: 1,
+    controlMode: "arrow",
 };
-playerEle = document.getElementById('player')
+playerEle = document.getElementById("player");
+enemyEle = document.getElementById("enemy");
+
+playerInit = {
+    x: 0,
+    y: 0,
+};
+enemyInit = {
+    x: 700,
+    y: 0,
+};
 
 let playerAttack = new attackClass(
-    100,0,50,50,document.getElementById('player-attack')
-)
+    playerInit.x + 100,
+    playerInit.y,
+    50,
+    50,
+    document.getElementById("player-attack")
+);
+let enemyAttack = new attackClass(
+    enemyInit.x - 50,
+    enemyInit.y,
+    50,
+    50,
+    document.getElementById("enemy-attack")
+);
+
+enemyPersonality = enemyEle
+    .getAttribute("personality")
+    .split(",")
+    .map((a) => +a);
 
 let playerCharacter = new playerClass(
-    0,0,playerEle,
-    playerEle.getAttribute('name'),
-    playerAttack, 
-    +playerEle.getAttribute('hp'), 
-    +playerEle.getAttribute('mp'), 
-    +playerEle.getAttribute('atk'), 
-    +playerEle.getAttribute('def'), 
-    +playerEle.getAttribute('spatk'), 
-    +playerEle.getAttribute('spdef'), 
-)
+    playerInit.x,
+    playerInit.y,
+    playerEle,
+    playerEle.getAttribute("name"),
+    playerAttack,
+    +playerEle.getAttribute("hp"),
+    +playerEle.getAttribute("mp"),
+    +playerEle.getAttribute("atk"),
+    +playerEle.getAttribute("def"),
+    +playerEle.getAttribute("spatk"),
+    +playerEle.getAttribute("spdef"),
+    [1, 1, 1, 1, 1, 1]
+);
 
 let enemyCharacter = new enemyClass(
-    400,0,document.getElementById('enemy'),'sdf',null, 100, 100, 10, 5, 5, 5
-)
+    enemyInit.x,
+    enemyInit.y,
+    document.getElementById("enemy"),
+    enemyEle.getAttribute("name"),
+    enemyAttack,
+    +enemyEle.getAttribute("hp"),
+    +enemyEle.getAttribute("mp"),
+    +enemyEle.getAttribute("atk"),
+    +enemyEle.getAttribute("def"),
+    +enemyEle.getAttribute("spatk"),
+    +enemyEle.getAttribute("spdef"),
+    enemyPersonality
+);
 
-playerAttack.user = playerCharacter
-playerCharacter.opponent = enemyCharacter
-enemyCharacter.opponent = playerCharacter
+playerAttack.user = playerCharacter;
+enemyAttack.user = enemyCharacter;
 
+playerCharacter.opponent = enemyCharacter;
+enemyCharacter.opponent = playerCharacter;
 
-game()
-assignEvents()
-mute()
-
-console.log(playerCharacter.hp)
+game();
+assignEvents();
