@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
+    <script defer src="/js/dom_manipulation.js"></script>
     <title>Avatar Details</title>
 </head>
 <body class="body">
@@ -38,7 +39,7 @@
             <h3 class=""> Next level: <%= levelInfo.expRem %>xp </h3>
         </div>
         <form action="/index/account/avatars/<%= avatar._id %>?_method=DELETE" method="POST" class="form-group">
-            <a href="/index/account/avatars/<%= avatar._id %>/game" class="btn btn-outline-primary">Play</a>
+            <a href="/index/account/avatars/<%= avatar._id %>/game" class="btn btn-outline-primary" id="play-btn">Play</a>
             <a href="/index/account/avatars/<%= avatar._id %>/edit" class="btn btn-outline-info">Edit</a>
             <button type="submit" class="btn btn-outline-danger">Delete</button>
         </form>

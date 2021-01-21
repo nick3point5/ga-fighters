@@ -183,7 +183,7 @@ h4{
 
 .game-window{
     background-color: gray;
-    background-image: url(https://i.imgur.com/davQLBo.gif);
+    background-image: url('../assets/arenas/africa.gif');
     background-position: bottom;
     background-size: cover;
     height: 100%;

@@ -26,7 +26,6 @@ router.get('/logout', (req, res) => {
 
 // POST ---->   /index/    <---- User Sign up and redirects to login
 router.post('/', (req, res) => {
-	console.log(req.body)
 	const username = {
 		name : req.body.name,
 		password: req.body.password,
@@ -158,10 +157,8 @@ router.put('/account', (req, res) => {
 	
 	router.delete('/account', (req, res) => {
 		db.User.findById(req.session.currentUser._id, (err, foundObj) => {
-			if (err) {
-				console.log('Error:');
-				console.log(err);
-			}
+			if (err) return res.send(err);
+
 			db.User.findByIdAndDelete(foundObj._id, (err, deletedObj) => {
 				if (err) return res.send(err);
 				db.Avatar.deleteMany({user: req.session.currentUser._id},(err, deletedArr)=>{
@@ -393,8 +390,6 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 				{ new: true },
 				(err, updatedAvatar) => {
 					if (err) {
-						console.log('Error:');
-						console.log(err);
 						res.send(err);
 					}
 					return res.redirect(`/index/account/avatars/${avatarId}/edit`);

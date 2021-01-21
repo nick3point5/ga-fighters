@@ -5,9 +5,11 @@ const userSchema = new Schema(
 	{
 		name: {
 			type: String,
+			required:true,
 		},
 		password: {
 			type: String,
+			required:true,
 		},
 		account: { type: String, required: true },
 		avatars: [{ type: Schema.Types.ObjectId, ref: 'Avatar' }],
