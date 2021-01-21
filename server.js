@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use('/', express.static(__dirname + '/public'));
+app.use('/', express.static(__dirname + '/public/assets'));
 app.use(session({
 	secret: 'clifford the big red dog',
 	resave: false,

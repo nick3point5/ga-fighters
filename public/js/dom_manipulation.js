@@ -67,8 +67,15 @@ function Stats() {
 
 }
 function err() {
-    const error = document.getElementById('error-message')
-    error.textContent = window.location.search.split('%22')[1].replaceAll('%20',' ')
-    error.classList.remove('hidden')
+    if(window.location.search){
+        const error = document.getElementById('error-message')
+        error.textContent = window.location.search.split('%22')[1].replaceAll('%20',' ')
+        error.classList.remove('hidden')
+    }
 
+}
+
+function backg(){
+    const backg=document.querySelector('.game-window')
+    backg.setAttribute('Style','background-image: url(/assets/Pow.png);')
 }
