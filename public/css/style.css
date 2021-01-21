@@ -276,8 +276,8 @@ p{
     width: 100px;
 }
 
-.character-name{
-    z-index: 3;
+.card-text{
+    width:150px;
 }
 
 .account-controls{
@@ -308,4 +308,14 @@ input{
     flex-direction: row;
     justify-content: space-between;
     width: 200px;
+}
+
+.opponent-pic{
+    width: 200px;
+    height: 300px;
+    background-size: contain;
+}
+
+.lvl-container{
+    display: flex;
 }

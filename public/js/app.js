@@ -781,6 +781,3 @@ enemyCharacter.opponent = playerCharacter
 game()
 assignEvents()
 mute()
-
-// let xhr = new XMLHttpRequest
-// xhr.open('GET',

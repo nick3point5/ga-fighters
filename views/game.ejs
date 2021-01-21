@@ -14,23 +14,8 @@
     </head>
     <body class="body">
 <!-- HEADER START -->
-        <%- include('partials/header.ejs')  %> 
+        <%- include('partials/header-game.ejs')  %> 
 <!-- HEADER END -->
-    <form action="/index/<%= accountId %>/avatars/<%= avatar._id %>/level?_method=PUT" method="post">
-        <div class="input-container">
-            <div class="stat-container">
-                <label>Lvl</label>
-                <div class="stat-control form-group">
-                    <div class="input-container">
-                        <div class="input"></div>
-                        <input type="number" id="level-display" name = "lvl">
-                        <input type="number" class="hidden" id="exp" name="exp" value="<%= avatar.stats.exp %> ">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-outline-primary">Level Up</button>
-    </form>
     
 <!-- MAIN START -->
     <main class="main-game">
@@ -116,9 +101,47 @@
                 
             </div>
         </div>
-        <div class="intructions">
+        <div class="opponent-bio">
             <section class="info-section">
-                
+                <img src="<%= opponent.img %>" alt="Opponent" class="opponent-pic"/>
+                    <!-- 
+                    <p class=""> Level: <%= opponent.stats.exp*2 %> </p> -->
+            </section>
+            <section class="info-section">
+                <p class="game-info">Name:</p>
+                <p class="game-info"><%= opponent.name %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">Bio:</p>
+                <p class="game-info"><%= opponent.info %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">HP</p>
+                <p class="game-info"><%= opponent.stats.health %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">MP</p>
+                <p class="game-info"><%= opponent.stats.mana %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">Atk</p>
+                <p class="game-info"><%= opponent.stats.attack %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">Def</p>
+                <p class="game-info"><%= opponent.stats.defence %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">SpAtk</p>
+                <p class="game-info"><%= opponent.stats.spclAttack %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">SpDef</p>
+                <p class="game-info"><%= opponent.stats.spclDefence %></p>
+            </section>
+            <section class="info-section">
+                <p class="game-info">Level</p>
+                <p class="game-info"><%= Math.floor(Math.log(9*(opponent.stats.exp)/100)/Math.log(3)) %></p>
             </section>
         </div>
     </main>
