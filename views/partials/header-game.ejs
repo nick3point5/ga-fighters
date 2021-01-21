@@ -1,8 +1,8 @@
 <header class="header pow">
     <h1 class="logo">G.A-Fighter's</h1>
     <div class="d-flex flex-row justify-content-between">
-        <a href="/index/<%= accountId %>" class="btn btn-primary">Back</a>
-        <form action="/index/<%= accountId %>/avatars/<%= avatar._id %>/level?_method=PUT" method="post">
+        <a href="/index/account" class="btn btn-primary">Back</a>
+        <form action="/index/account/avatars/<%= avatar._id %>/level?_method=PUT" method="post">
             <div class="input-container">
                 <div class="lvl-container">
                     <label>Lvl</label>
@@ -17,6 +17,6 @@
                 </div>
             </div>
         </form>
-        <a href="/index" class="btn btn-primary">Logout</a>
+        <a href="/index/logout" class="btn btn-primary">Logout</a>
     </div>
 </header>
