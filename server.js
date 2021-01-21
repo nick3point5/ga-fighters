@@ -16,13 +16,12 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use('/', express.static(__dirname + '/public'));
-app.use('/', express.static(__dirname + '/public/assets'));
 app.use(session({
 	secret: 'clifford the big red dog',
 	resave: false,
 	saveUninitialized: false,
 	cookie: {
-	  maxAge: 1000 * 60 * 60 * 24 * 7 * 2 // valid for 2 weeks
+	  maxAge: 1000 * 60 * 60 * 24 * 7 * 2
 	}
 }));
 
@@ -33,7 +32,7 @@ app.get('/', (req, res) => {
 
 // ALL SEPRATE ROUTES
 app.use('/index', express.static(__dirname + '/public'));
-app.use('/index', indexRoute); // login page and link to Sign-Up
+app.use('/index', indexRoute);
 app.listen(PORT, () => {
 	console.log('Server is running on port: ' + PORT);
 });

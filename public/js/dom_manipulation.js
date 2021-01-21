@@ -72,7 +72,7 @@ function err() {
         error.textContent = window.location.search.split('%22')[1].replaceAll('%20',' ')
         error.classList.remove('hidden')
     }
-
+}
 // ALL MAPS FOR GAME AND RANDOM GENERATING FUNCTION FOR MAPS
 const maps = [
     '/assets/arenas/africa.gif',
@@ -119,13 +119,14 @@ const maps = [
     '/assets/arenas/windmill.gif',
 ];
 
-
-document.getElementById('change-map').addEventListener('click',()=>{
-    let mapChoice = maps[Math.floor(Math.random() * 5)];
-    document.querySelector('.game-window').setAttribute('style',`background-image: url('${mapChoice}')`)
-})
-
 function backg(){
+    let mapChoice = maps[getRand(maps.length-1, 0)];
     const backg=document.querySelector('.game-window')
-    backg.setAttribute('Style','background-image: url(/assets/Pow.png);')
+    backg.setAttribute('Style',`background-image: url(${mapChoice});`)
+}
+
+function getRand(max, min) {
+    let num = Math.random() * (max + 1 - min) + min - 1;
+    num = Math.ceil(num);
+    return num;
 }

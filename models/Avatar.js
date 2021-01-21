@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const avatarSchema = new Schema(
@@ -9,7 +9,7 @@ const avatarSchema = new Schema(
 		},
 		info: {
 			type: String,
-			default: 'Input details on the Avatar. ex: Avatar background story',
+			default: "Input details on the Avatar. ex: Avatar background story",
 		},
 		stats: {
 			health: { type: Number },
@@ -24,15 +24,13 @@ const avatarSchema = new Schema(
 
 		user: {
 			type: Schema.Types.ObjectId,
-			ref: 'User',
+			ref: "User",
 		},
 
-		personality:
-		{type: String, 
-		default: '1,1,1,1,1,1'},
+		personality: { type: String, default: "1,1,1,1,1,1" },
 	},
 
 	{ timestamps: true }
 );
 
-module.exports = mongoose.model('Avatar', avatarSchema);
+module.exports = mongoose.model("Avatar", avatarSchema);
