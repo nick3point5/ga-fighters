@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -12,9 +12,9 @@ const userSchema = new Schema(
 			required:true,
 		},
 		account: { type: String, required: true },
-		avatars: [{ type: Schema.Types.ObjectId, ref: 'Avatar' }],
+		avatars: [{ type: Schema.Types.ObjectId, ref: "Avatar" }],
 	},
 	{ timestamps: true }
 );
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
