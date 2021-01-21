@@ -338,6 +338,21 @@ class enemyClass extends fighter {
         }
 
     }
+    setPersonality(personality){
+        if (personality==='lazy') {
+            this.personality=[10,10,30,30,10,100]
+        }else if (personality==='cowardly') {
+            this.personality=[20,20,50,1,50,20]
+        }else if (personality==='angry') {
+            this.personality=[100,1,100,1,30,1]
+        }else if (personality==='zoner') {
+            this.personality=[1,100,1,100,1,10]
+        }else if (personality==='crazy') {
+            this.personality=[1,1,1,1,1,1]
+        }
+        
+        
+    }
 
 
     stateAttack(){
