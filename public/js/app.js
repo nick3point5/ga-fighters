@@ -540,6 +540,7 @@ function gameOver() {
         document.getElementById('exp').value = exp
         playerCharacter.element.setAttribute('exp',exp)
         document.getElementById('level-display').value = Math.floor(Math.log(9*(exp)/100)/Math.log(3))
+        document.getElementById('personality').value = playerCharacter.personality.toString()
 
     } else{
         document.getElementById('notification-message').innerHTML=`Tie`
@@ -803,6 +804,8 @@ let enemyAttack = new attackClass(
     enemyInit.x-50,enemyInit.y,50,50,document.getElementById('enemy-attack')
 )
 
+enemyPersonality=enemyEle.getAttribute('personality').split(',').map(a=>+a)
+
 let playerCharacter = new playerClass(
     playerInit.x,
     playerInit.y,
@@ -830,7 +833,7 @@ let enemyCharacter = new enemyClass(
     +enemyEle.getAttribute('def'), 
     +enemyEle.getAttribute('spatk'), 
     +enemyEle.getAttribute('spdef'), 
-    [1,1,1,1,1,1]
+    enemyPersonality
 )
 
 playerAttack.user = playerCharacter

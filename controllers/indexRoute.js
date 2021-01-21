@@ -379,6 +379,7 @@ router.put('/account/avatars/:avatarId', (req, res) => {
 router.put('/:account/avatars/:avatarId/level', (req, res) => {
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
+	const personalityMatrix = req.body.personality
 
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		
@@ -394,6 +395,7 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 				spclDefence: foundObj.stats.spclDefence,
 				exp: +req.body.exp,
 			},
+			personality:personalityMatrix,
 			img: foundObj.img,
 			user: foundObj.user
 		}
@@ -419,7 +421,7 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 router.get('/reset', (req,res) => {
 	db.Avatar.updateMany(
 		{},
-		{personality: [1,1,1,1,1,1]},
+		{personality: '1,1,1,1,1,1'},
 		(err,obj)=>{
 		if(err){
 			console.log(err);

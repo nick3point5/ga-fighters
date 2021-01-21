@@ -28,8 +28,8 @@ const avatarSchema = new Schema(
 		},
 
 		personality:
-		[{type: Number, 
-		default: [1,1,1,1,1,1]}],
+		{type: String, 
+		default: '1,1,1,1,1,1'},
 	},
 
 	{ timestamps: true }
