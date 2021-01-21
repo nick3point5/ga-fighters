@@ -67,8 +67,9 @@
                     value="<%= avatar.stats.mana %>">
                 </meter>
             </div>
-
-            <h3 id="timer">12</h3>
+            <div class="timer">
+                <p id="timer">99</p>
+            </div>
 
             <div class="bar-container enemy-bar-container">
 
@@ -116,6 +117,10 @@
                 <p class="game-info"><%= opponent.info %></p>
             </section>
             <section class="info-section">
+                <p class="game-info">Level</p>
+                <p class="game-info"><%= Math.floor(Math.log(9*(opponent.stats.exp)/100)/Math.log(3)) %></p>
+            </section>
+            <section class="info-section">
                 <p class="game-info">HP</p>
                 <p class="game-info"><%= opponent.stats.health %></p>
             </section>
@@ -138,10 +143,6 @@
             <section class="info-section">
                 <p class="game-info">SpDef</p>
                 <p class="game-info"><%= opponent.stats.spclDefence %></p>
-            </section>
-            <section class="info-section">
-                <p class="game-info">Level</p>
-                <p class="game-info"><%= Math.floor(Math.log(9*(opponent.stats.exp)/100)/Math.log(3)) %></p>
             </section>
         </div>
     </main>
