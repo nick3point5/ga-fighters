@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
     <!-- STYLES -->
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
@@ -11,17 +13,18 @@
     <title>Profile</title>
 </head>
 <body class="body">
+    <div class="content">
 <!-- HEADER START -->
     <header class="header text-center d-flex flex-column">
         <h1 class="display-1">Welcome, <%= user.name %> </h1>
         <div class="d-flex flex-row justify-content-between">
-            <a href="/index/<%= user.account %>/edit" class="btn btn-primary">Settings</a>
-            <a href="/index" class="btn btn-primary">Logout</a>
+            <a href="/index/account/edit" class="btn btn-primary">Settings</a>
+            <a href="/index/logout" class="btn btn-primary">Logout</a>
         </div>
     </header>
 <!-- HEADER END -->
-    <h3 class="text-center">The best experience awaits!. </h3>
-    <a href="/index/<%= user.account %>/new" class="btn btn-outline-info">New Character</a>
+    <h3 class="text-center">The best experience awaits! </h3>
+    <a href="/index/account/new" class="btn btn-outline-info">New Character</a>
 <!-- MAIN START -->
     <main class="main-show character-container d-flex  justify-content-center flex-wrap">
         <%   if (user.avatars.length < 1){ %>
@@ -32,6 +35,10 @@
         <% } %>  
         <% } %> 
     </main>
-<!-- MAIN START -->          
+<!-- MAIN START -->   
+</div>
+<!-- FOOTER START -->
+<%- include('partials/footer.ejs') %>
+<!-- FOOTER END -->       
 </body>
 </html>

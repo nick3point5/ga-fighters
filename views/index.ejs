@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
     <link href="./css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="./css/style.css" rel="stylesheet" type="text/css">
     <script defer src="./js/bootstrap.bundle.js"></script>
+    <script defer src="/js/dom_manipulation.js"></script>
     <title>Login</title>
 </head>
-<body class="body ">
+<body class="body" onload=err()>
+    <div class="content">
 <!-- HEADER START -->
     <%- include('partials/mini-header.ejs')  %> 
+    <h1 id="error-message" class="alert alert-danger hidden" role="alert"></h1>
 <!-- HEADER END -->
     <h3 class="text-center">Login to your Account</h3>
 <!-- MAIN START -->
-    <main class="d-flex  justify-content-center">
-        <form action="/index/login" method="POST" class="p-5 text-center">
+    <main class="main-show">
+        <form action="/index/login" method="POST" class="form p-5 text-center">
             <h3 class="text-center">Login Form</h3>
             <div class="form-group">
                 <label for="name">Username</label>
@@ -30,5 +35,9 @@
         </form>
     </main>
 <!-- MAIN END -->
+</div>
+<!-- FOOTER START -->
+<%- include('partials/footer.ejs') %>
+<!-- FOOTER END -->
 </body>
 </html>

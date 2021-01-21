@@ -3,26 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <script defer src="/js/bootstrap.bundle.js"></script>
     <script defer src="/js/dom_manipulation.js"></script>
     <title>Edit Avatar</title>
 </head>
-<body class="body">
+<body class="body" onload=Stats()>
+    <div class="content" >
 <!-- HEADER START -->
     <header class="header">
         <h1 class="display-1 text-center">Avatar Info</h1>
         <div class="d-flex flex-row justify-content-between">
-            <a href="/index/<%= accountId %>/avatars/<%= avatar._id  %> " class="btn btn-outline-primary">Back</a>
-            <a href="/index" class="btn btn-outline-primary">Logout</a>
+            <a href="/index/account/avatars/<%= avatar._id  %> " class="btn btn-outline-primary">Back</a>
+            <a href="/index/logout" class="btn btn-outline-primary">Logout</a>
         </div>
     </header>
 <!-- HEADER END -->
 <h3 class="text-center">Edit Your Avatar</h3>
 <!-- MAIN START -->
 <main class="main d-flex  justify-content-center">
-        <form action="/index/<%= accountId %>/avatars/<%= avatarId %>?_method=PUT" method="POST" class="p-5 text-center">
+        <form action="/index/account/avatars/<%= avatarId %>?_method=PUT" method="POST" class="p-5 text-center">
             <div class="form-group">
                 <label for="name">Character Name</label>
                 <input id="name" type="text" name="name" class="form-control" value="<%= avatar.name %> ">
@@ -35,7 +38,9 @@
                 <label for="info">info</label>
                 <input id="bio" type="text" name="info" class="form-control" value="<%= avatar.info %> ">
             </div>
-            <h2 id="skillpoints">Skill Points: ###</h2>
+            <h2>Level: <%= lvl %></h2>
+            <h2 id="skillpoints-tag">Skill Points: </h2>
+            <h2 id="skillpoints"><%= skillpts %></h2>
 <!-- PARTIAL EJS -->
             <%- include('partials/avatar-stat.ejs') %>
 <!-- PARTIAL EJS -->
@@ -43,5 +48,9 @@
         </form>
     </main>
 <!-- MAIN END -->
+</div>
+<!-- FOOTER START -->
+<%- include('partials/footer-stats.ejs') %>
+<!-- FOOTER END -->
 </body>
 </html>
