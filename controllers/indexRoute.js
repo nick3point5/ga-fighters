@@ -144,12 +144,12 @@ router.put('/account', (req, res) => {
 						})
 					})
 				} else {
-					return res.render('edit', { user: req.session.currentUser });
+					return res.redirect('/index/account/edit?_message="Current password incorrect. Try again."')
 				}
 			})
 		})
 	} else {
-		return res.render('edit', { user: req.session.currentUser });
+		return res.redirect('/index/account/edit?_message="Passwords dont match. Try again."')
 	}
 });
 
@@ -197,6 +197,21 @@ router.put('/account', (req, res) => {
 		
 		db.User.findById(req.session.currentUser._id,(err,foundUser)=>{
 			if (err) return res.send(err);
+
+			const skillpts = 50
+	
+			const skillpost = (
+				+rb.health/20+
+				+rb.mana/20+
+				+rb.attack+
+				+rb.defence+
+				+rb.spclAttack+
+				+rb.spclDefence
+			)
+	
+			if(skillpost>skillpts){
+				return res.redirect('/index?_message="Cheater"');
+			}
 				
 			db.Avatar.create(
 			{
@@ -292,10 +307,21 @@ router.get('/account/avatars/:avatarId/game', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-			const pick = getRand(opponents.length-1,0)
-			const opponent = (opponents[pick])
-			
-			return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser, opponent:opponent});
+
+			if(opponents.length<1){
+				db.Avatar.find({user: {$nin:player.user}},(err, opponents) => {
+					const pick = getRand(opponents.length-1,0)
+					const opponent = (opponents[pick])
+					
+					return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser, opponent:opponent});
+				})
+			}else{
+				const pick = getRand(opponents.length-1,0)
+				const opponent = (opponents[pick])
+				
+				return res.render('game', { avatar: player , avatarId : avatarId, accountId: req.session.currentUser, opponent:opponent});
+				
+			}
 		})
 	});
 });
@@ -304,8 +330,69 @@ router.get('/account/avatars/:avatarId/game', (req, res) => {
 router.put('/account/avatars/:avatarId', (req, res) => {
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
+	
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+			if (err) {
+				res.send(err);
+			}
+			let	lvl = Math.floor(Math.log(9*(foundObj.exp)/100)/Math.log(3))
+			
+			let spent = (
+				foundObj.stats.health/20+
+				foundObj.stats.mana/20+
+				foundObj.stats.attack+
+				foundObj.stats.defence+
+				foundObj.stats.spclAttack+
+				foundObj.stats.spclDefence
+			)
+	
+	
+			const skillpts = 20 * lvl + 30 - spent
+
+			const skillpost = (
+				rb.health/20+
+				rb.mana/20+
+				rb.attack+
+				rb.defence+
+				rb.spclAttack+
+				rb.spclDefence
+			)
+
+			if(skillpost>skillpts){
+				return res.redirect('/index?_message="Cheater"');
+			}
+	
+			
+	
+			
+		});
+
+	// Avatar GET game  ---------------------------------------------------------------
+	
 
 	db.Avatar.findById(avatarId,(err,foundAvatar)=>{
+		if (err) {
+			res.send(err);
+		}
+		let	lvl = Math.floor(Math.log(9*(foundAvatar.stats.exp)/100)/Math.log(3))
+
+		const skillpts = 20 * lvl + 30
+
+		const skillpost = (
+			+rb.health/20+
+			+rb.mana/20+
+			+rb.attack+
+			+rb.defence+
+			+rb.spclAttack+
+			+rb.spclDefence
+		)
+
+		if(skillpost>skillpts){
+			return res.redirect('/index?_message="Cheater"');
+		}
+
+
+
 
 		db.User.findById(req.session.currentUser._id,(err, foundUser)=>{
 			if (err) {
@@ -365,6 +452,7 @@ router.put('/account/avatars/:avatarId', (req, res) => {
 router.put('/:account/avatars/:avatarId/level', (req, res) => {
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
+	const personalityMatrix = req.body.personality
 
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		
@@ -380,6 +468,7 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 				spclDefence: foundObj.stats.spclDefence,
 				exp: +req.body.exp,
 			},
+			personality:personalityMatrix,
 			img: foundObj.img,
 			user: foundObj.user
 		}
@@ -392,7 +481,7 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 					if (err) {
 						res.send(err);
 					}
-					return res.redirect(`/index/account/avatars/${avatarId}/edit`);
+					return res.redirect(`/index/account/avatars/${avatarId}/game`);
 				}
 		);
 				

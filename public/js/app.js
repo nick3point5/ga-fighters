@@ -246,7 +246,7 @@ class fighter extends interObj {
 
 }
 class playerClass extends fighter {
-    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef) {
+    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef, personality) {
         super(x, y, element, name, HitBox)
         this.hp=hp
         this.mp=mp
@@ -255,15 +255,23 @@ class playerClass extends fighter {
         this.spAtk=spAtk
         this.spDef=spDef
         this.xSpd = 5;
-
+        this.personality=personality
+        this.states = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
+        this.currentState = 'idle'
     }
     Ai(){
 
     }
-
+    recorder(){
+        for (let i = 0; i < this.states.length; i++) {
+            if (this.currentState===this.states[i]) {
+                this.personality[i] += 1
+            }
+        }
+    }
 }
 class enemyClass extends fighter {
-    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef) {
+    constructor(x, y, element, name, HitBox, hp, mp, atk, def, spAtk, spDef, personality) {
         super(x, y, element, name, HitBox)
         this.hp=hp
         this.mp=mp
@@ -275,7 +283,7 @@ class enemyClass extends fighter {
         this.control = true
         this.states = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
         this.currentState = 'idle'
-        this.personality=[1,1,1,1,1,1]
+        this.personality= personality
 
     }
     Ai() {
@@ -460,6 +468,7 @@ function update() {
         uiUpdate();
         movement();
         playerCharacter.update();
+        playerCharacter.recorder()
         enemyCharacter.update();
         if(playwin.frame === playwin.framerate){
             playwin.frame = 0
@@ -531,6 +540,7 @@ function gameOver() {
         document.getElementById('exp').value = exp
         playerCharacter.element.setAttribute('exp',exp)
         document.getElementById('level-display').value = Math.floor(Math.log(9*(exp)/100)/Math.log(3))
+        document.getElementById('personality').value = playerCharacter.personality.toString()
 
     } else{
         document.getElementById('notification-message').innerHTML=`Tie`
@@ -597,11 +607,13 @@ function controlToggle() {
         document.getElementById('control-toggle').innerText = 'wasd'
         document.querySelector('.move-info').innerText ='A D'
         document.querySelector('.jump-info').innerText ='W'
+        document.querySelector('.fire-info').innerText ='Z'
     } else {
         playwin.controlMode = 'arrow'
         document.getElementById('control-toggle').innerText = 'Arrows'
         document.querySelector('.move-info').innerText ='⬅➡'
         document.querySelector('.jump-info').innerText ='⬆'
+        document.querySelector('.fire-info').innerText ='L Shift'
     }
 }
 
@@ -626,27 +638,40 @@ function getKey(event) {
 }
 
 function controller(inp){
-    if(playerCharacter.control){
+    if(playerCharacter.control && !playwin.pause){
     if(playwin.controlMode === 'arrow'){
         if(inp === 'ArrowUp'){
             if (!playerCharacter.airborne) {
                 playerCharacter.jump()
             }
+            playerCharacter.currentState='jump'
         }
         if(inp === 'ArrowDown'){
             playerCharacter.move.dn = true
         }
         if(inp === 'ArrowLeft'){
             playerCharacter.move.lf = true
+            if(playerCharacter.x<enemyCharacter.x){
+                playerCharacter.currentState='backoff'
+            }else{
+                playerCharacter.currentState='approach'
+            }
         }
         if(inp === 'ArrowRight'){
             playerCharacter.move.ri = true
+            if(playerCharacter.x>enemyCharacter.x){
+                playerCharacter.currentState='backoff'
+            }else{
+                playerCharacter.currentState='approach'
+            }
         }
         if(inp === ' '){
             playerCharacter.attack(enemyCharacter)
+            playerCharacter.currentState='attack'
         }
         if(inp === 'z'){
             playerCharacter.fireball(enemyCharacter)
+            playerCharacter.currentState='fireball'
         }
     } else if(playwin.controlMode === 'wasd'){
 
@@ -654,21 +679,34 @@ function controller(inp){
                 if (!playerCharacter.airborne) {
                     playerCharacter.jump()
                 }
+                playerCharacter.currentState='jump'
             }
             if(inp === 's'){
                 playerCharacter.move.dn = true
             }
             if(inp === 'a'){
                 playerCharacter.move.lf = true
+                if(playerCharacter.x<enemyCharacter.x){
+                    playerCharacter.currentState='backoff'
+                }else{
+                    playerCharacter.currentState='approach'
+                }
             }
             if(inp === 'd'){
                 playerCharacter.move.ri = true
+                if(playerCharacter.x>enemyCharacter.x){
+                    playerCharacter.currentState='backoff'
+                }else{
+                    playerCharacter.currentState='approach'
+                }
             }
             if(inp === ' '){
                 playerCharacter.attack(enemyCharacter)
+                playerCharacter.currentState='attack'
             }
             if(inp === 'Shift'){
                 playerCharacter.fireball(enemyCharacter)
+                playerCharacter.currentState='fireball'
             }
         
         }
@@ -677,25 +715,31 @@ function controller(inp){
     if(inp === 'p'){
         pause()
     }
-    
     // console.log(inp)
     // console.log(playerCharacter.move);
 }
 
+
 function releaseKey(inp) {
-    if(playerCharacter.control){
+    if(playerCharacter.control && !playwin.pause){
         if(playwin.controlMode === 'arrow'){
             if(inp.key === 'ArrowUp'){
                 // playerCharacter.move.up = false
+
+                playerCharacter.currentState='idle'
+
             }
             if(inp.key === 'ArrowDown'){
                 playerCharacter.move.dn = false
+                playerCharacter.currentState='idle'
             }
             if(inp.key === 'ArrowLeft'){
                 playerCharacter.move.lf = false
+                playerCharacter.currentState='idle'
             }
             if(inp.key === 'ArrowRight'){
                 playerCharacter.move.ri = false
+                playerCharacter.currentState='idle'
             }
         } else if(playwin.controlMode === 'wasd'){
     
@@ -704,12 +748,15 @@ function releaseKey(inp) {
             }
             if(inp.key === 's'){
                 playerCharacter.move.dn = false
+                playerCharacter.currentState='idle'
             }
             if(inp.key === 'a'){
                 playerCharacter.move.lf = false
+                playerCharacter.currentState='idle'
             }
             if(inp.key === 'd'){
                 playerCharacter.move.ri = false
+                playerCharacter.currentState='idle'
             
             }
         }
@@ -757,6 +804,8 @@ let enemyAttack = new attackClass(
     enemyInit.x-50,enemyInit.y,50,50,document.getElementById('enemy-attack')
 )
 
+enemyPersonality=enemyEle.getAttribute('personality').split(',').map(a=>+a)
+
 let playerCharacter = new playerClass(
     playerInit.x,
     playerInit.y,
@@ -769,6 +818,7 @@ let playerCharacter = new playerClass(
     +playerEle.getAttribute('def'), 
     +playerEle.getAttribute('spatk'), 
     +playerEle.getAttribute('spdef'), 
+    [1,1,1,1,1,1]
 )
 
 let enemyCharacter = new enemyClass(
@@ -783,6 +833,7 @@ let enemyCharacter = new enemyClass(
     +enemyEle.getAttribute('def'), 
     +enemyEle.getAttribute('spatk'), 
     +enemyEle.getAttribute('spdef'), 
+    enemyPersonality
 )
 
 playerAttack.user = playerCharacter
