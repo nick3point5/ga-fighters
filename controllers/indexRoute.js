@@ -222,10 +222,14 @@ router.put('/account', (req, res) => {
 router.get('/account/avatars/:avatarId', (req, res) => {
 	const avatarId = req.params.avatarId;
 	db.Avatar.findById(avatarId, (err, foundObj) => {
-		if (err) {
-			res.send(err);
+		if (err) return res.send(err);
+		let lvl = 1
+		if (foundObj.stats.exp>=100){
+			lvl = Math.floor(Math.log(9*(foundObj.stats.exp)/100)/Math.log(3))
 		}
-		return res.render('avatar-Show', { avatar: foundObj, userAcc: accountId });
+
+		let expRem = (3**(lvl-1))*100 - foundObj.stats.exp 
+		return res.render('avatar-Show', { avatar: foundObj, userAcc: req.session.currentUser.account, levelInfo:{lvl:lvl, expRem:expRem}});
 	});
 });
 
@@ -238,8 +242,8 @@ router.get('/account/avatars/:avatarId/edit', (req, res) => {
 			res.send(err);
 		}
 		let lvl = 1
-		if (foundObj.exp>=100){
-			lvl = Math.floor(Math.log(9*(foundObj.exp)/100)/Math.log(3))
+		if (foundObj.stats.exp>=100){
+			lvl = Math.floor(Math.log(9*(foundObj.stats.exp)/100)/Math.log(3))
 		}
 		let spent = (
 			foundObj.stats.health/20+
@@ -250,7 +254,10 @@ router.get('/account/avatars/:avatarId/edit', (req, res) => {
 			foundObj.stats.spclDefence
 		)
 		const skillpts = 20 * lvl + 30 - spent
-		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: accountId, skillpts: skillpts});
+
+		
+
+		return res.render('avatar-edit', { avatar: foundObj , avatarId : avatarId, accountId: userAcc, skillpts: skillpts, lvl:lvl});
 	});
 });
 // Avatar GET game  ---------------------------------------------------------------
@@ -261,7 +268,7 @@ router.get('/account/avatars/:avatarId/game', (req, res) => {
 		if (err) {
 			res.send(err);
 		}
-		db.Avatar.find({user: {$nin:player.user}}, (err, opponents) => {
+		db.Avatar.find({$and: [{user: {$nin:player.user}},{"stats.exp": { $gte: player.stats.exp/3 }},{"stats.exp": { $lte: player.stats.exp*3 }}]}, (err, opponents) => {
 			if (err) {
 				res.send(err);
 			}
@@ -294,7 +301,25 @@ router.put('/account/avatars/:avatarId', (req, res) => {
 			if (err) {
 				res.send(err);
 			}
-				db.Avatar.findByIdAndUpdate(
+
+			const updateObj = {
+				name: rb.name,
+				info: rb.info,
+				stats: {
+					health: rb.health,
+					mana: rb.mana,
+					attack: rb.attack,
+					defence: rb.defence,
+					spclAttack: rb.spclAttack,
+					spclDefence: rb.spclDefence,
+					exp: foundAvatar.stats.exp
+				},
+				user: foundAvatar.user, 
+				img: rb.img,
+			};
+
+
+			db.Avatar.findByIdAndUpdate(
 			avatarId,
 			updateObj,
 			{ new: true },
@@ -325,6 +350,46 @@ router.put('/account/avatars/:avatarId', (req, res) => {
 			})
 		})
 });
+
+router.put('/:account/avatars/:avatarId/level', (req, res) => {
+	const avatarId = req.params.avatarId;
+	const rb = req.body;
+
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+		
+		const obj = {
+			name: foundObj.name,
+			info: foundObj.info,
+			stats: {
+				health: foundObj.stats.health,
+				mana: foundObj.stats.mana,
+				attack: foundObj.stats.attack,
+				defence: foundObj.stats.defence,
+				spclAttack: foundObj.stats.spclAttack,
+				spclDefence: foundObj.stats.spclDefence,
+				exp: +req.body.exp,
+			},
+			img: foundObj.img,
+			user: foundObj.user
+		}
+
+		db.Avatar.findByIdAndUpdate(
+				avatarId,
+				obj,
+				{ new: true },
+				(err, updatedAvatar) => {
+					if (err) {
+						console.log('Error:');
+						console.log(err);
+						res.send(err);
+					}
+					return res.redirect(`/index/account/avatars/${avatarId}/edit`);
+				}
+		);
+				
+	});
+});
+
 
 function getRand(max, min) {
     let num = Math.random() * (max + 1 - min) + min - 1;

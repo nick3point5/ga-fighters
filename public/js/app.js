@@ -176,7 +176,7 @@ class fighter extends interObj {
 
     fireball(target){
         this.moveLag(30)
-        if (this.mp >= 10) {
+        if (this.mp >= this.spAtk || this.mp > 0) {
             
             const  fire = document.createElement('div')
             fire.classList.add("fire")
@@ -190,9 +190,8 @@ class fighter extends interObj {
             )
                 
             fireball.launch(target)
-            this.mp -= 10
+            this.mp -= this.spAtk
         }
-                
 
     }
     jump(){
@@ -274,30 +273,32 @@ class enemyClass extends fighter {
         this.spDef=spDef
         this.xSpd  = 5;
         this.control = true
-        this.conditions = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
+        this.states = ['attack', 'fireball', 'approach', 'backoff', 'jump', 'idle']
         this.currentState = 'idle'
+        this.personality=[1,1,1,1,1,1]
+
     }
     Ai() {
         this.behavior()
         if (this.control) {
             
             
-            if (this.currentState === this.conditions[0]) {
+            if (this.currentState === this.states[0]) {
                 this.stateAttack()
             }
-            if (this.currentState === this.conditions[1]) {
+            if (this.currentState === this.states[1]) {
                 this.stateFireball()
             }
-            if (this.currentState === this.conditions[2]) {
+            if (this.currentState === this.states[2]) {
                 this.stateApproach()
             }
-            if (this.currentState === this.conditions[3]) {
+            if (this.currentState === this.states[3]) {
                 this.stateBackoff()
             }
-            if (this.currentState === this.conditions[4]) {
+            if (this.currentState === this.states[4]) {
                 this.stateJump()
             }
-            if (this.currentState === this.conditions[5]) {
+            if (this.currentState === this.states[5]) {
                 this.stateIdle()
             }
         }
@@ -305,12 +306,40 @@ class enemyClass extends fighter {
     }
     behavior(){
         if(!(playwin.frame%30)){
-            const thought = getRand(5,0)
-            this.currentState = this.conditions[thought]
-            // console.log(this.currentState);
+            const thought = weight(this.personality,this.states)
+            this.currentState = thought
+        }
+
+        function weight(choice,states){
+            const total = choice.reduce((a,b)=>a+b)
+            let n =0 
+            let upper=[]
+            let lower=[]  
+            let feeling=Math.random()
+            for (let i = 0; i < choice.length; i++) {
+                lower.push(n)
+                n += (choice[i]/total)
+                upper.push(n)
+            }
+            choice.forEach(trait=>{
+                (trait/total)
+            })
+            const bounds={
+                upper:upper,
+                lower:lower   
+            }
+            
+            for (let i = 0; i < choice.length; i++) {
+                if (bounds.lower[i]<= feeling && feeling<bounds.upper[i]) {
+                    return states[i]
+                }
+            }
+    
         }
 
     }
+
+
     stateAttack(){
         this.attack(this.opponent)
     }
@@ -369,8 +398,8 @@ class fireballClass extends interObj {
 
                 this.moveFunction()
                 if(this.collision(target)){
-                    if(this.spAtk > target.spDef){
-                        target.hp -= this.spAtk*3 - target.spDef + 10
+                    if(this.user.spAtk > target.spDef){
+                        target.hp -= this.user.spAtk*3 - target.spDef + 10
                     } else {
                         target.hp -= 10
                     }
@@ -384,6 +413,9 @@ class fireballClass extends interObj {
                 }
                 if (this.x + this.xSpd >= this.xMax) {
                     this.element.remove()
+                    clearInterval(launch);
+                }
+                if (playwin.gameOver) {
                     clearInterval(launch);
                 }
             }
@@ -479,7 +511,12 @@ function gameOver() {
     if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) > playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
         document.getElementById('notification-message').innerHTML=`${enemyCharacter.name} Wins`
     } else if (enemyCharacter.hp/(+enemyHpBar.getAttribute('max')) < playerCharacter.hp/(+playerHpBar.getAttribute('max'))) {
-        document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins`
+        document.getElementById('notification-message').innerHTML=`${playerCharacter.name} Wins <br> ${+enemyCharacter.element.getAttribute('exp')}xp gained`
+        const exp = +playerCharacter.element.getAttribute('exp') + +enemyCharacter.element.getAttribute('exp')
+        document.getElementById('exp').value = exp
+        playerCharacter.element.setAttribute('exp',exp)
+        document.getElementById('level-display').value = Math.floor(Math.log(9*(exp)/100)/Math.log(3))
+
     } else{
         document.getElementById('notification-message').innerHTML=`Tie`
     }
@@ -504,7 +541,8 @@ function Init() {
     playwin.pause = false
     playwin.timer = 99
     document.getElementById('notification-area').classList.add('hidden')
-
+    document.getElementById('exp').value = playerCharacter.element.getAttribute('exp') 
+    document.getElementById('level-display').value = Math.floor(Math.log(9*(+playerCharacter.element.getAttribute('exp'))/100)/Math.log(3))
     document.querySelectorAll('.fire').forEach(fire=>{
         fire.remove()
     })
@@ -542,9 +580,13 @@ function controlToggle() {
     if (playwin.controlMode === 'arrow') {
         playwin.controlMode = 'wasd'
         document.getElementById('control-toggle').innerText = 'wasd'
+        document.querySelector('.move-info').innerText ='A D'
+        document.querySelector('.jump-info').innerText ='W'
     } else {
         playwin.controlMode = 'arrow'
         document.getElementById('control-toggle').innerText = 'Arrows'
+        document.querySelector('.move-info').innerText ='⬅➡'
+        document.querySelector('.jump-info').innerText ='⬆'
     }
 }
 
@@ -739,5 +781,3 @@ enemyCharacter.opponent = playerCharacter
 game()
 assignEvents()
 mute()
-
-console.log(playerCharacter.hp)

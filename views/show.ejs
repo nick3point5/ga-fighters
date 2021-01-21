@@ -13,6 +13,7 @@
     <title>Profile</title>
 </head>
 <body class="body">
+    <div class="content">
 <!-- HEADER START -->
     <header class="header text-center d-flex flex-column">
         <h1 class="display-1">Welcome, <%= user.name %> </h1>
@@ -34,6 +35,10 @@
         <% } %>  
         <% } %> 
     </main>
-<!-- MAIN START -->          
+<!-- MAIN START -->   
+</div>
+<!-- FOOTER START -->
+<%- include('partials/footer.ejs') %>
+<!-- FOOTER END -->       
 </body>
 </html>

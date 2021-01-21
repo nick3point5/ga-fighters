@@ -15,20 +15,34 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .img-card{
     margin: 0 auto;
+
 }
-.body{
+.content{
     text-align: center;
     width: 80%;
-    height: 90vh;
+    height: 100% auto;
     margin: 20px auto;
     font-size: 1.2em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: rgba(255, 255, 255, 0.906);
+    flex: 1 0 auto
+}
+
+html, body {
+    height: 100%;
+}
+
+
+body{
     background-color: #345472;
     background-image: url(../assets/gradient-wallpaper.jpg);
     background-position: center;
-    background-size: cover;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: rgba(255, 255, 255, 0.906);
+    background-size: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
+
 .header{
     font-family: 'Black Ops One', cursive;
     background-image: url('');
@@ -78,6 +92,8 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0 auto;
     border: black solid 2px;
     background-color: rgba(48, 44, 39, 0.954);
+    display: flex;
+    flex-direction: row;
 }
 .card-stats{
     color: rgb(0, 0, 0);
@@ -176,6 +192,7 @@ h4{
     display: flex;
     flex-direction: column;
     align-content: center;
+    transform-origin: 50% 50%;
     overflow: hidden;
 }
 
@@ -273,8 +290,8 @@ p{
     width: 100px;
 }
 
-.character-name{
-    z-index: 3;
+.card-text{
+    width:150px;
 }
 
 .account-controls{
@@ -284,4 +301,56 @@ p{
 
 .display-1, .display-2, .display-3{
     margin: 0 1em 0 0 ;
+}
+
+#level-display{
+    width: 100px
+}
+
+input{
+    text-align: center;
+}
+
+.game-info{
+    color:white;
+    text-align: left;
+    margin: 0;
+}
+
+.info-section{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 200px;
+}
+
+.opponent-pic{
+    width: 200px;
+    height: 300px;
+    background-size: contain;
+}
+
+.lvl-container{
+    display: flex;
+}
+
+#timer{
+    height: 40px;
+    width: 40px ;
+    background-color: rgb(0, 0, 0);
+    color: #fff;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 24px;
+    margin: 0;
+}
+
+footer{
+    text-align: center;
+    position: relative;
+    color: #fff;
+    background-color: rgba(0,0,0,.7);
+    width: 100%;
+    flex-shrink: 0;
+    bottom: 0;
 }

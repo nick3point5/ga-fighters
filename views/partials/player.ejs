@@ -1,5 +1,5 @@
-<% statStr=['health','mana','attack','defence','spclAttack','spclDefence'] %> 
-<% statAttr=['hp','mp','atk','def','spAtk','spDef'] %> 
+<% statStr=['health','mana','attack','defence','spclAttack','spclDefence','exp'] %> 
+<% statAttr=['hp','mp','atk','def','spAtk','spDef','exp'] %> 
 <div class="fighter" id="player" style="background-image: url('<%= avatar.img %>');" 
         <% for(i=0;i<statStr.length;i++){ %>   
             <%= statAttr[i] %>="<%= avatar.stats[statStr[i]] %>" 

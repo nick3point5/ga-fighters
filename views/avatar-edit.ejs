@@ -12,6 +12,7 @@
     <title>Edit Avatar</title>
 </head>
 <body class="body">
+    <div class="content">
 <!-- HEADER START -->
     <header class="header">
         <h1 class="display-1 text-center">Avatar Info</h1>
@@ -37,6 +38,7 @@
                 <label for="info">info</label>
                 <input id="bio" type="text" name="info" class="form-control" value="<%= avatar.info %> ">
             </div>
+            <h2>Level: <%= lvl %></h2>
             <h2 id="skillpoints-tag">Skill Points: </h2>
             <h2 id="skillpoints"><%= skillpts %></h2>
 <!-- PARTIAL EJS -->
@@ -46,6 +48,9 @@
         </form>
     </main>
 <!-- MAIN END -->
+</div>
+<!-- FOOTER START -->
+<%- include('partials/footer-stats.ejs') %>
+<!-- FOOTER END -->
 </body>
 </html>
-<% console.log(skillpts) %> 
