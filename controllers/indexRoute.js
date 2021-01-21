@@ -200,6 +200,21 @@ router.put('/account', (req, res) => {
 		
 		db.User.findById(req.session.currentUser._id,(err,foundUser)=>{
 			if (err) return res.send(err);
+
+			const skillpts = 50
+	
+			const skillpost = (
+				+rb.health/20+
+				+rb.mana/20+
+				+rb.attack+
+				+rb.defence+
+				+rb.spclAttack+
+				+rb.spclDefence
+			)
+	
+			if(skillpost>skillpts){
+				return res.redirect('/index?_message="Cheater"');
+			}
 				
 			db.Avatar.create(
 			{
@@ -318,8 +333,69 @@ router.get('/account/avatars/:avatarId/game', (req, res) => {
 router.put('/account/avatars/:avatarId', (req, res) => {
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
+	
+	db.Avatar.findById(avatarId, (err, foundObj) => {
+			if (err) {
+				res.send(err);
+			}
+			let	lvl = Math.floor(Math.log(9*(foundObj.exp)/100)/Math.log(3))
+			
+			let spent = (
+				foundObj.stats.health/20+
+				foundObj.stats.mana/20+
+				foundObj.stats.attack+
+				foundObj.stats.defence+
+				foundObj.stats.spclAttack+
+				foundObj.stats.spclDefence
+			)
+	
+	
+			const skillpts = 20 * lvl + 30 - spent
+
+			const skillpost = (
+				rb.health/20+
+				rb.mana/20+
+				rb.attack+
+				rb.defence+
+				rb.spclAttack+
+				rb.spclDefence
+			)
+
+			if(skillpost>skillpts){
+				return res.redirect('/index?_message="Cheater"');
+			}
+	
+			
+	
+			
+		});
+
+	// Avatar GET game  ---------------------------------------------------------------
+	
 
 	db.Avatar.findById(avatarId,(err,foundAvatar)=>{
+		if (err) {
+			res.send(err);
+		}
+		let	lvl = Math.floor(Math.log(9*(foundAvatar.stats.exp)/100)/Math.log(3))
+
+		const skillpts = 20 * lvl + 30
+
+		const skillpost = (
+			+rb.health/20+
+			+rb.mana/20+
+			+rb.attack+
+			+rb.defence+
+			+rb.spclAttack+
+			+rb.spclDefence
+		)
+
+		if(skillpost>skillpts){
+			return res.redirect('/index?_message="Cheater"');
+		}
+
+
+
 
 		db.User.findById(req.session.currentUser._id,(err, foundUser)=>{
 			if (err) {
@@ -416,19 +492,6 @@ router.put('/:account/avatars/:avatarId/level', (req, res) => {
 				
 	});
 });
-
-
-// router.get('/reset', (req,res) => {
-// 	db.Avatar.updateMany(
-// 		{},
-// 		{personality: '1,1,1,1,1,1'},
-// 		(err,obj)=>{
-// 		if(err){
-// 			console.log(err);
-// 		}
-// 		res.redirect('/index')	
-// 	})
-// })
 
 function getRand(max, min) {
     let num = Math.random() * (max + 1 - min) + min - 1;
