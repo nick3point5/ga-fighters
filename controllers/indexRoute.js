@@ -379,6 +379,11 @@ router.get("/account/avatars/:avatarId/game", (req, res) => {
 router.put("/account/avatars/:avatarId", (req, res) => {
 	const avatarId = req.params.avatarId;
 	const rb = req.body;
+	if (!rb.name) {
+		return res.redirect(
+			`/index/account/${avatarId}/edit?_message="Avatar name required"`
+		)
+	}
 
 	db.Avatar.findById(avatarId, (err, foundObj) => {
 		if (err) {
