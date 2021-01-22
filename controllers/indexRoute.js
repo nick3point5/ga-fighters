@@ -215,7 +215,7 @@ router.post("/account/avatars", (req, res) => {
 	const rb = req.body;
 	if (!rb.name) {
 		return res.redirect(
-			'/index/account/avatars?_message="Avatar name required"'
+			'/index/account/new?_message="Avatar name required"'
 		)
 	}
 
