@@ -129,3 +129,8 @@ function getRand(max, min) {
     num = Math.ceil(num);
     return num;
 }
+
+function combine(){
+    Stats()
+    err()
+}
