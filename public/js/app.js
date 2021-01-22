@@ -623,8 +623,6 @@ function controlToggle() {
 }
 
 function assignEvents() {
-
-    document.getElementById("notification-area").addEventListener("click", game);
     document
         .getElementById("control-toggle")
         .addEventListener("click", controlToggle);
