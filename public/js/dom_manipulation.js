@@ -18,15 +18,45 @@ function Stats() {
 
 	document.getElementById('skillpoints').textContent = skillpts;
 
-	stat = [];
+	for (let i = 0, eleUp = null; i < 2; i++) {
+		eleUp = document.getElementById(`${statStr[i]}-up-stat-btn`);
+		eleUp.addEventListener('click', () => {
+			if (skillpts > 0) {
+				stat[i].value = +stat[i].value + 20;
+				skillpts -= 1;
+				document.getElementById('skillpoints').textContent = skillpts;
+			}
+		});
 
-	for (let i = 0; i < statStr.length; i++) {
-		stat.push(document.getElementById(statStr[i]));
+		const eleDn = document.getElementById(`${statStr[i]}-down-stat-btn`);
+		eleDn.addEventListener('click', () => {
+			if (+stat[i].value > 0 && +stat[i].value > 20) {
+				stat[i].value = +stat[i].value - 20;
+				skillpts += 1;
+				document.getElementById('skillpoints').textContent = skillpts;
+			}
+		});
 	}
 
-	skillpts = +document.getElementById('skillpoints').textContent;
+	for (let i = 2, eleUp = null; i < statStr.length; i++) {
+		eleUp = document.getElementById(`${statStr[i]}-up-stat-btn`);
+		eleUp.addEventListener('click', () => {
+			if (skillpts > 0) {
+				stat[i].value = +stat[i].value + 1;
+				skillpts -= 1;
+				document.getElementById('skillpoints').textContent = skillpts;
+			}
+		});
 
-	document.getElementById('skillpoints').textContent = skillpts;
+		const eleDn = document.getElementById(`${statStr[i]}-down-stat-btn`);
+		eleDn.addEventListener('click', () => {
+			if (+stat[i].value > 0 && +stat[i].value > 1) {
+				stat[i].value = +stat[i].value - 1;
+				skillpts += 1;
+				document.getElementById('skillpoints').textContent = skillpts;
+			}
+		});
+	}
 }
 function err() {
 	if (window.location.search) {
@@ -83,14 +113,18 @@ const maps = [
 	'/assets/arenas/windmill.gif',
 ];
 
+function getRand(max, min) {
+	let num = Math.random() * (max + 1 - min) + min - 1;
+	num = Math.ceil(num);
+	return num;
+}
 function backg() {
 	let mapChoice = maps[getRand(maps.length - 1, 0)];
 	const backg = document.querySelector('.game-window');
 	backg.setAttribute('Style', `background-image: url(${mapChoice});`);
 }
 
-function getRand(max, min) {
-	let num = Math.random() * (max + 1 - min) + min - 1;
-	num = Math.ceil(num);
-	return num;
+function combine() {
+	Stats();
+	err();
 }
