@@ -11,7 +11,7 @@
     <script defer src="/js/dom_manipulation.js"></script>
     <title>Edit Avatar</title>
 </head>
-<body class="body" onload=Stats()>
+<body class="body" onload=Stats() onload=err()>
     <div class="content" >
 <!-- HEADER START -->
     <header class="header">
@@ -21,6 +21,7 @@
             <a href="/index/logout" class="btn btn-outline-primary">Logout</a>
         </div>
     </header>
+    <h1 id="error-message" class="alert alert-danger hidden" role="alert"></h1>
 <!-- HEADER END -->
 <h3 class="text-center">Edit Your Avatar</h3>
 <!-- MAIN START -->
