@@ -381,7 +381,7 @@ router.put("/account/avatars/:avatarId", (req, res) => {
 	const rb = req.body;
 	if (!rb.name) {
 		return res.redirect(
-			`/index/account/${avatarId}/edit?_message="Avatar name required"`
+			`/index/account/avatars/${avatarId}/edit?_message="Avatar name required"`
 		)
 	}
 
