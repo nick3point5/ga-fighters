@@ -243,7 +243,7 @@ router.post("/account/avatars", (req, res) => {
 			},
 			(err, newAvatar) => {
 				if (err) {
-					res.send(err);
+					return res.send(err);
 				}
 				db.User.findByIdAndUpdate(
 					foundUser._id,
