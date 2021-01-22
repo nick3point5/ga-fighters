@@ -20,14 +20,14 @@ Javascript, Jquery, Express, MongoDB, Mongoose, Bootstrap, CSS, HTML, Ejs, MVC, 
 
 ## Wire-frames
 
-![screen shot](/planning/wireframe.png)
+![WIRE FRAME](https://git.generalassemb.ly/kennytrinh/fighter/planning/wireframe.png)
 
 ## ERD
 
-![screen shot](/planning/erd.png)
+![ERD](https://git.generalassemb.ly/kennytrinh/fighter/planning/erd.png)
 
 ## Flow-Chart
 
-![screen shot](/planning/flow-chart.png)
+![FLOW CHART](https://git.generalassemb.ly/kennytrinh/fighter/planning/flow-chart.png)
 
             Thanks for playing our game!
