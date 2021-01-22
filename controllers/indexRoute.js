@@ -123,6 +123,11 @@ router.put("/account", (req, res) => {
 		newPassword: req.body.newPassword,
 		confirm: req.body.confirm,
 	};
+	if (!req.body.newName) {
+		return res.redirect(
+			'/index/account/edit?_message="Username required"'
+		)
+	}
 
 	if (dataObj.newPassword === dataObj.confirm) {
 		db.User.findById(req.session.currentUser._id, (err, foundUser) => {
@@ -208,6 +213,11 @@ router.get("/account/new", (req, res) => {
 // POST ---->   /avatars/    <---- POST =  new avatar and redirects to show
 router.post("/account/avatars", (req, res) => {
 	const rb = req.body;
+	if (!rb.name) {
+		return res.redirect(
+			'/index/account/new?_message="Avatar name required"'
+		)
+	}
 
 	db.User.findById(req.session.currentUser._id, (err, foundUser) => {
 		if (err) return res.send(err);
@@ -243,7 +253,7 @@ router.post("/account/avatars", (req, res) => {
 			},
 			(err, newAvatar) => {
 				if (err) {
-					res.send(err);
+					return res.send(err);
 				}
 				db.User.findByIdAndUpdate(
 					foundUser._id,
@@ -272,7 +282,7 @@ router.get("/account/avatars/:avatarId", (req, res) => {
 		}
 
 		let expRem = 3 ** (lvl - 1) * 100 - foundObj.stats.exp;
-		return res.render("avatar-Show", {
+		return res.render("avatar-show", {
 			avatar: foundObj,
 			account: req.session.currentUser.account,
 			levelInfo: { lvl: lvl, expRem: expRem },
